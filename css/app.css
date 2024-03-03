@@ -42,6 +42,12 @@
     --secondary-color: #C5D1F8;
 }
 
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
 body {
     margin: 0;
     height: 100vh;
@@ -135,8 +141,6 @@ h1 + .sub-heading a {
     font-weight: 500;
     color: var(--border-color);
     pointer-events: none;
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 .upload-area .upload-area-message .button {
@@ -174,8 +178,6 @@ h1 + .sub-heading a {
     color: #ef233c;
     font-size: .9em;
     font-weight: 500;
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 .popup-container {
@@ -197,8 +199,6 @@ h1 + .sub-heading a {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    user-select: none;
-    -webkit-user-select: none;
 }
 
 .popup-container .popup .popup-header strong {
