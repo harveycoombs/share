@@ -8,7 +8,6 @@ use futures::StreamExt;
 use std::fs;
 use std::fs::File;
 use std::io::{self, Read, Write};
-use std::io::prelude::*;
 use zip::ZipWriter;
 use zip::write::FileOptions;
 use std::time::{SystemTime, UNIX_EPOCH};
