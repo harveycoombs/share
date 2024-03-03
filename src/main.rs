@@ -8,6 +8,9 @@ use futures::StreamExt;
 use std::fs;
 use std::fs::File;
 use std::io::{self, Read, Write};
+use std::io::prelude::*;
+use zip::ZipWriter;
+use zip::write::FileOptions;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 async fn index() -> impl Responder {
@@ -44,6 +47,8 @@ async fn upload(mut payload: Multipart) -> impl Responder {
     let unix = now.duration_since(UNIX_EPOCH).expect("ERR");
     let ms = unix.as_millis();
 
+    let count = 0;
+
     while let Ok(Some(mut field)) = payload.try_next().await {
         let context = field.content_disposition();
         let filename = context.get_filename().unwrap();
@@ -54,7 +59,24 @@ async fn upload(mut payload: Multipart) -> impl Responder {
         while let Some(chunk) = field.next().await {
             let data = chunk.unwrap();
             file.write_all(&data).unwrap();
+
+            count += 1;
         }
+    }
+
+    if count > 1 {
+        let archive = File::create(format!("./uploads/{}.zip", ms.to_string()))?;
+        let mut zip = ZipWriter::new(archive);
+        let options = FileOptions::default().compression_method(zip::CompressionMethod::Stored).unix_permissions(0o755);
+
+        let files = list_directory_files("./uploads", &ms.to_string());
+
+        for filename in files {
+            zip.start_file(filename, options)?;
+            std::io::copy(&mut archive, &mut zip)?;
+        }
+
+        zip.finish()?;
     }
 
     HttpResponse::Ok().body("{ \"id\": \"".to_owned() + &ms.to_string() + "\" }")
