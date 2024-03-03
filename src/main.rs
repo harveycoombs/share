@@ -47,7 +47,7 @@ async fn upload(mut payload: Multipart) -> impl Responder {
     let unix = now.duration_since(UNIX_EPOCH).expect("ERR");
     let ms = unix.as_millis();
 
-    let count = 0;
+    let mut count = 0;
 
     while let Ok(Some(mut field)) = payload.try_next().await {
         let context = field.content_disposition();
@@ -65,21 +65,23 @@ async fn upload(mut payload: Multipart) -> impl Responder {
     }
 
     if count > 1 {
-        let archive = File::create(format!("./uploads/{}.zip", ms.to_string()))?;
+        let archive = File::create(format!("./uploads/{}.zip", ms.to_string())).unwrap();
         let mut zip = ZipWriter::new(archive);
         let options = FileOptions::default().compression_method(zip::CompressionMethod::Stored).unix_permissions(0o755);
 
         let files = list_directory_files("./uploads", &ms.to_string());
 
         for filename in files {
-            zip.start_file(filename, options)?;
-            std::io::copy(&mut archive, &mut zip)?;
+            let path = format!("./uploads/{}-{}", ms.to_string(), filename);
+            let mut file = File::open(path).unwrap();
+            zip.start_file(filename, options).unwrap();
+            std::io::copy(&mut file, &mut zip).unwrap();
         }
 
-        zip.finish()?;
+        zip.finish().unwrap();
     }
 
-    HttpResponse::Ok().body("{ \"id\": \"".to_owned() + &ms.to_string() + "\" }")
+    HttpResponse::Ok().body(format!("{{ \"id\": \"{}\" }}", ms))
 }
 
 #[actix_web::main]
