@@ -24,7 +24,10 @@ uploader.addEventListener("dragover", (e) => {
 
 uploadArea.addEventListener("drop", (e) => {
     e.preventDefault();
+
     uploader.files = e.dataTransfer.files;
+    uploader.dispatchEvent(new Event("change"));
+    
     uploadArea.classList.remove("active-drag");
 });
 
@@ -35,18 +38,21 @@ manualUploadBtn.addEventListener("click", () => {
 });
 
 function processUpload(e) {
-    let files;
+    let files = new FormData();
+
+    for (let file of e.target.files) files.append("files", file);
 
     fetch("/upload", {
         method: "POST",
         body: files
     }).then(response => response.json()).then((result) => {
-        if (!result.success) {
-            displayError("Unable to upload file(s) right now. Please try again later.");
-            return;
-        }
+        let popup = document.createElement("div");
 
-        window.open(result.url, "_blank");
+        popup.classList = "popup-container";
+        popup.innerHTML = `<div class="popup"><div class="popup-header"><strong>Upload Successful</strong><div id="close_popup_btn"><i class="fa-solid fa-xmark"></i></div></div><input type="text" value="${document.location.href}uploads/${result.id}" class="field" id="upload_url_field" readonly /></div>`;
+
+        document.querySelector(".popup-container")?.remove();
+        document.body.append(popup);
     }).catch(() => {
         displayError("Unable to upload file(s) right now. Please try again later.");
     });

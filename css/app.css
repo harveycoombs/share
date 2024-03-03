@@ -56,19 +56,33 @@ a {
     color: inherit;
 }
 
-.button {
+.button, .field {
     padding: 10px 14px;
-    border: 1px solid var(--secondary-color);
+    border: 1px solid;
     border-radius: 6px;
+    font: .9em 'Inter';
+    transition: 180ms;
+}
+
+.button {
+    border-color: var(--secondary-color);
     background-color: var(--secondary-color);
     color: var(--primary-color);
-    font: .9em 'Inter';
     font-weight: 600;
     cursor: pointer;
-    transition: 180ms;
 } .button:hover {
     border-color: #B1BFEA;
     background-color: #B1BFEA;
+}
+
+.field {
+    border-color: var(--border-color);
+    background-color: transparent;
+}
+
+.field:focus {
+    outline: none;
+    border-color: var(--primary-color);
 }
 
 h1 {
@@ -162,4 +176,44 @@ h1 + .sub-heading a {
     font-weight: 500;
     user-select: none;
     -webkit-user-select: none;
+}
+
+.popup-container {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: grid;
+    place-items: center;
+}
+
+.popup-container .popup {
+    width: fit-content;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: var(--background-color);
+}
+
+.popup-container .popup .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.popup-container .popup .popup-header strong {
+    font-weight: 700;
+}
+
+#close_popup_btn {
+    cursor: pointer;
+    transition: 180ms;
+} #close_popup_btn:hover {
+    color: #EF233C;
+}
+
+#upload_url_field {
+    width: 330px;
+    margin-top: 12px;
+    text-align: center;
 }

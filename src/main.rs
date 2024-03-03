@@ -45,7 +45,7 @@ async fn upload(mut payload: Multipart) -> impl Responder {
     let ms = unix.as_millis();
 
     while let Ok(Some(mut field)) = payload.try_next().await {
-        let context = field.content_disposition().unwrap();
+        let context = field.content_disposition();
         let filename = context.get_filename().unwrap();
 
         let path = format!("./uploads/{}-{}", ms.to_string(), filename);
@@ -57,7 +57,7 @@ async fn upload(mut payload: Multipart) -> impl Responder {
         }
     }
 
-    HttpResponse::Ok().body("\{ \"success\": true, \"url\": \"\" \}")
+    HttpResponse::Ok().body("{ \"id\": \"".to_owned() + &ms.to_string() + "\" }")
 }
 
 #[actix_web::main]
