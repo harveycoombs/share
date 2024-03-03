@@ -38,6 +38,12 @@ manualUploadBtn.addEventListener("click", () => {
 });
 
 function processUpload(e) {
+    let placeholder = uploadArea.querySelector(".upload-area-placeholder");
+    let loader = uploadArea.querySelector(".loader");
+
+    placeholder.classList.add("hidden");
+    loader.classList.remove("hidden");
+
     let files = new FormData();
 
     for (let file of e.target.files) files.append("files", file);
@@ -46,6 +52,9 @@ function processUpload(e) {
         method: "POST",
         body: files
     }).then(response => response.json()).then((result) => {
+        placeholder.classList.remove("hidden");
+        loader.classList.add("hidden");
+
         let popup = document.createElement("div");
 
         popup.classList = "popup-container";
@@ -53,6 +62,9 @@ function processUpload(e) {
 
         document.querySelector(".popup-container")?.remove();
         document.body.append(popup);
+
+        let closePopupBtn = popup.querySelector("#close_popup_btn");
+        closePopupBtn.addEventListener("click", () => popup.remove());
 
         let uploadUrlField = popup.querySelector("#upload_url_field");
         uploadUrlField.focus();

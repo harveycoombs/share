@@ -91,6 +91,10 @@ a {
     border-color: var(--primary-color);
 }
 
+.hidden {
+    display: none !important;
+}
+
 h1 {
     text-align: center;
     font-size: 2.5em;
@@ -137,13 +141,13 @@ h1 + .sub-heading a {
     margin: auto;
 }
 
-.upload-area .upload-area-message {
+.upload-area .upload-area-placeholder {
     font-weight: 500;
     color: var(--border-color);
     pointer-events: none;
 }
 
-.upload-area .upload-area-message .button {
+.upload-area .upload-area-placeholder .button {
     pointer-events: all;
 }
 
@@ -152,7 +156,7 @@ h1 + .sub-heading a {
     background-color: rgba(255, 229, 102, 0.2);
 }
 
-.upload-area.active-drag .upload-area-message {
+.upload-area.active-drag .upload-area-placeholder {
     color: #FFE568;
 }
 
@@ -216,4 +220,19 @@ h1 + .sub-heading a {
     width: 330px;
     margin-top: 12px;
     text-align: center;
+}
+
+.loader {
+    font-size: 1.4em;
+    color: var(--primary-color);
+    animation: spin 600ms infinite linear;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
