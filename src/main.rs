@@ -71,7 +71,7 @@ async fn upload(mut payload: Multipart) -> impl Responder {
         let files = list_directory_files("./uploads", &ms.to_string());
 
         for filename in files {
-            let path = format!("./uploads/{}-{}", ms.to_string(), filename);
+            let path = format!("./uploads/{}", filename);
             let mut file = File::open(path).unwrap();
             zip.start_file(filename, options).unwrap();
             std::io::copy(&mut file, &mut zip).unwrap();
