@@ -11,6 +11,7 @@ use std::io::{self, Read, Write};
 use zip::ZipWriter;
 use zip::write::FileOptions;
 use std::time::{SystemTime, UNIX_EPOCH};
+use mime_guess::from_path;
 
 async fn index() -> impl Responder {
     match read_file("./views/index.html") {
@@ -56,10 +57,11 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
         match fs::read(&format!("./uploads/{}", file_name)) {
             Ok(bytes) => {
                 let original_filename = file_name.replace(&format!("{}-", id), "");
+                let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
 
                 return HttpResponse::Ok()
-                    .content_type("application/octet-stream")
-                    .header("Content-Disposition", format!("attachment; filename=\"{}\"", original_filename))
+                    .content_type(content_type)
+                    //.header("Content-Disposition", format!("attachment; filename=\"{}\"", original_filename))
                     .body(bytes);
             },
             Err(ex) => {
