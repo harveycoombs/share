@@ -53,6 +53,10 @@ function processUpload(e) {
 
         document.querySelector(".popup-container")?.remove();
         document.body.append(popup);
+
+        let uploadUrlField = popup.querySelector("#upload_url_field");
+        uploadUrlField.focus();
+        uploadUrlField.select();
     }).catch(() => {
         displayError("Unable to upload file(s) right now. Please try again later.");
     });
