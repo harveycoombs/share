@@ -22,7 +22,37 @@ async fn index() -> impl Responder {
 async fn uploads(id: web::Path<String>) -> impl Responder {
     let files = list_directory_files("./uploads", &id);
 
-    if let Some(file_name) = files.first() {
+    if files.len() > 1 {
+        let mut archive = File::create(format!("./uploads/{}.zip", id)).unwrap();
+        let mut writer = ZipWriter::new(&mut archive);
+
+        let options = FileOptions::default().compression_method(zip::CompressionMethod::Stored);
+
+        for file_name in files {
+            match fs::read(&format!("./uploads/{}", file_name)) {
+                Ok(bytes) => {
+                    let original_filename = file_name.replace(&format!("{}-", id), "");
+    
+                    writer.start_file(original_filename, options).unwrap();
+                    writer.write(&bytes).unwrap();
+                },
+                Err(ex) => {
+                    eprintln!("ERR! {}", ex);
+                }
+            }                
+        }
+
+        writer.finish().unwrap();
+
+        let mut zip_file = File::open(format!("./uploads/{}.zip", id)).unwrap();
+        let mut data = Vec::new();
+
+        zip_file.read_to_end(&mut data).unwrap();
+
+        return HttpResponse::Ok()
+            .content_type("application/zip")
+            .body(data)
+    } else if let Some(file_name) = files.first() {
         match fs::read(&format!("./uploads/{}", file_name)) {
             Ok(bytes) => {
                 let original_filename = file_name.replace(&format!("{}-", id), "");
@@ -46,8 +76,6 @@ async fn upload(mut payload: Multipart) -> impl Responder {
     let unix = now.duration_since(UNIX_EPOCH).expect("ERR");
     let ms = unix.as_millis();
 
-    let mut count = 0;
-
     while let Ok(Some(mut field)) = payload.try_next().await {
         let context = field.content_disposition();
         let filename = context.get_filename().unwrap();
@@ -58,26 +86,7 @@ async fn upload(mut payload: Multipart) -> impl Responder {
         while let Some(chunk) = field.next().await {
             let data = chunk.unwrap();
             file.write_all(&data).unwrap();
-
-            count += 1;
         }
-    }
-
-    if count > 1 {
-        let archive = File::create(format!("./uploads/{}.zip", ms.to_string())).unwrap();
-        let mut zip = ZipWriter::new(archive);
-        let options = FileOptions::default().compression_method(zip::CompressionMethod::Stored).unix_permissions(0o755);
-
-        let files = list_directory_files("./uploads", &ms.to_string());
-
-        for filename in files {
-            let path = format!("./uploads/{}", filename);
-            let mut file = File::open(path).unwrap();
-            zip.start_file(filename, options).unwrap();
-            std::io::copy(&mut file, &mut zip).unwrap();
-        }
-
-        zip.finish().unwrap();
     }
 
     HttpResponse::Ok().body(format!("{{ \"id\": \"{}\" }}", ms))
@@ -94,7 +103,7 @@ async fn main() -> std::io::Result<()> {
             .route("/uploads/{id}", web::get().to(uploads))
             .route("/upload", web::post().to(upload))
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind(("127.0.0.1", 3002))?
     .run()
     .await
 }
