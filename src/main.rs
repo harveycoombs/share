@@ -1,10 +1,11 @@
 // share.harveycoombs.com 
 // written by Harvey Coombs, 2020-2024
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_web::web::Bytes;
 use actix_files;
 use actix_multipart::Multipart;
-use futures::TryStreamExt;
-use futures::StreamExt;
+use futures::{StreamExt, TryStreamExt};
+use futures::stream::once;
 use std::fs;
 use std::fs::File;
 use std::io::{self, Read, Write};
@@ -56,13 +57,25 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
     } else if let Some(file_name) = files.first() {
         match fs::read(&format!("./uploads/{}", file_name)) {
             Ok(bytes) => {
-                //let original_filename = file_name.replace(&format!("{}-", id), "");
                 let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
 
-                return HttpResponse::Ok()
-                    .content_type(content_type)
-                    //.header("Content-Disposition", format!("attachment; filename=\"{}\"", original_filename))
-                    .body(bytes);
+                if bytes.len() > 2000000 {
+                    let chunks: Vec<&[u8]> = bytes.chunks_exact(bytes.len() / 16).collect();
+
+                    let streams = chunks.into_iter().map(|chunk| {
+                        let chunk = Bytes::from(chunk);
+                        once(Box::pin(async move { Ok::<_, std::io::Error>(chunk.to_vec()) }))
+                    });
+
+                    let combined_streams = futures::stream::select_all(streams);
+
+                    return HttpResponse::Ok()
+                        .streaming(combined_streams)
+                } else {
+                    return HttpResponse::Ok()
+                        .content_type(content_type)
+                        .body(bytes);
+                }
             },
             Err(ex) => {
                 eprintln!("ERR! {}", ex);
