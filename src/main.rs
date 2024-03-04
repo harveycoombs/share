@@ -60,17 +60,25 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                 let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
 
                 if bytes.len() > 2000000 {
-                    let chunks: Vec<&[u8]> = bytes.chunks_exact(bytes.len() / 16).collect();
-
+                    let chunks: Vec<Vec<u8>> = bytes.chunks_exact(bytes.len() / 128)
+                        .map(|chunk| chunk.to_vec())
+                        .collect();
+            
                     let streams = chunks.into_iter().map(|chunk| {
                         let chunk = Bytes::from(chunk);
                         once(Box::pin(async move { Ok::<_, std::io::Error>(chunk.to_vec()) }))
                     });
-
+                
                     let combined_streams = futures::stream::select_all(streams);
-
+                    let converted_streams = combined_streams.map(|result| {
+                        result.map(|bytes| {
+                            let vec_bytes: Vec<u8> = bytes.to_vec();
+                            actix_web::web::Bytes::from(vec_bytes)
+                        })
+                    });
+                
                     return HttpResponse::Ok()
-                        .streaming(combined_streams)
+                        .streaming(converted_streams)
                 } else {
                     return HttpResponse::Ok()
                         .content_type(content_type)
