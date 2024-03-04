@@ -56,7 +56,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
     } else if let Some(file_name) = files.first() {
         match fs::read(&format!("./uploads/{}", file_name)) {
             Ok(bytes) => {
-                let original_filename = file_name.replace(&format!("{}-", id), "");
+                //let original_filename = file_name.replace(&format!("{}-", id), "");
                 let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
 
                 return HttpResponse::Ok()
