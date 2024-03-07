@@ -24,6 +24,10 @@ async fn index() -> impl Responder {
 async fn uploads(id: web::Path<String>) -> impl Responder {
     let files = list_directory_files("./uploads", &id);
 
+    if files.len() == 0 {
+        return HttpResponse::Ok().body("File(s) not found");
+    }
+    
     if files.len() > 1 {
         let mut archive = File::create(format!("./uploads/{}.zip", id)).unwrap();
         let mut writer = ZipWriter::new(&mut archive);
@@ -39,7 +43,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                     writer.write(&bytes).unwrap();
                 },
                 Err(ex) => {
-                    eprintln!("ERR! {}", ex);
+                    println!("ERR! {}", ex);
                 }
             }                
         }
