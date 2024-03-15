@@ -2,24 +2,15 @@ const uploadArea = document.querySelector("#upload_area"),
     manualUploadBtn = uploadArea.querySelector("#manual_upload_btn"),
     uploader = uploadArea.querySelector("#uploader");
 
-uploadArea.addEventListener("dragenter", () => {
-    uploadArea.classList.add("active-drag");
-});
+uploadArea.addEventListener("dragenter", () => uploadArea.classList.add("active-drag"));
+uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("active-drag"));
 
-uploadArea.addEventListener("dragleave", () => {
-    uploadArea.classList.remove("active-drag");
-});
+uploader.addEventListener("dragover", (e) => e.preventDefault());
+manualUploadBtn.addEventListener("click", () => uploader.click());
 
 uploadArea.addEventListener("dragover", (e) => {
     e.preventDefault();
-
-    if (!uploadArea.classList.contains("active-drag")) {
-        uploadArea.classList.add("active-drag");
-    }
-});
-
-uploader.addEventListener("dragover", (e) => {
-    e.preventDefault();
+    if (!uploadArea.classList.contains("active-drag")) uploadArea.classList.add("active-drag");
 });
 
 uploadArea.addEventListener("drop", (e) => {
@@ -31,13 +22,7 @@ uploadArea.addEventListener("drop", (e) => {
     uploadArea.classList.remove("active-drag");
 });
 
-uploader.addEventListener("change", processUpload);
-
-manualUploadBtn.addEventListener("click", () => {
-    uploader.click();
-});
-
-function processUpload(e) {
+uploader.addEventListener("change", (e) => {
     let placeholder = uploadArea.querySelector(".upload-area-placeholder");
     let loader = uploadArea.querySelector(".loader");
 
@@ -45,7 +30,6 @@ function processUpload(e) {
     loader.classList.remove("hidden");
 
     let files = new FormData();
-
     for (let file of e.target.files) files.append("files", file);
 
     fetch("/upload", {
@@ -70,16 +54,12 @@ function processUpload(e) {
         uploadUrlField.focus();
         uploadUrlField.select();
     }).catch(() => {
-        displayError("Unable to upload file(s) right now. Please try again later.");
-    });
-}
-
-function displayError(message) {
-    let errorDialog = document.createElement("div");
+        let errorDialog = document.createElement("div");
     
-    errorDialog.classList = "error-dialog";
-    errorDialog.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${message}`;
-
-    document.querySelector(".error-dialog")?.remove();
-    document.body.append(errorDialog);
-}
+        errorDialog.classList = "error-dialog";
+        errorDialog.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Unable to upload file(s) right now. Please try again later.';
+    
+        document.querySelector(".error-dialog")?.remove();
+        document.body.append(errorDialog);
+    });
+});
