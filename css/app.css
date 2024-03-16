@@ -73,11 +73,6 @@ h1 {
     margin: 0 auto 12px auto;
 }
 
-h1 span {
-    color: var(--border-color);
-    font-weight: 300;
-}
-
 h1 i {
     color: var(--primary-color);
     font-size: 0.9em;
