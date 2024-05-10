@@ -26,9 +26,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
 
     if files.len() == 0 {
         return HttpResponse::Ok().body("File(s) not found");
-    }
-    
-    if files.len() > 1 {
+    } else if files.len() > 1 {
         let mut archive = File::create(format!("./uploads/{}.zip", id)).unwrap();
         let mut writer = ZipWriter::new(&mut archive);
 
@@ -43,7 +41,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                     writer.write(&bytes).unwrap();
                 },
                 Err(ex) => {
-                    println!("ERR! {}", ex);
+                    eprintln!("ERR! {}", ex);
                 }
             }                
         }
@@ -64,7 +62,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                 let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
 
                 if bytes.len() > 2000000 {
-                    let chunks: Vec<Vec<u8>> = bytes.chunks_exact(bytes.len() / 128)
+                    let chunks: Vec<Vec<u8>> = bytes.chunks_exact(bytes.len() / 4)
                         .map(|chunk| chunk.to_vec())
                         .collect();
             
@@ -82,6 +80,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                     });
                 
                     return HttpResponse::Ok()
+                        .content_type(content_type)
                         .streaming(converted_streams)
                 } else {
                     return HttpResponse::Ok()
@@ -130,7 +129,7 @@ async fn main() -> std::io::Result<()> {
             .route("/uploads/{id}", web::get().to(uploads))
             .route("/upload", web::post().to(upload))
     })
-    .bind(("127.0.0.1", 3002))?
+    .bind(("localhost", 3002))?
     .run()
     .await
 }
