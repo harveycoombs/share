@@ -62,9 +62,16 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                 let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
 
                 if bytes.len() > 2000000 {
-                    let chunks: Vec<Vec<u8>> = bytes.chunks_exact(bytes.len() / 4)
+                    let chunk_size = 104857600.0;
+                    let remaining_chunks = (bytes.len() as f64) % chunk_size;
+                    
+                    let mut chunks: Vec<Vec<u8>> = bytes.chunks(chunk_size as usize)
                         .map(|chunk| chunk.to_vec())
                         .collect();
+                 
+                    if let Some(remaining_chunks) = bytes.chunks(chunk_size as usize).last() {
+                        chunks.push(remaining_chunks.to_vec());
+                    }
             
                     let streams = chunks.into_iter().map(|chunk| {
                         let chunk = Bytes::from(chunk);
