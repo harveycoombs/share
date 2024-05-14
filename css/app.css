@@ -4,8 +4,8 @@
     --background-color: #FFF;
     --text-color: #22223B;
     --border-color: #CED4DA;
-    --primary-color: #3E67E9;
-    --secondary-color: #C5D1F8;
+    --primary-color: #EF476F;
+    --secondary-color: #FBD4DE;
 }
 
 * {
@@ -43,8 +43,8 @@ a {
     font-weight: 600;
     cursor: pointer;
 } .button:hover {
-    border-color: #B1BFEA;
-    background-color: #B1BFEA;
+    border-color: #DB4266;
+    background-color: #DB4266;
 }
 
 .field {
