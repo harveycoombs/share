@@ -1,4 +1,4 @@
-// share.harveycoombs.com 
+// share.harveycoombs.com
 // written by Harvey Coombs, 2020-2024
 use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 use actix_web::web::Bytes;
@@ -43,7 +43,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                 Err(ex) => {
                     eprintln!("ERR! {}", ex);
                 }
-            }                
+            }
         }
 
         writer.finish().unwrap();
@@ -64,20 +64,20 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                 if bytes.len() > 2000000 {
                     let chunk_size = 104857600.0;
                     let remaining_chunks = (bytes.len() as f64) % chunk_size;
-                    
+
                     let mut chunks: Vec<Vec<u8>> = bytes.chunks(chunk_size as usize)
                         .map(|chunk| chunk.to_vec())
                         .collect();
-                 
+
                     if let Some(remaining_chunks) = bytes.chunks(chunk_size as usize).last() {
                         chunks.push(remaining_chunks.to_vec());
                     }
-            
+
                     let streams = chunks.into_iter().map(|chunk| {
                         let chunk = Bytes::from(chunk);
                         once(Box::pin(async move { Ok::<_, std::io::Error>(chunk.to_vec()) }))
                     });
-                
+
                     let combined_streams = futures::stream::select_all(streams);
                     let converted_streams = combined_streams.map(|result| {
                         result.map(|bytes| {
@@ -85,7 +85,7 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                             actix_web::web::Bytes::from(vec_bytes)
                         })
                     });
-                
+
                     return HttpResponse::Ok()
                         .content_type(content_type)
                         .streaming(converted_streams)
