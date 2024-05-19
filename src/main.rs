@@ -13,6 +13,12 @@ use zip::ZipWriter;
 use zip::write::FileOptions;
 use std::time::{SystemTime, UNIX_EPOCH};
 use mime_guess::from_path;
+use std::sync::{Arc, Mutex};
+use lazy_static::lazy_static;
+
+lazy_static! {
+    static ref ALREADY_CHUNKED: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
+}
 
 async fn index() -> impl Responder {
     match read_file("./views/index.html") {
@@ -57,11 +63,13 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
             .content_type("application/zip")
             .body(data)
     } else if let Some(file_name) = files.first() {
+        let mut already_chunked = ALREADY_CHUNKED.lock().unwrap();
+        
         match fs::read(&format!("./uploads/{}", file_name)) {
             Ok(bytes) => {
                 let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
 
-                if bytes.len() > 2000000 {
+                if bytes.len() > 2000000 && !*already_chunked {
                     let chunk_size = 104857600.0;
                     let remaining_chunks = (bytes.len() as f64) % chunk_size;
 
@@ -85,6 +93,8 @@ async fn uploads(id: web::Path<String>) -> impl Responder {
                             actix_web::web::Bytes::from(vec_bytes)
                         })
                     });
+
+                    *already_chunked = true;
 
                     return HttpResponse::Ok()
                         .content_type(content_type)
