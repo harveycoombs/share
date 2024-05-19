@@ -1,33 +1,28 @@
-const uploadArea = document.querySelector("#upload_area"),
-    manualUploadBtn = uploadArea.querySelector("#manual_upload_btn"),
-    uploader = uploadArea.querySelector("#uploader");
+const header = document.querySelector("header");
+const main = document.querySelector("main");
 
-uploadArea.addEventListener("dragenter", () => uploadArea.classList.add("active-drag"));
-uploadArea.addEventListener("dragleave", () => uploadArea.classList.remove("active-drag"));
+const manualUploadBtn = header.querySelector("#manual_upload_btn");
+const uploader = main.querySelector("#uploader");
 
-uploader.addEventListener("dragover", (e) => e.preventDefault());
+main.setAttribute("style", `height: ${window.innerHeight - (header.clientHeight + 24)}px;`);
+
 manualUploadBtn.addEventListener("click", () => uploader.click());
 
-uploadArea.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    if (!uploadArea.classList.contains("active-drag")) uploadArea.classList.add("active-drag");
+document.addEventListener("click", (e) => {
+    if (e.target.matches(".popup-container")) {
+        e.target.remove();
+    } else if (e.target.matches("#close_popup_btn")) {
+        e.target.closest(".popup-container")?.remove();
+    }
 });
 
-uploadArea.addEventListener("drop", (e) => {
-    e.preventDefault();
-
-    uploader.files = e.dataTransfer.files;
-    uploader.dispatchEvent(new Event("change"));
-    
-    uploadArea.classList.remove("active-drag");
-});
+addDragEventListeners();
 
 uploader.addEventListener("change", (e) => {
-    let placeholder = uploadArea.querySelector(".upload-area-placeholder");
-    let loader = uploadArea.querySelector(".loader");
+    let title = main.querySelector("h1");
+    title.innerHTML = '<div class="loader-container"></div> UPLOADING';
 
-    placeholder.classList.add("hidden");
-    loader.classList.remove("hidden");
+    addLoaderToNode(title.querySelector(".loader-container"), "fa-solid fa-gear", true);
 
     let files = new FormData();
     for (let file of e.target.files) files.append("files", file);
@@ -36,23 +31,14 @@ uploader.addEventListener("change", (e) => {
         method: "POST",
         body: files
     }).then(response => response.json()).then((result) => {
-        placeholder.classList.remove("hidden");
-        loader.classList.add("hidden");
+        removeDragEventListeners();
+        
+        title.classList.add("upload-url");
 
-        let popup = document.createElement("div");
-
-        popup.classList = "popup-container";
-        popup.innerHTML = `<div class="popup"><div class="popup-header"><strong>Upload Successful</strong><div id="close_popup_btn"><i class="fa-solid fa-xmark"></i></div></div><input type="text" value="${document.location.href}uploads/${result.id}" class="field" id="upload_url_field" readonly /></div>`;
-
-        document.querySelector(".popup-container")?.remove();
-        document.body.append(popup);
-
-        let closePopupBtn = popup.querySelector("#close_popup_btn");
-        closePopupBtn.addEventListener("click", () => popup.remove());
-
-        let uploadUrlField = popup.querySelector("#upload_url_field");
-        uploadUrlField.focus();
-        uploadUrlField.select();
+        setTimeout(() => {
+            title.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${document.location.href}uploads/${result.id}`;
+        }, 180);
+        
     }).catch(() => {
         let errorDialog = document.createElement("div");
     
@@ -63,3 +49,48 @@ uploader.addEventListener("change", (e) => {
         document.body.append(errorDialog);
     });
 });
+
+function addDragEventListeners() {
+    document.body.addEventListener("dragenter", () => handleDragEnterEvent);
+    document.body.addEventListener("dragleave", () => handleDragLeaveEvent);
+
+    document.body.addEventListener("dragover", handleDragOverEvent);
+    document.body.addEventListener("drop", handleDropEvent);
+}
+
+function removeDragEventListeners() {
+    document.body.removeEventListener("dragenter", () => handleDragEnterEvent);
+    document.body.removeEventListener("dragleave", () => handleDragLeaveEvent);
+
+    document.body.removeEventListener("dragover", handleDragOverEvent);
+    document.body.removeEventListener("drop", handleDropEvent);
+}
+
+function handleDropEvent(e) {
+    e.preventDefault();
+    
+    uploader.files = e.dataTransfer.files;
+    uploader.dispatchEvent(new Event("change"));
+    
+    document.body.classList.remove("active-drag");
+}
+
+function handleDragOverEvent(e) {
+    e.preventDefault();
+    if (!document.body.classList.contains("active-drag")) document.body.classList.add("active-drag");
+}
+
+function handleDragEnterEvent() {
+    document.body.classList.add("active-drag");
+}
+
+function handleDragLeaveEvent() {
+    document.body.classList.remove("active-drag");
+}
+
+function addLoaderToNode(target, icon="fa-solid fa-circle-notch", prepend=false) {
+    let loader = document.createElement("i");
+    loader.classList = `${icon} loader`;
+
+    prepend ? target?.prepend(loader) : target?.append(loader);
+}

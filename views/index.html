@@ -4,24 +4,26 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <meta property="og:title" content="Share | Harvey Coombs" />
+        <meta property="og:title" content="Share 2 | Harvey Coombs" />
 	    <meta property="og:type" content="website" />
-        <meta property="og:url" content="http://share.harveycoombs.com/" />
-        <meta name="theme-color" content="#3E67E9" />
+        <meta property="og:url" content="http://share2.harveycoombs.com/" />
+        <meta name="theme-color" content="#EF476F" />
 
         <link rel="stylesheet" type="text/css" href="/css/app.css" />
+        
+        <script src="https://kit.fontawesome.com/c2f479917e.js" defer></script>
+        <script src="/js/app.js" type="module" defer></script>
 
-        <title>Share | Harvey Coombs</title>
+        <title>Share 2 | Harvey Coombs</title>
     </head>
 
     <body>
-        <main>
-            <h1><i class="fa-solid fa-file-arrow-up"></i> Share</h1>
-            <div class="sub-heading">Written in Rust &middot; Harvey Coombs &middot; <a href="https://github.com/harveycoombs/share"><i class="fa-brands fa-github"></i></a></div>
-            <div class="upload-area" id="upload_area"><div class="upload-area-placeholder">Drag files here, or <button class="button" id="manual_upload_btn">Browse</button></div><i class="fa-solid fa-circle-notch loader hidden"></i><input type="file" id="uploader" multiple /></div>
+        <header class="sb-flex">
+            <div class="header-info">Written in Rust by Harvey Coombs &middot; <a href="https://github.com/harveycoombs/share"><i class="fa-brands fa-github"></i></a></div>
+            <div class="header-options-container"><button class="button" id="manual_upload_btn">Browse Files</button></div>
+        </header><main>
+            <h1>SHARE 2.0</h1>
+            <input type="file" class="hidden" id="uploader" multiple /></div>
         </main>
-
-        <script src="https://kit.fontawesome.com/c2f479917e.js" defer></script>
-        <script src="/js/app.js" type="text/javascript" defer></script>
     </body>
 </html>

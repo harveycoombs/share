@@ -4,23 +4,20 @@
     --background-color: #FFF;
     --text-color: #22223B;
     --border-color: #CED4DA;
-    --primary-color: #EF476F;
-    --secondary-color: #FBD4DE;
+    --primary-color: #3E67E9;
+    --secondary-color: #C5D1F8;
+    --error-color: #EF233C;
 }
 
 * {
     box-sizing: border-box;
     user-select: none;
     -webkit-user-select: none;
-    transition: 180ms;
 }
 
 body {
-    margin: 0;
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    font: 1em 'Inter', sans-serif;
+    height: 100vh;
+    font: 14px 'Inter', sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
 }
@@ -29,157 +26,72 @@ a {
     color: inherit;
 }
 
+i {
+    pointer-events: none;
+}
+
+body, h1, h2 {
+    margin: 0;
+}
+
+::selection {
+    background-color: var(--primary-color);
+    color: #FFFFFF;
+}
+
+:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .button, .field {
-    padding: 10px 14px;
+    padding: 10px 16px;
     border: 1px solid;
-    border-radius: 6px;
-    font: .9em 'Inter';
+    border-radius: 4px;
+    font: .9em 'Inter', sans-serif;
+    transition: 180ms;
 }
 
 .button {
-    border-color: var(--secondary-color);
-    background-color: var(--secondary-color);
-    color: var(--primary-color);
-    font-weight: 600;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #FFFFFF;
+    font-weight: 500;
     cursor: pointer;
 } .button:hover {
-    border-color: #DB4266;
-    background-color: #DB4266;
+    border-color: #3758BF;
+    background-color: #3758BF;
+} .button:active {
+    border-color: #2E4AA1;
+    background-color: #2E4AA1;
 }
 
 .field {
     border-color: var(--border-color);
     background-color: transparent;
-}
-
-.field:focus {
+    color: var(--text-color);
+} .field:focus {
     outline: none;
     border-color: var(--primary-color);
+}
+
+.field::placeholder {
+    color: var(--border-color);
 }
 
 .hidden {
     display: none !important;
 }
 
-h1, h1 + .sub-heading {
-    text-align: center;
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-h1 {
-    font-size: 2.5em;
-    font-weight: 700;
-    margin: 0 auto 12px auto;
-}
-
-h1 i {
-    color: var(--primary-color);
-    font-size: 0.9em;
-    transform: translateY(-1px);
-}
-
-h1 + .sub-heading {
-    font-size: 1.2em;
-    font-weight: 500;
-    color: var(--border-color);
-    margin-bottom: 24px;
-}
-
-h1 + .sub-heading a {
-    cursor: pointer;
-} h1 + .sub-heading a:hover {
-    color: #B8BEC3;
-}
-
-.upload-area {
-    border: 2px dashed var(--border-color);
-    border-radius: 8px;
-    padding: 12px;
-    width: 600px;
-    height: 120px;
-    display: grid;
-    place-items: center;
-    margin: auto;
-}
-
-.upload-area .upload-area-placeholder {
-    font-weight: 500;
-    color: var(--border-color);
-    pointer-events: none;
-}
-
-.upload-area .upload-area-placeholder .button {
-    pointer-events: all;
-}
-
-.upload-area.active-drag {
-    border-color: #FFE566;
-    background-color: rgba(255, 229, 102, 0.2);
-}
-
-.upload-area.active-drag .upload-area-placeholder {
-    color: #FFE568;
-}
-
-#manual_upload_btn {
-    display: inline-block;
-    vertical-align: middle;
-    padding: 8px 12px;
-    font-size: 0.8em;
-    margin-left: 8px;
-}
-
-#uploader {
-    display: none;
-}
-
-.error-dialog {
-    position: absolute;
-    top: 40px;
-    padding: 12px;
-    border: 1px solid #EF233C;
-    border-radius: 8px;
-    background-color: rgba(239, 35, 60, 0.2);
-    font-size: .9em;
-    font-weight: 500;
-}
-
-.popup-container {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: grid;
-    place-items: center;
-}
-
-.popup-container .popup {
-    width: fit-content;
-    padding: 12px;
-    border-radius: 8px;
-    background-color: var(--background-color);
-}
-
-.popup-container .popup .popup-header {
+.sb-flex {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.popup-container .popup .popup-header strong {
-    font-weight: 700;
-}
-
-#close_popup_btn {
-    cursor: pointer;
-} #close_popup_btn:hover, .error-dialog {
-    color: #EF233C;
-}
-
-#upload_url_field {
-    width: 330px;
-    margin-top: 12px;
-    text-align: center;
+.invalid {
+    border-color: var(--error-color);
+    background-color: rgb(245 223 1 / 15%);
 }
 
 .loader {
@@ -188,7 +100,103 @@ h1 + .sub-heading a {
     animation: spin 600ms infinite linear;
 }
 
+.banner {
+    padding: 8px;
+    border: 1px solid;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.banner.red {
+    background-color: rgba(239, 35, 60, 0.12);
+    border-color: var(--error-color);
+    color: var(--error-color);
+}
+
+.banner.amber {
+    background-color: rgba(252, 163, 17, 0.12);
+    border-color: #FCA311;
+    color: #FCA311;
+}
+
+.banner.green {
+    background-color: rgba(45, 198, 83, 0.12);
+    border-color: #2DC653;
+    color: #2DC653;
+}
+
+.text-in-center {
+    text-align: center;
+}
+
+header {
+    padding: 12px;
+}
+
+header .header-info {
+    font-weight: 500;
+}
+
+header .header-options-container > * {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 24px;
+}
+
+main {
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+}
+
+main h1 {
+    font-size: 15vw;
+    font-weight: 900;
+    text-align: center;
+    transition: 180ms;
+    opacity: 0.03;
+}
+
+body.active-drag main h1 {
+    color: var(--primary-color);
+    opacity: 1;
+}
+
+main h1:has(.loader) {
+    font-size: 10vw;
+}
+
+main h1 .loader-container {
+    display: inline-block;
+    vertical-align: middle;
+    width: fit-content;
+    height: fit-content;
+    transform: translateY(-42px);
+}
+
+main h1 .loader-container .loader {
+    font-size: .8em;
+    color: var(--text-color);
+    animation-duration: 800ms;
+}
+
+main:has(h1.upload-url) {
+    pointer-events: all;
+}
+
+main h1.upload-url {
+    font-size: 2.5vw;
+    opacity: 1;
+    user-select: all;
+}
+
+main h1.upload-url i {
+    color: #16db65;
+    margin-right: 12px;
+    user-select: none;
+}
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% { rotate: 0deg; }
+    100% { rotate: 360deg; }
 }
