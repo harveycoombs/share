@@ -67,18 +67,6 @@ body, h1, h2 {
     background-color: #2E4AA1;
 }
 
-.button.alt {
-    background-color: #C7D3F9;
-    border-color: #C7D3F9;
-    color: var(--primary-color);
-} .button.alt:hover {
-    background-color: #B9C4E8;
-    border-color: #B9C4E8;
-} .button.alt:active {
-    background-color: #AAB5D7;
-    border-color: #AAB5D7;
-}
-
 .field {
     border-color: var(--border-color);
     background-color: transparent;
@@ -153,7 +141,35 @@ header .header-info {
 header .header-options-container > * {
     display: inline-block;
     vertical-align: middle;
-    margin-left: 8px;
+    margin-left: 14px;
+}
+
+header .header-options-container .header-option {
+    font-size: 1.2em;
+    color: var(--border-color);
+    cursor: pointer;
+    transition: 180ms;
+}
+
+#view_history_btn:hover {
+    position: relative;
+}
+  
+#view_history_btn:hover::after {
+    content: 'COMING SOON';
+    position: absolute;
+    top: 120%;
+    padding: 4px 5px 4px 4px;
+    border-radius: 4px;
+    font-size: .55em;
+    font-weight: 600;
+    margin: auto;
+    display: block;
+    left: 50%;
+    transform: translateX(-50%);
+    text-wrap: nowrap;
+    color: white;
+    background-color: var(--text-color);
 }
 
 main {
