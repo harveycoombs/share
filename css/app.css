@@ -58,12 +58,25 @@ body, h1, h2 {
     color: #FFFFFF;
     font-weight: 500;
     cursor: pointer;
+    text-decoration: none;
 } .button:hover {
     border-color: #3758BF;
     background-color: #3758BF;
 } .button:active {
     border-color: #2E4AA1;
     background-color: #2E4AA1;
+}
+
+.button.alt {
+    background-color: #C7D3F9;
+    border-color: #C7D3F9;
+    color: var(--primary-color);
+} .button.alt:hover {
+    background-color: #B9C4E8;
+    border-color: #B9C4E8;
+} .button.alt:active {
+    background-color: #AAB5D7;
+    border-color: #AAB5D7;
 }
 
 .field {
@@ -140,7 +153,7 @@ header .header-info {
 header .header-options-container > * {
     display: inline-block;
     vertical-align: middle;
-    margin-left: 24px;
+    margin-left: 8px;
 }
 
 main {
