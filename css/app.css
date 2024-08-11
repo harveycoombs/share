@@ -1,12 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-:root {
-    --background-color: #FFF;
-    --text-color: #22223B;
-    --border-color: #CED4DA;
+@media (prefers-color-scheme: light) {
+    :root {
+        --background-color: #FFF;
+        --text-color: #22223B;
+        --border-color: #CED4DA;
+        --primary-color: #3E67E9;
+        --secondary-color: #C5D1F8;
+        --error-color: #EF233C;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+    --background-color: #050607;
+    --text-color: #FFFFFF;
+    --border-color: #343A40;
     --primary-color: #3E67E9;
     --secondary-color: #C5D1F8;
     --error-color: #EF233C;
+    }
 }
 
 * {
@@ -149,27 +162,6 @@ header .header-options-container .header-option {
     color: var(--border-color);
     cursor: pointer;
     transition: 180ms;
-}
-
-#view_history_btn:hover {
-    position: relative;
-}
-  
-#view_history_btn:hover::after {
-    content: 'COMING SOON';
-    position: absolute;
-    top: 120%;
-    padding: 4px 5px 4px 4px;
-    border-radius: 4px;
-    font-size: .55em;
-    font-weight: 600;
-    margin: auto;
-    display: block;
-    left: 50%;
-    transform: translateX(-50%);
-    text-wrap: nowrap;
-    color: white;
-    background-color: var(--text-color);
 }
 
 main {
