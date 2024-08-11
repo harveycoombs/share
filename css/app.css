@@ -217,7 +217,25 @@ main h1.upload-url i {
     user-select: none;
 }
 
+#manual_upload_btn i {
+    display: none;
+}
+
 @keyframes spin {
     0% { rotate: 0deg; }
     100% { rotate: 360deg; }
+}
+
+@media only screen and (max-width: 550px) {
+    #manual_upload_btn {
+        padding: 10px 12px;
+    }
+
+    #manual_upload_btn i {
+        display: block;
+    }
+    
+    #manual_upload_btn span {
+        display: none;
+    }
 }
