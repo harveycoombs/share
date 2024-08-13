@@ -110,33 +110,7 @@ body, h1, h2 {
 
 .loader {
     font-size: 1.4em;
-    color: var(--primary-color);
     animation: spin 600ms infinite linear;
-}
-
-.banner {
-    padding: 8px;
-    border: 1px solid;
-    border-radius: 6px;
-    font-weight: 500;
-}
-
-.banner.red {
-    background-color: rgba(239, 35, 60, 0.12);
-    border-color: var(--error-color);
-    color: var(--error-color);
-}
-
-.banner.amber {
-    background-color: rgba(252, 163, 17, 0.12);
-    border-color: #FCA311;
-    color: #FCA311;
-}
-
-.banner.green {
-    background-color: rgba(45, 198, 83, 0.12);
-    border-color: #2DC653;
-    color: #2DC653;
 }
 
 .text-in-center {
@@ -151,17 +125,8 @@ header .header-info {
     font-weight: 500;
 }
 
-header .header-options-container > * {
-    display: inline-block;
-    vertical-align: middle;
+#manual_upload_btn {
     margin-left: 14px;
-}
-
-header .header-options-container .header-option {
-    font-size: 1.2em;
-    color: var(--border-color);
-    cursor: pointer;
-    transition: 180ms;
 }
 
 main {
@@ -171,16 +136,15 @@ main {
 }
 
 main h1 {
-    font-size: 15vw;
+    font-size: 10vw;
     font-weight: 900;
     text-align: center;
     transition: 180ms;
-    opacity: 0.03;
+    color: var(--border-color);
 }
 
 body.active-drag main h1 {
     color: var(--primary-color);
-    opacity: 1;
 }
 
 main h1:has(.loader) {
@@ -197,7 +161,6 @@ main h1 .loader-container {
 
 main h1 .loader-container .loader {
     font-size: .8em;
-    color: var(--text-color);
     animation-duration: 800ms;
 }
 
@@ -206,15 +169,21 @@ main:has(h1.upload-url) {
 }
 
 main h1.upload-url {
+    color: var(--text-color);
     font-size: 2.5vw;
-    opacity: 1;
     user-select: all;
 }
 
 main h1.upload-url i {
-    color: #16db65;
+    color: #16DB65;
     margin-right: 12px;
     user-select: none;
+}
+
+main h1.upload-url a {
+    text-decoration: none;
+} main h1.upload-url a:hover {
+    text-decoration: underline;
 }
 
 #manual_upload_btn i {

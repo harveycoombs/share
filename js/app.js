@@ -6,6 +6,10 @@ const uploader = main.querySelector("#uploader");
 
 main.setAttribute("style", `height: ${window.innerHeight - (header.clientHeight + 24)}px;`);
 
+window.addEventListener("resize", () => {
+    main.setAttribute("style", `height: ${window.innerHeight - (header.clientHeight + 24)}px;`);
+});
+
 manualUploadBtn.addEventListener("click", () => uploader.click());
 
 document.addEventListener("click", (e) => {
@@ -36,7 +40,7 @@ uploader.addEventListener("change", (e) => {
         title.classList.add("upload-url");
 
         setTimeout(() => {
-            title.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${document.location.href}uploads/${result.id}`;
+            title.innerHTML = `<i class="fa-solid fa-circle-check"></i> <a href="${document.location.href}uploads/${result.id}" target="_blank">${document.location.href}uploads/${result.id}</a>`;
         }, 180);
         
     }).catch(() => {
@@ -51,16 +55,16 @@ uploader.addEventListener("change", (e) => {
 });
 
 function addDragEventListeners() {
-    document.body.addEventListener("dragenter", () => handleDragEnterEvent);
-    document.body.addEventListener("dragleave", () => handleDragLeaveEvent);
+    document.body.addEventListener("dragenter", handleDragEnterEvent);
+    document.body.addEventListener("dragleave", handleDragLeaveEvent);
 
     document.body.addEventListener("dragover", handleDragOverEvent);
     document.body.addEventListener("drop", handleDropEvent);
 }
 
 function removeDragEventListeners() {
-    document.body.removeEventListener("dragenter", () => handleDragEnterEvent);
-    document.body.removeEventListener("dragleave", () => handleDragLeaveEvent);
+    document.body.removeEventListener("dragenter", handleDragEnterEvent);
+    document.body.removeEventListener("dragleave", handleDragLeaveEvent);
 
     document.body.removeEventListener("dragover", handleDragOverEvent);
     document.body.removeEventListener("drop", handleDropEvent);
