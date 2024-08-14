@@ -6,23 +6,23 @@ const uploader = main.querySelector("#uploader");
 
 main.setAttribute("style", `height: ${window.innerHeight - (header.clientHeight + 24)}px;`);
 
+manualUploadBtn.addEventListener("click", () => uploader.click());
+
 window.addEventListener("resize", () => {
     main.setAttribute("style", `height: ${window.innerHeight - (header.clientHeight + 24)}px;`);
 });
 
-manualUploadBtn.addEventListener("click", () => uploader.click());
-
-document.addEventListener("click", (e) => {
-    if (e.target.matches(".popup-container")) {
-        e.target.remove();
-    } else if (e.target.matches("#close_popup_btn")) {
-        e.target.closest(".popup-container")?.remove();
-    }
-});
-
-addDragEventListeners();
+if (window.innerWidth <= 550) {
+    removeDragEventListeners();
+    document.body.addEventListener("click", () => uploader.click());
+} else {
+    addDragEventListeners();
+    document.body.removeEventListener("click", () => uploader.click());
+}
 
 uploader.addEventListener("change", (e) => {
+    console.log("test");
+
     let title = main.querySelector("h1");
     title.innerHTML = '<div class="loader-container"></div> UPLOADING';
 
@@ -41,8 +41,8 @@ uploader.addEventListener("change", (e) => {
 
         setTimeout(() => {
             title.innerHTML = `<i class="fa-solid fa-circle-check"></i> <a href="${document.location.href}uploads/${result.id}" target="_blank">${document.location.href}uploads/${result.id}</a>`;
+            manualUploadBtn.remove();
         }, 180);
-        
     }).catch(() => {
         let errorDialog = document.createElement("div");
     

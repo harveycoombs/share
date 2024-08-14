@@ -20,11 +20,9 @@
     <body>
         <header class="sb-flex">
             <div class="header-info">Written in Rust by Harvey Coombs &middot; <a href="https://github.com/harveycoombs/share"><i class="fa-brands fa-github"></i></a></div>
-            <div class="header-options-container">
-                <button class="button" id="manual_upload_btn"><span>Browse Files</span><i class="fa-solid fa-arrow-up-from-bracket"></i></button>
-            </div>
+            <button class="button" id="manual_upload_btn">Browse Files</button>
         </header><main>
-            <h1>DROP FILES HERE TO UPLOAD</h1>
+            <h1><span class="drop-msg">DROP FILES</span><span class="click-msg">CLICK</span> HERE TO UPLOAD</h1>
             <input type="file" class="hidden" id="uploader" multiple /></div>
         </main>
     </body>

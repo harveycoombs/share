@@ -28,7 +28,7 @@ pub mod routes {
     }
     
     pub async fn uploads(id: web::Path<String>) -> impl Responder {
-        let target_files = list_directory_files("./uploads", &id);
+        let target_files = list_directory_files(&format!("./uploads/{}", id));
     
         if target_files.len() == 0 {
             return HttpResponse::Ok().body("File(s) not found");
@@ -39,11 +39,9 @@ pub mod routes {
             let options = FileOptions::default().compression_method(zip::CompressionMethod::Stored);
     
             for file_name in target_files {
-                match fs::read(&format!("./uploads/{}", file_name)) {
+                match fs::read(&format!("./uploads/{}/{}", id, file_name)) {
                     Ok(bytes) => {
-                        let original_filename = file_name.replace(&format!("{}-", id), "");
-        
-                        writer.start_file(original_filename, options).unwrap();
+                        writer.start_file(file_name, options).unwrap();
                         writer.write(&bytes).unwrap();
                     },
                     Err(ex) => {
@@ -65,7 +63,7 @@ pub mod routes {
         } else if let Some(file_name) = target_files.first() {
             let mut already_chunked = ALREADY_CHUNKED.lock().unwrap();
             
-            match fs::read(&format!("./uploads/{}", file_name)) {
+            match fs::read(&format!("./uploads/{}/{}", id, file_name)) {
                 Ok(bytes) => {
                     let content_type = from_path(format!("./uploads/{}", file_name)).first_or_octet_stream();
     
@@ -119,11 +117,17 @@ pub mod routes {
         let unix = now.duration_since(UNIX_EPOCH).expect("ERR");
         let ms = unix.as_millis();
     
+        let dir = format!("./uploads/{}", ms.to_string());
+
+        if !create_directory(&dir) {
+            return HttpResponse::Ok().body("{{ \"error\": \"Unable to create upload directory.\" }}");
+        }
+
         while let Ok(Some(mut field)) = payload.try_next().await {
             let context = field.content_disposition();
             let filename = context.get_filename().unwrap();
     
-            let path = format!("./uploads/{}-{}", ms.to_string(), filename);
+            let path = format!("{}/{}", dir, filename);
             let mut file = File::create(path).unwrap();
     
             while let Some(chunk) = field.next().await {

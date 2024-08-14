@@ -14,7 +14,6 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(actix_files::Files::new("/css", "./css").show_files_listing())
             .service(actix_files::Files::new("/js", "./js").show_files_listing())
-            .service(actix_files::Files::new("/fonts", "./fonts").show_files_listing())
             .route("/", web::get().to(index))
             .route("/uploads/{id}", web::get().to(uploads))
             .route("/upload", web::post().to(upload))

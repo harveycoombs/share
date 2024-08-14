@@ -2,6 +2,7 @@ pub mod files {
     use std::fs;
     use std::fs::File;
     use std::io::{self, Read};
+    use std::path::Path;
 
     pub fn read_file(path: &str) -> io::Result<String> {
         let mut file = File::open(path)?;
@@ -12,11 +13,26 @@ pub mod files {
         Ok(contents)
     }
     
-    pub fn list_directory_files(path: &str, prefix: &str) -> Vec<String> {
+    pub fn list_directory_files(path: &str) -> Vec<String> {
+        if !directory_exists(path) {
+            return Vec::new();
+        }
+        
         fs::read_dir(path)
             .unwrap()
             .filter_map(|entry| entry.ok().and_then(|e| e.file_name().into_string().ok()))
-            .filter(|file_name| file_name.starts_with(prefix))
             .collect()
+    }
+
+    pub fn directory_exists(path: &str) -> bool {
+        let path = Path::new(path);
+        path.exists() && path.is_dir()
+    }
+
+    pub fn create_directory(path: &str) -> bool {
+        match fs::create_dir_all(path) {
+            Ok(_) => true,
+            Err(_e) => false,
+        }
     }
 }
