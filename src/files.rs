@@ -3,6 +3,7 @@ pub mod files {
     use std::fs::File;
     use std::io::{self, Read};
     use std::path::Path;
+    use std::time::SystemTime;
 
     pub fn read_file(path: &str) -> io::Result<String> {
         let mut file = File::open(path)?;
@@ -32,7 +33,26 @@ pub mod files {
     pub fn create_directory(path: &str) -> bool {
         match fs::create_dir_all(path) {
             Ok(_) => true,
-            Err(_e) => false,
+            Err(_) => false,
+        }
+    }
+
+    pub fn delete_directory(path: &str) -> bool {
+        match fs::remove_dir_all(path) {
+            Ok(_) => true,
+            Err(_) => false,
+        }
+    }
+
+    pub fn get_directory_creation_date(path: &str) -> SystemTime {
+        match fs::metadata(path) {
+            Ok(data) => {
+                match data.created() {
+                    Ok(created) => created,
+                    Err(_) => SystemTime::now()
+                }
+            },
+            Err(_) => SystemTime::now()
         }
     }
 }

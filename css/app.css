@@ -4,6 +4,7 @@
     --primary-color: #3E67E9;
     --secondary-color: #C5D1F8;
     --error-color: #EF233C;
+    --warning-color: #EEAD07;
     --background-color: #FFFFFF;
     --text-color: #22223B;
     --border-color: #CED4DA;
@@ -83,6 +84,11 @@ i {
 header {
     padding: 12px;
     font-weight: 500;
+}
+
+header .upload-expiration-warning {
+    color: var(--warning-color);
+    pointer-events: none;
 }
 
 main {
