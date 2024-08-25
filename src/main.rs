@@ -46,7 +46,7 @@ async fn delete_old_uploads() {
 
             let hours = age / 3600;
 
-            if hours >= 168 {
+            if hours >= 720 {
                 delete_directory(path);
             }
         }
