@@ -24,7 +24,10 @@ if (window.innerWidth <= 550) {
 uploader.addEventListener("change", (e) => {
     title.innerHTML = '<div class="loader-container"></div> UPLOADING';
 
-    addLoaderToNode(title.querySelector(".loader-container"), "fa-solid fa-gear", true);
+    let loader = document.createElement("i");
+    loader.classList = 'fa-solid fa-gear loader';
+    
+    title.querySelector(".loader-container").prepend(loader);
 
     let files = new FormData();
     for (let file of e.target.files) files.append("files", file);
@@ -99,13 +102,6 @@ function handleDragEnterEvent() {
 
 function handleDragLeaveEvent() {
     document.body.classList.remove("active-drag");
-}
-
-function addLoaderToNode(target, icon="fa-solid fa-circle-notch", prepend=false) {
-    let loader = document.createElement("i");
-    loader.classList = `${icon} loader`;
-
-    prepend ? target?.prepend(loader) : target?.append(loader);
 }
 
 function resetUploader(e) {
