@@ -89,9 +89,7 @@ header {
     font-weight: 500;
 }
 
-header .header-info a {
-    text-decoration: none;
-} header .header-info a:hover {
+header .header-info a:hover {
     text-decoration: underline;
 }
 
