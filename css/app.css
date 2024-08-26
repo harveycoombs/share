@@ -20,7 +20,6 @@
 
 * {
     box-sizing: border-box;
-    user-select: none;
 }
 
 body, h1, h2 {
@@ -41,6 +40,10 @@ a {
 
 i {
     pointer-events: none;
+}
+
+header, h1, i {
+    user-select: none;
 }
 
 ::selection {
@@ -84,6 +87,12 @@ i {
 header {
     padding: 12px;
     font-weight: 500;
+}
+
+header .header-info a {
+    text-decoration: none;
+} header .header-info a:hover {
+    text-decoration: underline;
 }
 
 header .upload-expiration-warning {
@@ -137,6 +146,11 @@ main h1.upload-url i {
 
 main h1.upload-url a:hover {
     text-decoration: underline;
+}
+
+#reset_uploader_btn {
+    position: absolute;
+    margin-top: 15em;
 }
 
 .click-msg {

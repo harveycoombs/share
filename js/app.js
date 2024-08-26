@@ -3,6 +3,7 @@ const main = document.querySelector("main");
 
 const manualUploadBtn = header.querySelector("#manual_upload_btn");
 const uploader = main.querySelector("#uploader");
+const title = main.querySelector("h1");
 
 main.setAttribute("style", `height: ${window.innerHeight - (header.clientHeight + 24)}px;`);
 
@@ -21,9 +22,6 @@ if (window.innerWidth <= 550) {
 }
 
 uploader.addEventListener("change", (e) => {
-    console.log("test");
-
-    let title = main.querySelector("h1");
     title.innerHTML = '<div class="loader-container"></div> UPLOADING';
 
     addLoaderToNode(title.querySelector(".loader-container"), "fa-solid fa-gear", true);
@@ -41,6 +39,17 @@ uploader.addEventListener("change", (e) => {
 
         setTimeout(() => {
             title.innerHTML = `<i class="fa-solid fa-circle-check"></i> <a href="${document.location.href}uploads/${result.id}" target="_blank">${document.location.href}uploads/${result.id}</a>`;
+
+            let resetUploaderBtn = document.createElement("button");
+
+            resetUploaderBtn.classList = "button";
+            resetUploaderBtn.id = "reset_uploader_btn";
+            resetUploaderBtn.innerText = "Upload More";
+
+            resetUploaderBtn.addEventListener("click", resetUploader);
+
+            title.after(resetUploaderBtn);
+
             manualUploadBtn.remove();
         }, 180);
     }).catch(() => {
@@ -97,4 +106,13 @@ function addLoaderToNode(target, icon="fa-solid fa-circle-notch", prepend=false)
     loader.classList = `${icon} loader`;
 
     prepend ? target?.prepend(loader) : target?.append(loader);
+}
+
+function resetUploader(e) {
+    e.target.remove();
+
+    title.classList.remove("upload-url");
+    title.innerHTML = '<span class="drop-msg">DROP FILES</span><span class="click-msg">CLICK</span> HERE TO UPLOAD';
+
+    addDragEventListeners();
 }
