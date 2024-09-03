@@ -24,7 +24,7 @@ async fn main() -> std::io::Result<()> {
             .route("/uploads/{id}", web::get().to(uploads))
             .route("/upload", web::post().to(upload))
     })
-    .bind(("localhost", 3002))?
+    .bind(("localhost", 81))?
     .run()
     .await
 }
