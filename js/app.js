@@ -69,13 +69,7 @@ function upload(e, strong, bar) {
         if (e.target.readyState != 4) return;
 
         if (e.target.status != 200) {
-            let errorDialog = document.createElement("div");
-    
-            errorDialog.classList = "error-dialog";
-            errorDialog.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Unable to upload file(s) right now. Please try again later.';
-        
-            document.querySelector(".error-dialog")?.remove();
-            document.body.append(errorDialog);
+            alert("Unable to upload files. Please try again later.");
             return;
         }
 
@@ -128,10 +122,7 @@ function handleDropEvent(e) {
 
 function handleDragOverEvent(e) {
     e.preventDefault();
-    if (!title.classList.contains("text-slate-500")) {
-        title.classList.add("text-slate-500");
-        title.classList.remove("text-slate-800");
-    }
+    if (!title.classList.contains("text-slate-500")) handleDragEnterEvent();
 }
 
 function handleDragEnterEvent() {
