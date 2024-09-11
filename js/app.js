@@ -179,7 +179,7 @@ function viewHistory() {
     popup.id = "upload_history_popup";
     popup.classList = "fixed inset-0 z-10 grid place-items-center bg-gray-950 bg-opacity-80";
     popup.innerHTML = `<div class="p-3 rounded bg-white w-96"><div class="flex justify-between items-center"><strong class="text-slate-800 font-extrabold text-sm">UPLOAD HISTORY</strong><div id="close_popup_btn" class="cursor-pointer duration-150 hover:text-red-500"><i class="fa-solid fa-xmark text-lg leading-none pointer-events-none"></i></div></div>
-    <div id="history_list" class="w-full"></div></div>`;
+    <div id="history_list" class="w-full overflow-auto max-h-[60vh]"></div></div>`;
 
     document.body.append(popup);
 
