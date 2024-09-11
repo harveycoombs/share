@@ -68,7 +68,7 @@ function upload(e, strong, bar) {
         }
 
         title.classList = "text-5xl font-black text-emerald-400 cursor-pointer";
-        title.innerText = `${document.location.href}${e.target.response.id}`.toUpperCase();
+        title.innerText = `${document.location.href}uploads/${e.target.response.id}`.toUpperCase();
         
         strong.innerText = "CLICK THE LINK ABOVE TO COPY";
         strong.classList = "block text-xl text-center font-extrabold text-emerald-200";
