@@ -6,13 +6,7 @@ const uploadArea = main.querySelector("#upload_area");
 const title = uploadArea.querySelector("h1");
 var browseFilesBtn = uploadArea.querySelector("#browse_files_btn");
 
-tailwind.config = {
-    theme: {
-        fontFamily: {
-            sans: ["Inter", "sans-serif"]
-        }
-    }
-};
+tailwind.config = { theme: { fontFamily: { sans: ["Inter", "sans-serif"] } } };
 
 if (window.innerWidth <= 550) {
     removeDragEventListeners();
@@ -85,9 +79,10 @@ function upload(e, strong, bar) {
         resetUploaderBtn.id = "reset_uploader_btn";
         resetUploaderBtn.innerText = "UPLOAD MORE";
 
-        resetUploaderBtn.addEventListener("click", resetUploader);
-
         bar.replaceWith(resetUploaderBtn);
+
+        resetUploaderBtn.addEventListener("click", resetUploader);
+        title.addEventListener("click", copyUploadURL);
 
         removeDragEventListeners();
     });
@@ -148,9 +143,24 @@ function resetUploader(e) {
     browseFilesBtn.innerText = "BROWSE FILES";
 
     e.target.previousElementSibling.after(browseFilesBtn);
+
     browseFilesBtn.addEventListener("click", () => uploader.click());
+    title.removeEventListener("click", copyUploadURL);
 
     e.target.remove();
 
     addDragEventListeners();
+}
+
+async function copyUploadURL() {
+    let url = title.innerText;
+
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url.toLowerCase());
+        title.innerText = "COPIED!";
+
+        setTimeout(() => {
+            title.innerText = url;
+        }, 1200);
+    }
 }
