@@ -4,22 +4,51 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        <link rel="stylesheet" type="text/css" href="/css/app.css" />
-        
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
+        <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://kit.fontawesome.com/c2f479917e.js" defer></script>
+
         <script src="/js/app.js" type="module" defer></script>
 
-        <title>Share | Harvey Coombs</title>
+        <style>
+            @layer base {
+                progress::-webkit-progress-bar {
+                    background-color: #F1F5F9;
+                    overflow: hidden;
+                    transition: 150ms;
+                }
+
+                progress::-webkit-progress-value, progress::-moz-progress-bar {
+                    background-color: #2563EB;
+                    transition: 150ms;
+                }
+            }
+        </style>
+
+        <title>Share &middot; Harvey Coombs</title>
     </head>
 
-    <body>
-        <header class="sb-flex">
-            <div class="header-info">Written in Rust by <a href="https://harveycoombs.com/" target="_blank">Harvey Coombs</a> &middot; <a href="https://github.com/harveycoombs/share" target="_blank"><i class="fa-brands fa-github"></i></a></div>
-            <div class="upload-expiration-warning"><i class="fa-solid fa-circle-info"></i> Uploads are automatically deleted after 30 days</div>
-            <button class="button" id="manual_upload_btn">Browse Files</button>
-        </header><main>
-            <h1><span class="drop-msg">DROP FILES</span><span class="click-msg">CLICK</span> HERE TO UPLOAD</h1>
-            <input type="file" class="hidden" id="uploader" multiple /></div>
+    <body class="font-sans text-slate-300 h-screen">
+        <header class="flex justify-between items-center p-4">
+            <strong class="text-sm font-extrabold">WRITTEN IN <span class="text-slate-800">RUST</span> BY <span class="text-slate-800">HARVEY COOMBS</span></strong>
+            <nav>
+                <a href="/" class="text-xl ml-3 duration-150 hover:text-slate-400 active:text-slate-500" title="Your Upload History" draggable="false"><i class="fa-solid fa-clock-rotate-left"></i></a>
+                <a href="/" class="text-xl ml-3 duration-150 hover:text-slate-400 active:text-slate-500" title="Report an Issue" draggable="false"><i class="fa-solid fa-bug"></i></a>
+                <a href="https://github.com/harveycoombs/share" class="text-xl ml-3 duration-150 hover:text-slate-400 active:text-slate-500" title="View on GitHub" draggable="false"><i class="fa-brands fa-github"></i></a>
+            </nav>
+        </header><main class="grid place-items-center">
+            <section id="upload_area" class="text-center">
+                <h1 class="text-5xl font-black text-slate-800 pointer-events-none duration-150">DROP FILES ONTO THIS PAGE</h1>
+                <div class="w-fit mt-8 mb-0 ml-auto mr-auto">
+                    <strong class="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none">OR</strong>
+                    <button id="browse_files_btn" class="inline-block align-middle bg-blue-600 text-white text-xs font-semibold pt-2.5 pb-2.5 pl-4 pr-4 rounded duration-150 hover:bg-blue-700 active:bg-blue-800">BROWSE FILES</button>
+                </div>
+            </section>
         </main>
+
+        <input type="file" class="hidden" id="uploader" multiple /></div>
     </body>
 </html>
