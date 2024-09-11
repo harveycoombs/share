@@ -155,6 +155,30 @@ main h1.upload-url a:hover {
     display: none;
 }
 
+#upload_progress_bar, #upload_progress_bar::-webkit-progress-bar,
+#upload_progress_bar::-webkit-progress-value, #upload_progress_bar::-moz-progress-bar {
+    border-radius: 4px;
+}
+
+#upload_progress_bar {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 12px;   
+    border: none;
+    margin-bottom: 32px;
+}
+
+#upload_progress_bar::-webkit-progress-bar {
+    background-color: #ECECEC;
+    overflow: hidden;
+}
+
+#upload_progress_bar::-webkit-progress-value, #upload_progress_bar::-moz-progress-bar {
+    background-color: var(--primary-color);
+    transition: width 300ms ease;
+}
+
 @keyframes spin {
     0% { rotate: 0deg; }
     100% { rotate: 360deg; }

@@ -22,20 +22,43 @@ if (window.innerWidth <= 550) {
 }
 
 uploader.addEventListener("change", (e) => {
-    title.innerHTML = '<div class="loader-container"></div> UPLOADING';
+    title.innerHTML = 'UPLOADING<progress id="upload_progress_bar" value="0" max="100"></progress>';
 
-    let loader = document.createElement("i");
-    loader.classList = 'fa-solid fa-gear loader';
-    
-    title.querySelector(".loader-container").prepend(loader);
+    let bar = title.querySelector("#upload_progress_bar");
 
     let files = new FormData();
     for (let file of e.target.files) files.append("files", file);
+ 
+    let request = new XMLHttpRequest();
+    request.open("POST", "/upload", true);
 
-    fetch("/upload", {
-        method: "POST",
-        body: files
-    }).then(response => response.json()).then((result) => {
+    request.responseType = "json";
+
+    request.upload.addEventListener("progress", (e) => {
+        if (e.lengthComputable) {
+            let progress = (e.loaded / e.total) * 100;
+
+            bar.value = progress;
+            bar.innerText = `${progress}%`;
+        }
+    });
+
+    request.addEventListener("readystatechange", (e) => {
+        if (e.target.status != 200) {
+            let errorDialog = document.createElement("div");
+    
+            errorDialog.classList = "error-dialog";
+            errorDialog.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Unable to upload file(s) right now. Please try again later.';
+        
+            document.querySelector(".error-dialog")?.remove();
+            document.body.append(errorDialog);
+            return;
+        }
+
+        console.log(e.target);
+
+        let result = e.target.response;
+
         removeDragEventListeners();
         
         title.classList.add("upload-url");
@@ -54,16 +77,10 @@ uploader.addEventListener("change", (e) => {
             title.after(resetUploaderBtn);
 
             manualUploadBtn.remove();
-        }, 180);
-    }).catch(() => {
-        let errorDialog = document.createElement("div");
-    
-        errorDialog.classList = "error-dialog";
-        errorDialog.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Unable to upload file(s) right now. Please try again later.';
-    
-        document.querySelector(".error-dialog")?.remove();
-        document.body.append(errorDialog);
+        }, 180);        
     });
+
+    request.send(files);
 });
 
 function addDragEventListeners() {
