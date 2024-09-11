@@ -1,5 +1,5 @@
 pub mod routes {
-    use actix_web::{web, HttpResponse, Responder};
+    use actix_web::{web, HttpRequest, HttpResponse, Responder, cookie::Cookie};
     use actix_web::web::Bytes;
     use actix_multipart::Multipart;
     use futures::{StreamExt, TryStreamExt};
@@ -15,6 +15,7 @@ pub mod routes {
     use lazy_static::lazy_static;
 
     use crate::files::files::*;
+    use crate::history::history::*;
 
     lazy_static! {
         static ref ALREADY_CHUNKED: Arc<Mutex<bool>> = Arc::new(Mutex::new(false));
@@ -112,12 +113,12 @@ pub mod routes {
         HttpResponse::InternalServerError().finish()
     }
     
-    pub async fn upload(mut payload: Multipart) -> impl Responder {
+    pub async fn upload(mut payload: Multipart, request: HttpRequest) -> impl Responder {
         let now = SystemTime::now();
         let unix = now.duration_since(UNIX_EPOCH).expect("ERR");
         let ms = unix.as_millis();
     
-        let dir = format!("./uploads/{}", ms.to_string());
+        let dir = format!("./uploads/{}", ms);
 
         if !create_directory(&dir) {
             return HttpResponse::Ok().body("{{ \"error\": \"Unable to create upload directory.\" }}");
@@ -135,7 +136,20 @@ pub mod routes {
                 file.write_all(&data).unwrap();
             }
         }
+
+        let history_cookie: Cookie = insert_history(request, &ms);
     
-        HttpResponse::Ok().body(format!("{{ \"id\": \"{}\" }}", ms))
+        HttpResponse::Ok()
+            .cookie(history_cookie)
+            .body(format!("{{ \"id\": \"{}\" }}", ms))
+    }
+
+    pub async fn history(request: HttpRequest) -> impl Responder {
+        let history = get_history(request);
+        let json = serde_json::to_string(&history).unwrap();
+
+        return HttpResponse::Ok()
+            .content_type("application/json")
+            .body(format!("{{ \"history\": {} }}", json));
     }
 }

@@ -8,6 +8,7 @@ use std::thread;
 
 mod files;
 mod routes;
+mod history;
 
 use crate::files::files::*;
 use crate::routes::routes::*;
@@ -22,6 +23,7 @@ async fn main() -> std::io::Result<()> {
             .route("/", web::get().to(index))
             .route("/uploads/{id}", web::get().to(uploads))
             .route("/upload", web::post().to(upload))
+            .route("/history", web::get().to(history))
     })
     .bind(("localhost", 81))?
     .run()

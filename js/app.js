@@ -4,6 +4,7 @@ const main = document.querySelector("main");
 const uploader = document.querySelector("#uploader");
 const uploadArea = main.querySelector("#upload_area");
 const title = uploadArea.querySelector("h1");
+const uploadHistoryBtn = header.querySelector("#upload_history_btn");
 var browseFilesBtn = uploadArea.querySelector("#browse_files_btn");
 
 tailwind.config = { theme: { fontFamily: { sans: ["Inter", "sans-serif"] } } };
@@ -16,10 +17,17 @@ if (window.innerWidth <= 550) {
     document.body.removeEventListener("click", () => uploader.click());
 }
 
+document.addEventListener("click", (e) => {
+    if (!e.target.matches("#upload_history_popup")) return;
+    e.target.remove();
+});
+
 main.setAttribute("style", `height: calc(100vh - ${header.clientHeight + 5}px);`);
 
 browseFilesBtn.addEventListener("click", () => uploader.click());
 uploader.addEventListener("change", handleUpload);
+
+uploadHistoryBtn.addEventListener("click", viewHistory);
 
 function handleUpload(e) {
     browseFilesBtn.remove();
@@ -163,4 +171,35 @@ async function copyUploadURL() {
             title.innerText = url;
         }, 1200);
     }
+}
+
+function viewHistory() {
+    let popup = document.createElement("div");
+
+    popup.id = "upload_history_popup";
+    popup.classList = "fixed inset-0 z-10 grid place-items-center bg-gray-950 bg-opacity-80";
+    popup.innerHTML = `<div class="p-3 rounded bg-white w-96"><div class="flex justify-between items-center"><strong class="text-slate-800 font-extrabold text-sm">UPLOAD HISTORY</strong><div id="close_popup_btn" class="cursor-pointer duration-150 hover:text-red-500"><i class="fa-solid fa-xmark text-lg leading-none pointer-events-none"></i></div></div>
+    <div id="history_list" class="w-full"></div></div>`;
+
+    document.body.append(popup);
+
+    popup.addEventListener("click", (e) => {
+        if (!e.target.matches("#close_popup_btn")) return;
+        popup.remove();
+    });
+
+    let list = popup.querySelector("#history_list");
+
+    fetch("/history").then(response => response.json()).then((data) => {
+        for (let upload of data.history) {
+            let record = document.createElement("div");
+
+            record.classList = "bg-gray-100 p-2 rounded-md mt-2";
+            record.innerHTML = `<a href="${document.location.href}uploads/${upload}" target="_blank" class="block mb-[2px] w-fit text-slate-500 font-bold cursor-pointer decoration-2 hover:underline">${upload}</a><div class="text-xs text-slate-400">${new Date(upload).toUTCString()}</div>`;
+
+            list.append(record);
+        }
+    }).catch((ex) => {
+        alert(`Unable to fetch upload history: ${ex.message}`);
+    });
 }
