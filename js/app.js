@@ -10,11 +10,9 @@ var browseFilesBtn = uploadArea.querySelector("#browse_files_btn");
 tailwind.config = { theme: { fontFamily: { sans: ["Inter", "sans-serif"] } } };
 
 if (window.innerWidth <= 550) {
-    removeDragEventListeners();
     document.body.addEventListener("click", () => uploader.click());
 } else {
     addDragEventListeners();
-    document.body.removeEventListener("click", () => uploader.click());
 }
 
 document.addEventListener("click", (e) => {
@@ -25,11 +23,10 @@ document.addEventListener("click", (e) => {
 main.setAttribute("style", `height: calc(100vh - ${header.clientHeight + 5}px);`);
 
 browseFilesBtn.addEventListener("click", () => uploader.click());
-uploader.addEventListener("change", handleUpload);
 
 uploadHistoryBtn.addEventListener("click", viewHistory);
 
-function handleUpload(e) {
+uploader.addEventListener("change", (e) => {
     browseFilesBtn.remove();
 
     title.innerText = "UPLOADING...";
@@ -46,7 +43,7 @@ function handleUpload(e) {
     title.nextElementSibling.append(progressBar);
 
     upload(e, strong, progressBar);
-}
+});
 
 function upload(e, strong, bar) {
     let files = new FormData();
@@ -58,13 +55,13 @@ function upload(e, strong, bar) {
     request.responseType = "json";
 
     request.upload.addEventListener("progress", (e) => {
-        if (e.lengthComputable) {
-            let progress = (e.loaded / e.total) * 100;
+        if (!e.lengthComputable) return;
 
-            bar.value = progress;
-            bar.innerText = `${Math.round(progress)}&percnt;`;
-            strong.innerHTML = `${Math.round(progress)}&percnt; COMPLETE`;
-        }
+        let progress = (e.loaded / e.total) * 100;
+
+        bar.value = progress;
+        bar.innerText = `${Math.round(progress)}&percnt;`;
+        strong.innerHTML = `${Math.round(progress)}&percnt; COMPLETE`;
     });
 
     request.addEventListener("readystatechange", (e) => {
