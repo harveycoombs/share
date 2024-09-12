@@ -23,7 +23,7 @@ pub mod routes {
 
     pub async fn index() -> impl Responder {
         match read_file("./views/index.html") {
-            Ok(content) => HttpResponse::Ok().body(content),
+            Ok(content) => HttpResponse::Ok().content_type("text/html").body(content),
             Err(ex) => HttpResponse::InternalServerError().body(format!("ERR! {}", ex))
         }
     }
@@ -139,8 +139,9 @@ pub mod routes {
 
         let history_cookie: Cookie = insert_history(request, &ms);
     
-        HttpResponse::Ok()
+        return HttpResponse::Ok()
             .cookie(history_cookie)
+            .content_type("application/json")
             .body(format!("{{ \"id\": \"{}\" }}", ms))
     }
 
