@@ -114,7 +114,9 @@ pub mod routes {
         let dir = format!("./uploads/{}", ms);
 
         if !create_directory(&dir) {
-            return HttpResponse::Ok().body("{{ \"error\": \"Unable to create upload directory.\" }}");
+            return HttpResponse::Ok()
+                .content_type("application/json")
+                .body("{{ \"error\": \"Unable to create upload directory.\" }}");
         }
 
         while let Ok(Some(mut field)) = payload.try_next().await {
