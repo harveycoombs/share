@@ -46,8 +46,10 @@ uploader.addEventListener("change", (e) => {
 });
 
 function upload(e, strong, bar) {
+    let uploads = e.target.files;
     let files = new FormData();
-    for (let file of e.target.files) files.append("files", file);
+
+    for (let file of uploads) files.append("files", file);
  
     let request = new XMLHttpRequest();
     
@@ -69,7 +71,7 @@ function upload(e, strong, bar) {
 
         switch (e.target.status) {
             case 413:
-                let multiple = (e.target.files.length > 1);
+                let multiple = (uploads.length > 1);
                 title.innerText = `UPLOADED FILE${multiple ? "s" : ""} ${multiple ? "WERE" : "WAS"} TOO LARGE`;
                 strong.innerText = "THE MAXIMUM UPLOAD SIZE IS 5GB";
 
