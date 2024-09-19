@@ -97,8 +97,15 @@ pub mod routes {
                             .body(bytes);
                     }
                 },
-                Err(ex) => {
-                    return HttpResponse::Ok().body(format!("Unable to read file(s): {}", ex));
+                Err(_) => {
+                    return match read_file("./views/error.html") {
+                        Ok(mut content) => {
+                            content = content.replace("{{error}}", "FILE(S) NOT FOUND");
+                            content = content.replace("{{description}}", "UPLOAD MAY HAVE BEEN DELETED");
+                            HttpResponse::NotFound().content_type("text/html").body(content)
+                        },
+                        Err(ex) => HttpResponse::InternalServerError().body(format!("ERR! {}", ex))
+                    };
                 }
             }
         }
@@ -114,9 +121,9 @@ pub mod routes {
         let dir = format!("./uploads/{}", ms);
 
         if !create_directory(&dir) {
-            return HttpResponse::Ok()
+            return HttpResponse::InternalServerError()
                 .content_type("application/json")
-                .body("{{ \"error\": \"Unable to create upload directory.\" }}");
+                .body("{ \"error\": \"Unable to create upload directory.\" }");
         }
 
         while let Ok(Some(mut field)) = payload.try_next().await {
