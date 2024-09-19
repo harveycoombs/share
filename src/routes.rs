@@ -32,7 +32,14 @@ pub mod routes {
         let target_files = list_directory_files(&format!("./uploads/{}", id));
     
         if target_files.len() == 0 {
-            return HttpResponse::Ok().body("File(s) not found");
+            return match read_file("./views/error.html") {
+                Ok(mut content) => {
+                    content = content.replace("{{error}}", "FILE(S) NOT FOUND");
+                    content = content.replace("{{description}}", "UPLOAD MAY HAVE BEEN DELETED");
+                    HttpResponse::NotFound().content_type("text/html").body(content)
+                },
+                Err(ex) => HttpResponse::InternalServerError().body(format!("ERR! {}", ex))
+            };
         } else if target_files.len() > 1 {
             let mut archive = File::create(format!("./uploads/{}.zip", id)).unwrap();
             let mut writer = ZipWriter::new(&mut archive);
