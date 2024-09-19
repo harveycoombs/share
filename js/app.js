@@ -67,9 +67,14 @@ function upload(e, strong, bar) {
     request.addEventListener("readystatechange", (e) => {
         if (e.target.readyState != 4) return;
 
-        if (e.target.status != 200) {
-            alert("Unable to upload files. Please try again later.");
-            return;
+        switch (e.target.status) {
+            case 413:
+                let message = (e.target.files.length > 1) ? "One or more of the files you were attempting to upload were too large." : "The file you were attempting to upload is too large.";
+                alert(`${message} The maximum file size allowed is 5GB.`);
+                break;
+            case 500:
+                alert("An unexpected server error occured. Please try again later.");
+                break;
         }
 
         title.classList = "text-5xl font-black text-emerald-400 cursor-pointer";
