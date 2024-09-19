@@ -36,7 +36,7 @@ pub mod routes {
                 Ok(mut content) => {
                     content = content.replace("{{error}}", "FILE(S) NOT FOUND");
                     content = content.replace("{{description}}", "UPLOAD MAY HAVE BEEN DELETED");
-                    HttpResponse::NotFound().content_type("text/html").body(content)
+                    HttpResponse::Ok().content_type("text/html").body(content)
                 },
                 Err(ex) => HttpResponse::InternalServerError().body(format!("ERR! {}", ex))
             };
@@ -109,7 +109,7 @@ pub mod routes {
                         Ok(mut content) => {
                             content = content.replace("{{error}}", "FILE(S) NOT FOUND");
                             content = content.replace("{{description}}", "UPLOAD MAY HAVE BEEN DELETED");
-                            HttpResponse::NotFound().content_type("text/html").body(content)
+                            HttpResponse::Ok().content_type("text/html").body(content)
                         },
                         Err(ex) => HttpResponse::InternalServerError().body(format!("ERR! {}", ex))
                     };
