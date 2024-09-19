@@ -69,32 +69,34 @@ function upload(e, strong, bar) {
 
         switch (e.target.status) {
             case 413:
-                let message = (e.target.files.length > 1) ? "One or more of the files you were attempting to upload were too large." : "The file you were attempting to upload is too large.";
-                alert(`${message} The maximum file size allowed is 5GB.`);
+                let multiple = (e.target.files.length > 1);
+                title.innerText = `UPLOADED FILE${multiple ? "s" : ""} ${multiple ? "WERE" : "WAS"} TOO LARGE`;
                 break;
             case 500:
-                alert("An unexpected server error occured. Please try again later.");
+                title.innerText = "AN UNEXPECTED SERVER ERROR OCCURED";
+                break;
+            case 200:
+                title.innerText = `${document.location.href}uploads/${e.target.response.id}`.toUpperCase();
+                
+                strong.innerText = "CLICK THE LINK ABOVE TO COPY";
+                strong.classList = "block text-xl text-center font-extrabold text-emerald-200";
+        
+                let resetUploaderBtn = document.createElement("button");
+        
+                resetUploaderBtn.classList = "inline-block align-middle bg-blue-600 text-white text-xs font-semibold mt-8 pt-2.5 pb-2.5 pl-4 pr-4 rounded duration-150 hover:bg-blue-700 active:bg-blue-800";
+                resetUploaderBtn.id = "reset_uploader_btn";
+                resetUploaderBtn.innerText = "UPLOAD MORE";
+        
+                bar.replaceWith(resetUploaderBtn);
+        
+                resetUploaderBtn.addEventListener("click", resetUploader);
+                title.addEventListener("click", copyUploadURL);
+        
+                removeDragEventListeners();                
                 break;
         }
 
-        title.classList = "text-5xl font-black text-emerald-400 cursor-pointer";
-        title.innerText = `${document.location.href}uploads/${e.target.response.id}`.toUpperCase();
-        
-        strong.innerText = "CLICK THE LINK ABOVE TO COPY";
-        strong.classList = "block text-xl text-center font-extrabold text-emerald-200";
-
-        let resetUploaderBtn = document.createElement("button");
-
-        resetUploaderBtn.classList = "inline-block align-middle bg-blue-600 text-white text-xs font-semibold mt-8 pt-2.5 pb-2.5 pl-4 pr-4 rounded duration-150 hover:bg-blue-700 active:bg-blue-800";
-        resetUploaderBtn.id = "reset_uploader_btn";
-        resetUploaderBtn.innerText = "UPLOAD MORE";
-
-        bar.replaceWith(resetUploaderBtn);
-
-        resetUploaderBtn.addEventListener("click", resetUploader);
-        title.addEventListener("click", copyUploadURL);
-
-        removeDragEventListeners();
+        title.classList = `text-5xl font-black text-${(e.target.status == 200) ? "emerald-400" : "red-500"} cursor-pointer`;
     });
 
     request.send(files);
