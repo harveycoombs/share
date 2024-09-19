@@ -71,15 +71,20 @@ function upload(e, strong, bar) {
             case 413:
                 let multiple = (e.target.files.length > 1);
                 title.innerText = `UPLOADED FILE${multiple ? "s" : ""} ${multiple ? "WERE" : "WAS"} TOO LARGE`;
+                strong.innerText = "THE MAXIMUM UPLOAD SIZE IS 5GB";
+
+                bar.remove();
                 break;
             case 500:
                 title.innerText = "AN UNEXPECTED SERVER ERROR OCCURED";
+                strong.innerText = "PLEASE TRY AGAIN LATER";
+
+                bar.remove();
                 break;
             case 200:
                 title.innerText = `${document.location.href}uploads/${e.target.response.id}`.toUpperCase();
-                
+
                 strong.innerText = "CLICK THE LINK ABOVE TO COPY";
-                strong.classList = "block text-xl text-center font-extrabold text-emerald-200";
         
                 let resetUploaderBtn = document.createElement("button");
         
@@ -90,13 +95,14 @@ function upload(e, strong, bar) {
                 bar.replaceWith(resetUploaderBtn);
         
                 resetUploaderBtn.addEventListener("click", resetUploader);
-                title.addEventListener("click", copyUploadURL);
-        
-                removeDragEventListeners();                
+                title.addEventListener("click", copyUploadURL);              
                 break;
         }
 
+        removeDragEventListeners();
+
         title.classList = `text-5xl font-black text-${(e.target.status == 200) ? "emerald-400" : "red-500"} cursor-pointer`;
+        strong.classList = `block text-xl text-center font-extrabold text-${(e.target.status == 200) ? "emerald-200" : "red-300"}`;
     });
 
     request.send(files);
