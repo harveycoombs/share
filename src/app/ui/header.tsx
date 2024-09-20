@@ -11,15 +11,36 @@ import Popup from "./popup";
 export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
 
+    let [history, setHistory] = useState({});
+    let [historyIsLoading, setHistoryLoading] = useState(false);
+
     function openHistory() {
         setHistoryVisibility(true);
+        getHistory();
     }
     
     function closeHistory() {
         setHistoryVisibility(false);
     }
 
-    let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} /> : "";
+    async function getHistory() {
+        setHistoryLoading(true);
+
+        try {
+            let response = await fetch("/api/history");
+            let data = await response.json();
+
+            setHistory(data);
+        } catch (ex: any) {
+            alert(`Unable to fetch history: ${ex.message}`);
+        }
+
+        setHistoryLoading(false);
+    }
+
+    let historyList = (historyIsVisible && history) ? <div>{JSON.stringify(history)}</div> : "";
+
+    let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={historyList} /> : "";
 
     return (
         <>
