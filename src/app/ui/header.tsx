@@ -22,6 +22,6 @@ function HeaderNavigationItem(props: any) {
     let classes = "inline-block align-middle text-xl ml-4 duration-150 cursor-pointer hover:text-slate-400 active:text-slate-500";
 
     return (
-        props.url?.length ? <Link href={props.url} target="_blank" className={classes} title={props.title} draggable="false"><FontAwesomeIcon icon={props.icon} /></Link> : <div className={classes} draggable="false"><FontAwesomeIcon icon={props.icon} /></div>
+        props.url?.length ? <Link href={props.url} target="_blank" className={classes} title={props.title} draggable="false"><FontAwesomeIcon icon={props.icon} /></Link> : <div className={classes} title={props.title} draggable="false"><FontAwesomeIcon icon={props.icon} /></div>
     );
 }
