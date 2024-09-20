@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,6 +19,8 @@ export default function Header() {
         setHistoryVisibility(false);
     }
 
+    let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} /> : "";
+
     return (
         <>
             <header className="absolute top-0 left-0 right-0 flex justify-between items-center p-4">
@@ -29,10 +31,8 @@ export default function Header() {
                     <HeaderNavigationItem url="mailto:contact@harveycoombs.com" title="Report an Issue" icon={faBug} />
                     <HeaderNavigationItem url="https://github.com/harveycoombs/share" title="View on GitHub" icon={faGithub} />
                 </nav>
-            </header>{
-            historyIsVisible && (
-                <Popup title="Upload History" close={closeHistory} />
-            )}
+            </header>
+            {historyPopup}
         </>
     );
 }
