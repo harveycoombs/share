@@ -10,9 +10,7 @@ import Popup from "./popup";
 
 export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
-
-    let [history, setHistory] = useState({});
-    let [historyIsLoading, setHistoryLoading] = useState(false);
+    let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
     function openHistory() {
         setHistoryVisibility(true);
@@ -24,23 +22,31 @@ export default function Header() {
     }
 
     async function getHistory() {
-        setHistoryLoading(true);
-
+        let list: React.JSX.Element[] = [];
+        
         try {
             let response = await fetch("/api/history");
-            let data = await response.json();
+            let data: number[] = await response.json();
 
-            setHistory(data);
+            if (!data.length) {
+                list.push(<div className="py-4 text-center font-medium text-sm text-slate-400 text-opacity-60 select-none">You don't have any upload history.</div>);
+            }
+
+            for (let id of data) {
+                list.push(<div className="px-1.5 py-1 mt-1 rounded-md bg-slate-200 bg-opacity-50">
+                    <Link href={`/uploads/${id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline">{id}</Link>
+                    <div className="text-sm font-semibold text-slate-400">{new Date(id).toLocaleString("en-US", { month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })}</div>
+                </div>);
+            }
         } catch (ex: any) {
-            alert(`Unable to fetch history: ${ex.message}`);
+            console.error(ex);
+            list.push(<div className="py-4 text-center font-medium text-sm text-red-500 select-none">Unable to retrieve upload history.</div>);
         }
 
-        setHistoryLoading(false);
+        setHistory(list);
     }
 
-    let historyList = (historyIsVisible && history) ? <div>{JSON.stringify(history)}</div> : "";
-
-    let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={historyList} /> : "";
+    let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={history} /> : "";
 
     return (
         <>

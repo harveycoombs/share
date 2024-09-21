@@ -8,8 +8,8 @@ export default function Popup(props: any) {
                 <div className="flex justify-between items-center text-sm">
                     <strong className="font-extrabold text-slate-800">{props.title.toUpperCase()}</strong>
                     <div className="text-lg cursor-pointer duration-150 hover:text-red-500" onClick={props.close}><FontAwesomeIcon icon={faXmark} /></div>
-                </div>
-            </div>{props.content ?? ""}
+                </div>{props.content ?? ""}
+            </div>
         </div>
     );
 }
