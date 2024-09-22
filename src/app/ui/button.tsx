@@ -5,6 +5,6 @@ export default function Button(props: any) {
     let customClasses = props.classes?.length ? ` ${props.classes.join(" ")}` : "";
 
     return (
-        props.url?.length ? <Link href={props.url} className={classes + customClasses}>{props.text.toUpperCase()}</Link> : <button className={classes + customClasses}>{props.text.toUpperCase()}</button>
+        props.url?.length ? <Link href={props.url} className={classes + customClasses}>{props.text.toUpperCase()}</Link> : <button className={classes + customClasses} onClick={props.click ?? ""}>{props.text.toUpperCase()}</button>
     );
 }
