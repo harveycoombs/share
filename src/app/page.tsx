@@ -53,10 +53,15 @@ export default function Home() {
         request.addEventListener("readystatechange", (e: any) => {
             if (e.target.readyState != 4) return;
 
+            setButton(null);
+
             switch (e.target.status) {
                 case 200:
-                    setHeading(<h1 className="text-5xl font-black emerald-400 cursor-pointer">{document.location.href.toUpperCase()}UPLOADS/{e.target.response.id.toString().toUpperCase()}</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold emerald-200 mr-4 pointer-events-none">CLICK TO COPY</strong>);
+                    setHeading(<h1 className="text-4xl font-black text-emerald-400 cursor-pointer">{document.location.href.toUpperCase()}UPLOADS/{e.target.response.id.toString().toUpperCase()}</h1>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold text-emerald-200 mr-4 pointer-events-none">CLICK TO COPY</strong>);
+                    break;
+                case 400:
+                    setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
                     break;
                 case 413:
                     let multiple = (uploads.length > 1);

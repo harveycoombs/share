@@ -25,7 +25,7 @@ export default function Header() {
         let list: React.JSX.Element[] = [];
         
         try {
-            let response = await fetch("/api/history");
+            let response = await fetch("/history");
             let data: number[] = await response.json();
 
             if (!data.length) {
