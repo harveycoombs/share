@@ -16,6 +16,25 @@ export default function Home() {
         uploader?.current?.click();
     }
 
+    function resetUploader() {
+
+    }
+
+    async function copyUploadURL() {
+        if (!headingRef?.current) return;
+
+        let url = headingRef.current.innerText;
+
+        await navigator.clipboard.writeText(url.toLowerCase());
+        headingRef.current.innerText = "COPIED!";
+
+        setTimeout(() => {
+            if (headingRef?.current) {
+                headingRef.current.innerText = url;
+            }
+        }, 1200);
+    }
+
     function updateProgressBar(e: any) {
         if (!e.lengthComputable) return;
     
@@ -34,7 +53,7 @@ export default function Home() {
         let uploads = e.target.files;
 
         setSubheading(<strong className="block text-xl text-center font-extrabold" ref={percentageLabel}>0&percnt; COMPLETE</strong>);
-        setButton(<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress>);      
+        setButton(<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress>);
 
         if (!uploads?.length) {
             setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
@@ -58,8 +77,9 @@ export default function Home() {
 
             switch (e.target.status) {
                 case 200:
-                    setHeading(<h1 className="text-4xl font-black text-emerald-400 cursor-pointer">{document.location.href.toUpperCase()}UPLOADS/{e.target.response.id.toString().toUpperCase()}</h1>);
+                    setHeading(<h1 className="text-5xl font-black text-emerald-400 cursor-pointer select-none" onClick={copyUploadURL} ref={headingRef}>{document.location.href.toUpperCase()}UPLOADS/{e.target.response.id.toString().toUpperCase()}</h1>);
                     setSubheading(<strong className="block text-center text-xl font-extrabold text-emerald-200 mr-4 pointer-events-none">CLICK TO COPY</strong>);
+                    setButton(<Button text="Upload More" classes={["mt-8"]} click={resetUploader} />);
                     break;
                 case 400:
                     setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
@@ -101,8 +121,6 @@ export default function Home() {
     }
 
     function handleDropEvent(e: any) {
-        console.log(e.dataTransfer.files, e.dataTransfer.files.length);
-
         e.preventDefault();
 
         if (uploader.current) {
