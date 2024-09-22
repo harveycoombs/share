@@ -3,13 +3,14 @@ import { useState, useRef } from "react";
 import Button from "./ui/button";
 
 export default function Home() {
-    let [heading, setHeading] = useState<React.JSX.Element>(<h1 className="text-5xl font-black text-slate-800 pointer-events-none">DROP FILES ONTO THIS PAGE</h1>);
-    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none">OR</strong>);
-    let [button, setButton] = useState<React.JSX.Element|null>(<Button text="Browse Files" classes={["inline-block", "align-middle"]} click={browseFiles} />);
-
     let uploader = useRef<HTMLInputElement>(null);
     let progressBar = useRef<HTMLProgressElement>(null);
     let percentageLabel = useRef<HTMLElement>(null);
+    let headingRef = useRef<HTMLHeadingElement>(null);
+
+    let [heading, setHeading] = useState<React.JSX.Element>(<h1 className="text-5xl font-black text-slate-800 pointer-events-none" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
+    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none">OR</strong>);
+    let [button, setButton] = useState<React.JSX.Element|null>(<Button text="Browse Files" classes={["inline-block", "align-middle"]} click={browseFiles} />);
 
     function browseFiles() {
         uploader?.current?.click();
@@ -78,8 +79,42 @@ export default function Home() {
         request.send(files);
     }
 
+    function handleDragOverEvent(e: any) {
+        e.preventDefault();
+
+        if (!headingRef.current) return;
+        if (!headingRef.current.classList.contains("text-slate-500")) handleDragEnterEvent();
+    }
+    
+    function handleDragEnterEvent() {
+        if (!headingRef.current) return;
+
+        headingRef.current.classList.add("text-slate-500");
+        headingRef.current.classList.remove("text-slate-800");
+    }
+    
+    function handleDragLeaveEvent() {
+        if (!headingRef.current) return;
+
+        headingRef.current.classList.add("text-slate-800");
+        headingRef.current.classList.remove("text-slate-500");
+    }
+
+    function handleDropEvent(e: any) {
+        console.log(e.dataTransfer.files, e.dataTransfer.files.length);
+
+        e.preventDefault();
+
+        if (uploader.current) {
+            uploader.current.files = e.dataTransfer.files;
+            uploader.current.dispatchEvent(new Event("change", { bubbles: true }));
+
+            handleDragLeaveEvent();
+        }
+    }
+
   return (
-    <main className="grid place-items-center h-screen">
+    <main className="grid place-items-center h-screen" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
       <section className="text-center">
           {heading}
           <div className="w-fit mt-8 mb-0 ml-auto mr-auto">
@@ -87,7 +122,7 @@ export default function Home() {
               {button}
           </div>
       </section>
-      <input type="file" ref={uploader} onChange={handleUpload} className="hidden" />
+      <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
     </main>
   );
 }
