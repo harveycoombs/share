@@ -78,7 +78,7 @@ export default function Home() {
             switch (e.target.status) {
                 case 200:
                     setHeading(<h1 className="text-5xl font-black text-emerald-400 cursor-pointer select-none" onClick={copyUploadURL} ref={headingRef}>{document.location.href.toUpperCase()}UPLOADS/{e.target.response.id.toString().toUpperCase()}</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold text-emerald-200 mr-4 pointer-events-none">CLICK TO COPY</strong>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold text-emerald-200 pointer-events-none">CLICK TO COPY</strong>);
                     setButton(<Button text="Upload More" classes={["mt-8"]} click={resetUploader} />);
                     break;
                 case 400:
@@ -87,11 +87,11 @@ export default function Home() {
                 case 413:
                     let multiple = (uploads.length > 1);
                     setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none">UPLOADED FILE{multiple ? "S" : ""} {multiple ? "WERE" : "WAS"} TOO LARGE</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold red-300 mr-4 pointer-events-none">THE MAXIMUM UPLOAD SIZE IS 5GB</strong>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold red-300 pointer-events-none">THE MAXIMUM UPLOAD SIZE IS 5GB</strong>);
                     break;
                 default:
                     setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none">AN UNEXPECTED SERVER ERROR OCCURED</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold text-red-300 mr-4 pointer-events-none">PLEASE TRY AGAIN LATER</strong>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold text-red-300 pointer-events-none">PLEASE TRY AGAIN LATER</strong>);
                     break;
             }
         });
