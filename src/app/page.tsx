@@ -17,7 +17,9 @@ export default function Home() {
     }
 
     function resetUploader() {
-
+        setHeading(<h1 className="text-5xl font-black text-slate-800 pointer-events-none" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
+        setSubheading(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none">OR</strong>);
+        setButton(<Button text="Browse Files" classes={["inline-block", "align-middle"]} click={browseFiles} />);
     }
 
     async function copyUploadURL() {
