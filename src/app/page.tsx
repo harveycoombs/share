@@ -30,16 +30,18 @@ export default function Home() {
     async function handleUpload(e: any) {
         e.preventDefault();
 
+        let uploads = e.target.files;
+
         setSubheading(<strong className="block text-xl text-center font-extrabold" ref={percentageLabel}>0&percnt; COMPLETE</strong>);
         setButton(<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress>);      
 
-        if (!e.target.files?.length) {
+        if (!uploads?.length) {
             setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
             return;
         }
 
         let files = new FormData();
-        for (let file of e.target.files) files.append("files", file);
+        for (let file of uploads) files.append("files", file);
 
         let request = new XMLHttpRequest();
     
@@ -57,7 +59,7 @@ export default function Home() {
                     setSubheading(<strong className="block text-center text-xl font-extrabold emerald-200 mr-4 pointer-events-none">CLICK TO COPY</strong>);
                     break;
                 case 413:
-                    let multiple = (e.target.files.length > 1);
+                    let multiple = (uploads.length > 1);
                     setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none">UPLOADED FILE{multiple ? "S" : ""} {multiple ? "WERE" : "WAS"} TOO LARGE</h1>);
                     setSubheading(<strong className="block text-center text-xl font-extrabold red-300 mr-4 pointer-events-none">THE MAXIMUM UPLOAD SIZE IS 5GB</strong>);
                     break;
