@@ -1,27 +1,37 @@
 import { NextResponse } from "next/server";
+import * as fs from "fs/promises";
 
 export async function POST(request: Request): Promise<NextResponse> {
-    let data = await request.formData();
-    let files = new FormData();
+    let now = new Date().getTime();    
 
-    for (let [key, value] of  Array.from(data.entries())) {
-        if (value instanceof File) {
-            files.append(key, value);
+    let data = await request.formData();
+    let files = data.getAll("files");
+    
+    if (!files) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
+
+    try {
+        await fs.mkdir(`./uploads/${now}`);
+    } catch (ex: any) {
+        return NextResponse.json({ error: ex.message }, { status: 500 });
+    }
+    
+    let errors: any[] = [];
+    
+    for (let file of files) {
+        if (!(file instanceof File)) continue;
+        
+        try {
+            let buffer = Buffer.from(await file.arrayBuffer());
+            await fs.writeFile(`./uploads/${now}/${file.name}`, buffer);
+        } catch (ex: any) {
+            errors.push({
+                error: ex.message,
+                file: file.name
+            });
         }
     }
 
-    let response = await fetch("https://storage.harveycoombs.com/share/upload", {
-        method: "POST",
-        body: files
-    });
-
-    switch (response.status) {
-        case 200:
-            let json = await response.json();
-            return NextResponse.json({ id: json.identifier });
-        case 413:
-            return NextResponse.json({ error: "Uploaded file(s) too large.", status: 413 });
-        default:
-            return NextResponse.json({ error: "Unexpected server error.", status: 500 });
-    }
+    if (errors.length) return NextResponse.json({ errors: errors }, { status: 500 });
+    
+    return NextResponse.json({ id: now }, { status: 200 });
 }
