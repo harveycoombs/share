@@ -23,8 +23,7 @@ export async function GET(_: any, { params }: any) {
 
             return new NextResponse(content, {
                 headers: {
-                    "Content-Type": mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream",
-                    "Content-Disposition": `attachment; filename="${files[0]}"`,
+                    "Content-Type": mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream"
                 }
             });
         default:
