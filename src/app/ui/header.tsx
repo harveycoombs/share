@@ -21,14 +21,6 @@ export default function Header() {
     let bugTitleField = useRef<HTMLInputElement>(null);
     let bugDescriptionField = useRef<HTMLTextAreaElement>(null);
 
-    let [reportingForm, setReportingForm] = useState<React.JSX.Element>(<div className="mt-2">
-        <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
-        <Field classes={["w-full"]} type="text" ref={bugTitleField} />
-        <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
-        <TextBox classes={["w-full resize-none"]} rows="5" ref={bugDescriptionField} />
-        {reportBugButton}
-    </div>);
-
     function openHistory() {
         setBugReportingFormVisibility(false);
         setHistoryVisibility(true);
@@ -101,16 +93,22 @@ export default function Header() {
             let result = await response.json();
 
             if (result.success) {
-                setReportingForm(<strong className="mt-2 text-emerald-400 font-medium">Report submitted. You can now close this window.</strong>);
+                setReportBugButton(<strong className="mt-2 text-emerald-400 font-medium">Report submitted. You can now close this window.</strong>);
             }
         } catch {
-            setReportingForm(<strong className="mt-2 text-red-500 font-medium">Unable to submit report. Please try again later.</strong>);
+            setReportBugButton(<strong className="mt-2 text-red-500 font-medium">Unable to submit report. Please try again later.</strong>);
         }
     }
 
     let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={history} /> : "";
 
-    let bugReportingPopup = bugReportingFormIsVisible ? <Popup title="Report An Issue" close={closeBugReportingForm} content={reportingForm} /> : "";
+    let bugReportingPopup = bugReportingFormIsVisible ? <Popup title="Report An Issue" close={closeBugReportingForm} content={<div className="mt-2">
+        <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
+        <Field classes={["w-full"]} type="text" innerRef={bugTitleField} />
+        <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
+        <TextBox classes={["w-full resize-none"]} rows="5" innerRef={bugDescriptionField} />
+        {reportBugButton}
+    </div>} /> : "";
 
     return (
         <>
