@@ -1,19 +1,26 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faBug } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faBug, faFlag } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import Popup from "./popup";
+import Field from "./field";
+import TextBox from "./textbox";
+import Button from "./button";
 
 export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
     let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
+    let [reportingFormIsVisible, setReportingFormVisibility] = useState(false);
+
     function openHistory() {
+        setReportingFormVisibility(false);
         setHistoryVisibility(true);
+        
         getHistory();
     }
     
@@ -46,7 +53,25 @@ export default function Header() {
         setHistory(list);
     }
 
+    function openReportingForm() {
+        setHistoryVisibility(false);
+        setReportingFormVisibility(true);
+    }
+
+    function closeReportingForm() {
+        setReportingFormVisibility(false);
+    }
+
     let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={history} /> : "";
+    let reportingPopup = reportingFormIsVisible ? <Popup title="Report An Upload" close={closeReportingForm} content={
+        <div className="mt-2">
+            <label className="block mb-1.5 text-xs font-bold">UPLOAD ID</label>
+            <Field classes={["w-full"]} />
+            <label className="block mt-3 mb-1.5 text-xs font-bold">REASON</label>
+            <TextBox classes={["w-full resize-none"]} rows="5" />
+            <Button text="Submit Report" classes={["w-full", "mt-3"]} />
+        </div>
+    } /> : "";
 
     return (
         <>
@@ -55,17 +80,19 @@ export default function Header() {
                 <div className="text-sm font-bold pointer-events-none select-none">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
                 <nav>
                     <HeaderNavigationItem title="View Upload History" icon={faClockRotateLeft} click={openHistory} />
+                    <HeaderNavigationItem title="Report an Upload" icon={faFlag} click={openReportingForm} />
                     <HeaderNavigationItem url="mailto:contact@harveycoombs.com" title="Report an Issue" icon={faBug} />
                     <HeaderNavigationItem url="https://github.com/harveycoombs/share" title="View on GitHub" icon={faGithub} />
                 </nav>
             </header>
             {historyPopup}
+            {reportingPopup}
         </>
     );
 }
 
 function HeaderNavigationItem(props: any) {
-    let classes = "inline-block align-middle text-xl ml-4 duration-150 cursor-pointer hover:text-slate-400 active:text-slate-500";
+    let classes = "inline-block align-middle text-xl ml-5 duration-150 cursor-pointer hover:text-slate-400 active:text-slate-500";
 
     return (
         props.url?.length ? <Link href={props.url} target="_blank" className={classes} title={props.title} draggable="false"><FontAwesomeIcon icon={props.icon} /></Link> : <div className={classes} title={props.title} draggable="false" onClick={props.click}><FontAwesomeIcon icon={props.icon} /></div>
