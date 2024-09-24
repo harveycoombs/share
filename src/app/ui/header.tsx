@@ -16,9 +16,18 @@ export default function Header() {
     let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
     let [bugReportingFormIsVisible, setBugReportingFormVisibility] = useState(false);
+    let [reportBugButton, setReportBugButton] = useState<React.JSX.Element>(<Button text="Submit Report" classes={["w-full", "mt-3"]} click={submitBugReport} />);    
 
     let bugTitleField = useRef<HTMLInputElement>(null);
     let bugDescriptionField = useRef<HTMLTextAreaElement>(null);
+
+    let [reportingForm, setReportingForm] = useState<React.JSX.Element>(<div className="mt-2">
+        <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
+        <Field classes={["w-full"]} type="text" ref={bugTitleField} />
+        <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
+        <TextBox classes={["w-full resize-none"]} rows="5" ref={bugDescriptionField} />
+        {reportBugButton}
+    </div>);
 
     function openHistory() {
         setBugReportingFormVisibility(false);
@@ -78,21 +87,30 @@ export default function Header() {
         setBugReportingFormVisibility(false);
     }
 
-    function submitBugReport() {
+    async function submitBugReport() {
         if (!bugTitleField?.current || !bugDescriptionField?.current) return;
+
+        setReportBugButton(<Button text="Submitting..." classes={["w-full", "mt-3", "pointer-events-none", "opacity-50"]} />);
+
+        try {
+            let response = await fetch("/api/report", {
+                method: "POST",
+                body: new URLSearchParams({ title: bugTitleField.current.value ?? "", description: bugDescriptionField.current.textContent ?? "" })
+            });
+
+            let result = await response.json();
+
+            if (result.success) {
+                setReportingForm(<strong className="mt-2 text-emerald-400 font-medium">Report submitted. You can now close this window.</strong>);
+            }
+        } catch {
+            setReportingForm(<strong className="mt-2 text-red-500 font-medium">Unable to submit report. Please try again later.</strong>);
+        }
     }
 
     let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={history} /> : "";
 
-    let bugReportingPopup = bugReportingFormIsVisible ? <Popup title="Report An Issue" close={closeBugReportingForm} content={
-        <div className="mt-2">
-            <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
-            <Field classes={["w-full"]} type="text" ref={bugTitleField} />
-            <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
-            <TextBox classes={["w-full resize-none"]} rows="5" ref={bugDescriptionField} />
-            <Button text="Submit Report" classes={["w-full", "mt-3"]} click={submitBugReport} />
-        </div>
-    } /> : "";
+    let bugReportingPopup = bugReportingFormIsVisible ? <Popup title="Report An Issue" close={closeBugReportingForm} content={reportingForm} /> : "";
 
     return (
         <>
