@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faBug, faFlag, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faBug, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import Popup from "./popup";
@@ -15,10 +15,10 @@ export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
     let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
-    let [reportingFormIsVisible, setReportingFormVisibility] = useState(false);
+    let [bugReportingFormIsVisible, setBugReportingFormVisibility] = useState(false);
 
     function openHistory() {
-        setReportingFormVisibility(false);
+        setBugReportingFormVisibility(false);
         setHistoryVisibility(true);
         
         getHistory();
@@ -53,22 +53,23 @@ export default function Header() {
         setHistory(list);
     }
 
-    function openReportingForm() {
+    function openBugReportingForm() {
         setHistoryVisibility(false);
-        setReportingFormVisibility(true);
+        setBugReportingFormVisibility(true);
     }
 
-    function closeReportingForm() {
-        setReportingFormVisibility(false);
+    function closeBugReportingForm() {
+        setBugReportingFormVisibility(false);
     }
 
     let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={history} /> : "";
-    let reportingPopup = reportingFormIsVisible ? <Popup title="Report An Upload" close={closeReportingForm} content={
+
+    let bugReportingPopup = bugReportingFormIsVisible ? <Popup title="Report An Issue" close={closeBugReportingForm} content={
         <div className="mt-2">
-            <label className="block mb-1.5 text-xs font-bold">UPLOAD ID</label>
-            <Field classes={["w-full"]} />
-            <label className="block mt-3 mb-1.5 text-xs font-bold">REASON</label>
+            <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
             <TextBox classes={["w-full resize-none"]} rows="5" />
+            <label className="block mt-3 mb-1.5 text-xs font-bold">YOUR EMAIL ADDRESS</label>
+            <Field classes={["w-full"]} />
             <Button text="Submit Report" classes={["w-full", "mt-3"]} />
         </div>
     } /> : "";
@@ -82,14 +83,13 @@ export default function Header() {
                     <div className="text-sm font-bold pointer-events-none select-none">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
                     <nav>
                         <HeaderNavigationItem title="View Upload History" icon={faClockRotateLeft} click={openHistory} />
-                        <HeaderNavigationItem title="Report an Upload" icon={faFlag} click={openReportingForm} />
-                        <HeaderNavigationItem url="mailto:contact@harveycoombs.com" title="Report an Issue" icon={faBug} />
+                        <HeaderNavigationItem title="Report an Issue" icon={faBug}  click={openBugReportingForm} />
                         <HeaderNavigationItem url="https://github.com/harveycoombs/share" title="View on GitHub" icon={faGithub} />
                     </nav>
                 </div>
             </header>
             {historyPopup}
-            {reportingPopup}
+            {bugReportingPopup}
         </>
     );
 }
