@@ -43,7 +43,7 @@ export async function GET(_: any, { params }: any) {
                     }
                 });
             } catch (ex: any) {
-                return NextResponse.json({ error: "An unexpected server error occured," }, { status: 500 });
+                return NextResponse.json({ error: "An unexpected server error occured." }, { status: 500 });
             }
     }
   }

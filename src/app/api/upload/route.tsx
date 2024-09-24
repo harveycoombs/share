@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request): Promise<NextResponse> {
     let now = new Date().getTime();    
@@ -33,5 +34,17 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (errors.length) return NextResponse.json({ errors: errors }, { status: 500 });
     
-    return NextResponse.json({ id: now }, { status: 200 });
+    let response = NextResponse.json({ id: now }, { status: 200 });
+    
+    let historyCookie = cookies().get("history")?.value ?? "[]";
+    let ids: number[] = JSON.parse(historyCookie);
+
+    ids.push(now);
+
+    response.cookies.set("history", JSON.stringify(ids), {
+        httpOnly: true,
+        maxAge: 3155760000
+    });
+
+    return response;
 }

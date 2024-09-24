@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 
-export async function POST(request: Request): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse> {
     let historyCookie = cookies().get("history")?.value ?? "[]";
     let ids: number[] = JSON.parse(historyCookie);
    
@@ -21,5 +21,5 @@ export async function POST(request: Request): Promise<NextResponse> {
         };
     }));
 
-    return NextResponse.json({ history: history }, { status: 200 });
+    return NextResponse.json(history, { status: 200 });
 }

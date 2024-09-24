@@ -17,6 +17,9 @@ export default function Header() {
 
     let [bugReportingFormIsVisible, setBugReportingFormVisibility] = useState(false);
 
+    let bugTitleField = useRef<HTMLInputElement>(null);
+    let bugDescriptionField = useRef<HTMLTextAreaElement>(null);
+
     function openHistory() {
         setBugReportingFormVisibility(false);
         setHistoryVisibility(true);
@@ -28,21 +31,34 @@ export default function Header() {
         setHistoryVisibility(false);
     }
 
+    function formatBytes(bytes: number): string {
+        switch (true) {
+            case (bytes < 1024):
+                return `${bytes} B`;
+            case (bytes < 1024 * 1024):
+                return `${(bytes / 1024).toFixed(2)} kB`;
+            case (bytes < 1024 * 1024 * 1024):
+                return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+            default:
+                return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+        }
+    }
+
     async function getHistory() {
         let list: React.JSX.Element[] = [];
         
         try {
-            let response = await fetch("/history");
-            let data: number[] = await response.json();
+            let response = await fetch("/api/history");
+            let records: any[] = await response.json();
 
-            if (!data.length) {
+            if (!records.length) {
                 list.push(<div className="py-4 text-center font-medium text-sm text-slate-400 text-opacity-60 select-none">You don't have any upload history.</div>);
             }
 
-            for (let id of data) {
+            for (let record of records) {
                 list.push(<div className="px-1.5 py-1 mt-1 rounded-md bg-slate-200 bg-opacity-50">
-                    <Link href={`/uploads/${id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline">{id}</Link>
-                    <div className="text-sm font-semibold text-slate-400">{new Date(id).toLocaleString("en-US", { month: "long", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })}</div>
+                    <Link href={`/uploads/${record.id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline">{record.id}</Link>
+                    <div className="text-sm font-medium text-slate-400">{new Date(record.id).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })} &middot; {record.files} Files &middot; {formatBytes(record.size)}</div>
                 </div>);
             }
         } catch (ex: any) {
@@ -62,15 +78,19 @@ export default function Header() {
         setBugReportingFormVisibility(false);
     }
 
+    function submitBugReport() {
+        if (!bugTitleField?.current || !bugDescriptionField?.current) return;
+    }
+
     let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={history} /> : "";
 
     let bugReportingPopup = bugReportingFormIsVisible ? <Popup title="Report An Issue" close={closeBugReportingForm} content={
         <div className="mt-2">
+            <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
+            <Field classes={["w-full"]} type="text" ref={bugTitleField} />
             <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
-            <TextBox classes={["w-full resize-none"]} rows="5" />
-            <label className="block mt-3 mb-1.5 text-xs font-bold">YOUR EMAIL ADDRESS</label>
-            <Field classes={["w-full"]} />
-            <Button text="Submit Report" classes={["w-full", "mt-3"]} />
+            <TextBox classes={["w-full resize-none"]} rows="5" ref={bugDescriptionField} />
+            <Button text="Submit Report" classes={["w-full", "mt-3"]} click={submitBugReport} />
         </div>
     } /> : "";
 
