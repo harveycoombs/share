@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import mime from "mime";
+import AdmZip from "adm-zip";
 
 export async function GET(_: any, { params }: any) {
     let { id } = params;
@@ -27,6 +28,22 @@ export async function GET(_: any, { params }: any) {
                 }
             });
         default:
-            return;
+            let zip = new AdmZip();
+
+            try {
+                for (let file of files) {
+                    zip.addLocalFile(`./uploads/${id}/${file}`);
+                }
+                
+                let buffer = await zip.toBufferPromise();
+
+                return new NextResponse(buffer, {
+                    headers: {
+                        "Content-Type": "application/zip"
+                    }
+                });
+            } catch (ex: any) {
+                return NextResponse.json({ error: "An unexpected server error occured," }, { status: 500 });
+            }
     }
   }
