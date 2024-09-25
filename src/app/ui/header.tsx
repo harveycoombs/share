@@ -115,7 +115,7 @@ export default function Header() {
             <header className="absolute top-0 left-0 right-0">
                 <Banner content={<span>&#127881; Share 3.0.0 is here. Check out whats changed by clicking <a href="https://github.com/harveycoombs/share/releases" target="_blank" className="hover:underline">here</a>.</span>} />
                 <div className="flex justify-between items-center p-4 max-[460px]:p-3">
-                    <strong className="text-sm font-bold max-lg:text-xs">MADE <span className="max-[460px]:hidden">WITH <span className="text-slate-800 dark:text-slate-700">REACT</span></span> BY <a href="https://harveycoombs.com/" target="_blank" className="text-slate-800 decoration-2 hover:underline dark:text-slate-700">HARVEY COOMBS</a></strong>
+                    <strong className="text-sm font-bold max-lg:text-xs">MADE <span className="max-[460px]:hidden">WITH <span className="text-slate-800 dark:text-zinc-400">REACT</span></span> BY <a href="https://harveycoombs.com/" target="_blank" className="text-slate-800 decoration-2 hover:underline dark:text-zinc-400">HARVEY COOMBS</a></strong>
                     <div className="text-sm font-bold pointer-events-none select-none max-lg:hidden">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
                     <nav>
                         <HeaderNavigationItem title="View Upload History" icon={faClockRotateLeft} click={openHistory} />

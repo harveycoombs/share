@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} text-slate-300 h-screen dark:bg-slate-950 dark:text-slate-700`}>
+      <body className={`${inter.className} text-slate-300 h-screen dark:bg-zinc-950 dark:text-zinc-600`}>
         <Header />
         {children}
       </body>
