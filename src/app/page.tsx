@@ -11,7 +11,7 @@ export default function Home() {
 
     let [heading, setHeading] = useState<React.JSX.Element>(<h1 className="text-5xl font-black text-slate-800 px-5 pointer-events-none max-lg:text-4xl max-[460px]:hidden dark:text-zinc-500" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
     let [subheading, setSubheading] = useState<React.JSX.Element|null>(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none max-lg:text-base max-[460px]:hidden">OR</strong>);
-    let [button, setButton] = useState<React.JSX.Element|null>(<Button text="Browse Files" classes={["inline-block", "align-middle"]} click={browseFiles} />);
+    let [button, setButton] = useState<React.JSX.Element|null>(<Button classes="inline-block align-middle" click={browseFiles}>BROWSE FILES</Button>);
 
     function browseFiles() {
         uploader?.current?.click();
@@ -20,7 +20,7 @@ export default function Home() {
     function resetUploader() {
         setHeading(<h1 className="text-5xl font-black text-slate-800 px-5 pointer-events-none max-lg:text-4xl max-[460px]:hidden dark:text-zinc-500" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
         setSubheading(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none">OR</strong>);
-        setButton(<Button text="Browse Files" classes={["inline-block", "align-middle"]} click={browseFiles} />);
+        setButton(<Button classes="inline-block align-middle" click={browseFiles}>BROWSE FILES</Button>);
     }
 
     async function copyUploadURL() {
@@ -82,7 +82,7 @@ export default function Home() {
                 case 200:
                     setHeading(<h1 className="text-5xl font-black text-emerald-400 cursor-pointer select-none" onClick={copyUploadURL} ref={headingRef}>{document.location.href.toUpperCase()}UPLOADS/{e.target.response.id.toString().toUpperCase()}</h1>);
                     setSubheading(<strong className="block text-center text-xl font-extrabold text-emerald-200 pointer-events-none">CLICK TO COPY</strong>);
-                    setButton(<Button text="Upload More" classes={["mt-8"]} click={resetUploader} />);
+                    setButton(<Button classes="mt-8" click={resetUploader}>Upload More</Button>);
                     break;
                 case 400:
                     setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);

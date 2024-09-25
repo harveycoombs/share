@@ -3,20 +3,21 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faBug, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faBug } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import Popup from "./popup";
 import Field from "./field";
 import TextBox from "./textbox";
 import Button from "./button";
+import Banner from "./banner";
 
 export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
     let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
     let [bugReportingFormIsVisible, setBugReportingFormVisibility] = useState(false);
-    let [reportBugButton, setReportBugButton] = useState<React.JSX.Element>(<Button text="Submit Report" classes={["w-full", "mt-3"]} click={submitBugReport} />);    
+    let [reportBugButton, setReportBugButton] = useState<React.JSX.Element>(<Button classes="w-full mt-3" click={submitBugReport}>Submit Report</Button>);    
 
     let bugTitleField = useRef<HTMLInputElement>(null);
     let bugDescriptionField = useRef<HTMLTextAreaElement>(null);
@@ -75,7 +76,7 @@ export default function Header() {
     async function submitBugReport() {
         if (!bugTitleField?.current || !bugDescriptionField?.current) return;
 
-        setReportBugButton(<Button text="Submitting..." classes={["w-full", "mt-3", "pointer-events-none", "opacity-50"]} />);
+        setReportBugButton(<Button classes="w-full mt-3 pointer-events-none opacity-50">Submitting...</Button>);
 
         try {
             let response = await fetch("/api/report", {
@@ -96,7 +97,7 @@ export default function Header() {
     return (
         <>
             <header className="absolute top-0 left-0 right-0">
-                <Banner content={<span>&#127881; Share 3.0.0 is here. Check out whats changed by clicking <a href="https://github.com/harveycoombs/share/releases" target="_blank" className="hover:underline">here</a>.</span>} />
+                <Banner><span>&#127881; Share 3.0.0 is here. Check out whats changed by clicking <a href="https://github.com/harveycoombs/share/releases" target="_blank" className="hover:underline">here</a>.</span></Banner>
                 <div className="flex justify-between items-center p-4 max-[460px]:p-3">
                     <strong className="text-sm font-bold max-lg:text-xs">MADE <span className="max-[460px]:hidden">WITH <span className="text-slate-800 dark:text-zinc-400">REACT</span></span> BY <a href="https://harveycoombs.com/" target="_blank" className="text-slate-800 decoration-2 hover:underline dark:text-zinc-400">HARVEY COOMBS</a></strong>
                     <div className="text-sm font-bold pointer-events-none select-none max-lg:hidden">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
@@ -107,15 +108,17 @@ export default function Header() {
                     </nav>
                 </div>
             </header>
-            {historyIsVisible ? <Popup title="Upload History" close={setHistoryVisibility(false)} content={history} /> : ""}
+            {historyIsVisible ? <Popup title="Upload History" close={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
             
-            {bugReportingFormIsVisible ? <Popup title="Report An Issue" close={setBugReportingFormVisibility(false)} content={<div className="mt-2">
-                <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
-                <Field classes={["w-full"]} type="text" innerRef={bugTitleField} />
-                <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
-                <TextBox classes={["w-full resize-none"]} rows="5" innerRef={bugDescriptionField} />
-                {reportBugButton}
-            </div>} /> : ""}
+            {bugReportingFormIsVisible ? <Popup title="Report An Issue" close={() => setBugReportingFormVisibility(false)}>
+                <div className="mt-2">
+                    <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
+                    <Field type="text" classes="w-full" innerref={bugTitleField} />
+                    <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
+                    <TextBox classes="w-full resize-none" rows="5" innerref={bugDescriptionField} />
+                    {reportBugButton}
+                </div>
+            </Popup> : ""}
         </>
     );
 }
@@ -125,18 +128,5 @@ function HeaderNavigationItem(props: any) {
 
     return (
         props.url?.length ? <Link href={props.url} target="_blank" className={classes} title={props.title} draggable="false"><FontAwesomeIcon icon={props.icon} /></Link> : <div className={classes} title={props.title} draggable="false" onClick={props.click}><FontAwesomeIcon icon={props.icon} /></div>
-    );
-}
-
-function Banner(props: any) {
-    let banner = useRef<HTMLDivElement>(null);
-
-    function closeBanner() {
-        if (!banner?.current) return;
-        banner.current.remove();
-    }
-
-    return (
-        <div className="relative p-1.5 text-sm font-medium text-center bg-blue-100 text-blue-600 max-lg:text-xs" ref={banner}>{props.content}<div className="absolute right-3 top-0 translate-y-px text-lg cursor-pointer hover:text-blue-400" onClick={closeBanner}><FontAwesomeIcon icon={faXmark} /></div></div>
     );
 }
