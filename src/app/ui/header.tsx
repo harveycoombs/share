@@ -27,10 +27,6 @@ export default function Header() {
         
         getHistory();
     }
-    
-    function closeHistory() {
-        setHistoryVisibility(false);
-    }
 
     function formatBytes(bytes: number): string {
         switch (true) {
@@ -75,9 +71,6 @@ export default function Header() {
         setBugReportingFormVisibility(true);
     }
 
-    function closeBugReportingForm() {
-        setBugReportingFormVisibility(false);
-    }
 
     async function submitBugReport() {
         if (!bugTitleField?.current || !bugDescriptionField?.current) return;
@@ -100,16 +93,6 @@ export default function Header() {
         }
     }
 
-    let historyPopup = historyIsVisible ? <Popup title="Upload History" close={closeHistory} content={history} /> : "";
-
-    let bugReportingPopup = bugReportingFormIsVisible ? <Popup title="Report An Issue" close={closeBugReportingForm} content={<div className="mt-2">
-        <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
-        <Field classes={["w-full"]} type="text" innerRef={bugTitleField} />
-        <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
-        <TextBox classes={["w-full resize-none"]} rows="5" innerRef={bugDescriptionField} />
-        {reportBugButton}
-    </div>} /> : "";
-
     return (
         <>
             <header className="absolute top-0 left-0 right-0">
@@ -124,8 +107,15 @@ export default function Header() {
                     </nav>
                 </div>
             </header>
-            {historyPopup}
-            {bugReportingPopup}
+            {historyIsVisible ? <Popup title="Upload History" close={setHistoryVisibility(false)} content={history} /> : ""}
+            
+            {bugReportingFormIsVisible ? <Popup title="Report An Issue" close={setBugReportingFormVisibility(false)} content={<div className="mt-2">
+                <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
+                <Field classes={["w-full"]} type="text" innerRef={bugTitleField} />
+                <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
+                <TextBox classes={["w-full resize-none"]} rows="5" innerRef={bugDescriptionField} />
+                {reportBugButton}
+            </div>} /> : ""}
         </>
     );
 }
