@@ -7,3 +7,6 @@ You can. Uploads with multiple files are automatically compressed into a zip fil
 
 #### What is the maximum upload size?
 5GB. This applies to multiple-file uploads as well, meaning the combined size cannot exceed 5GB.
+
+#### How do I delete an upload?
+Currently, you cannot manually delete uploads. Uploads are automaically deleted 30 days after the upload date.
