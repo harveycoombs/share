@@ -114,8 +114,8 @@ export default function Header() {
         <>
             <header className="absolute top-0 left-0 right-0">
                 <Banner content={<span>&#127881; Share 3.0.0 is here. Check out whats changed by clicking <a href="https://github.com/harveycoombs/share/releases" target="_blank" className="hover:underline">here</a>.</span>} />
-                <div className="flex justify-between items-center p-4">
-                    <strong className="text-sm font-bold max-lg:text-xs">MADE WITH <span className="text-slate-800">REACT</span> BY <a href="https://harveycoombs.com/" target="_blank" className="text-slate-800 decoration-2 hover:underline">HARVEY COOMBS</a></strong>
+                <div className="flex justify-between items-center p-4 max-[460px]:p-3">
+                    <strong className="text-sm font-bold max-lg:text-xs">MADE <span className="max-[460px]:hidden">WITH <span className="text-slate-800">REACT</span></span> BY <a href="https://harveycoombs.com/" target="_blank" className="text-slate-800 decoration-2 hover:underline">HARVEY COOMBS</a></strong>
                     <div className="text-sm font-bold pointer-events-none select-none max-lg:hidden">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
                     <nav>
                         <HeaderNavigationItem title="View Upload History" icon={faClockRotateLeft} click={openHistory} />
@@ -131,7 +131,7 @@ export default function Header() {
 }
 
 function HeaderNavigationItem(props: any) {
-    let classes = "inline-block align-middle text-xl ml-5 duration-150 cursor-pointer hover:text-slate-400 active:text-slate-500";
+    let classes = "inline-block align-middle text-xl ml-5 duration-150 cursor-pointer hover:text-slate-400 active:text-slate-500 max-[460px]:ml-4 max-[460px]:text-lg";
 
     return (
         props.url?.length ? <Link href={props.url} target="_blank" className={classes} title={props.title} draggable="false"><FontAwesomeIcon icon={props.icon} /></Link> : <div className={classes} title={props.title} draggable="false" onClick={props.click}><FontAwesomeIcon icon={props.icon} /></div>

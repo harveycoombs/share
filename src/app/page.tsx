@@ -9,8 +9,8 @@ export default function Home() {
     let percentageLabel = useRef<HTMLElement>(null);
     let headingRef = useRef<HTMLHeadingElement>(null);
 
-    let [heading, setHeading] = useState<React.JSX.Element>(<h1 className="text-5xl font-black text-slate-800 pointer-events-none max-lg:text-4xl" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
-    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none max-lg:text-base">OR</strong>);
+    let [heading, setHeading] = useState<React.JSX.Element>(<h1 className="text-5xl font-black text-slate-800 px-5 pointer-events-none max-lg:text-4xl max-[460px]:hidden" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
+    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none max-lg:text-base max-[460px]:hidden">OR</strong>);
     let [button, setButton] = useState<React.JSX.Element|null>(<Button text="Browse Files" classes={["inline-block", "align-middle"]} click={browseFiles} />);
 
     function browseFiles() {
