@@ -17,7 +17,7 @@ export default function Header() {
     let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
     let [bugReportingFormIsVisible, setBugReportingFormVisibility] = useState(false);
-    let [reportBugButton, setReportBugButton] = useState<React.JSX.Element>(<Button classes="w-full mt-3" click={submitBugReport}>SUBMIT REPORT</Button>);    
+    let [reportBugButton, setReportBugButton] = useState<React.JSX.Element>(<Button classes="w-full mt-3" click={submitBugReport}>SUBMIT REPORT</Button>);
 
     let bugTitleField = useRef<HTMLInputElement>(null);
     let bugDescriptionField = useRef<HTMLTextAreaElement>(null);
