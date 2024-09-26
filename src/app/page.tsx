@@ -45,7 +45,7 @@ export default function Home() {
     
         if (progressBar.current && percentageLabel.current) {
             progressBar.current.value = progress;
-            progressBar.current.innerText = `${Math.round(progress)}&percnt;`;
+            progressBar.current.innerHTML = `${Math.round(progress)}&percnt;`;
             percentageLabel.current.innerHTML = `${Math.round(progress)}&percnt; COMPLETE`;
         }
     }
