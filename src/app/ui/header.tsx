@@ -78,7 +78,7 @@ export default function Header() {
 
         if (!bugTitleField?.current || !bugDescriptionField?.current) return;
 
-        setReportBugButton(<Button classes="w-full mt-3 pointer-events-none opacity-50">Submitting...</Button>);
+        setReportBugButton(<Button classes="w-full mt-3 pointer-events-none opacity-50">SUBMITTING...</Button>);
 
         try {
             let response = await fetch("/api/report", {
@@ -114,9 +114,9 @@ export default function Header() {
             
             {bugReportingFormIsVisible ? <Popup title="Report An Issue" close={() => setBugReportingFormVisibility(false)}>
                 <div className="mt-2">
-                    <label className="block mt-3 mb-1.5 text-xs font-bold">TITLE</label>
+                    <label className="block mt-3 mb-1.5 text-xs font-bold select-none">TITLE</label>
                     <Field type="text" classes="w-full" innerref={bugTitleField} />
-                    <label className="block mt-3 mb-1.5 text-xs font-bold">DESCRIPTION</label>
+                    <label className="block mt-3 mb-1.5 text-xs font-bold select-none">DESCRIPTION</label>
                     <TextBox classes="w-full resize-none" rows="5" innerref={bugDescriptionField} />
                     {reportBugButton}
                 </div>
@@ -126,7 +126,7 @@ export default function Header() {
 }
 
 function HeaderNavigationItem(props: any) {
-    let classes = "inline-block align-middle text-xl ml-5 duration-150 cursor-pointer hover:text-slate-400 active:text-slate-500 max-[460px]:ml-4 max-[460px]:text-lg";
+    let classes = "inline-block align-middle text-xl ml-5 duration-150 cursor-pointer select-none hover:text-slate-400 active:text-slate-500 max-[460px]:ml-4 max-[460px]:text-lg";
 
     return (
         props.url?.length ? <Link href={props.url} target="_blank" className={classes} title={props.title} draggable="false"><FontAwesomeIcon icon={props.icon} /></Link> : <div className={classes} title={props.title} draggable="false" onClick={props.click}><FontAwesomeIcon icon={props.icon} /></div>

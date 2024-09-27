@@ -9,8 +9,8 @@ export default function Home() {
     let percentageLabel = useRef<HTMLElement>(null);
     let headingRef = useRef<HTMLHeadingElement>(null);
 
-    let [heading, setHeading] = useState<React.JSX.Element>(<h1 className="text-5xl font-black text-slate-800 px-5 pointer-events-none max-lg:text-4xl max-[460px]:hidden dark:text-zinc-500" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
-    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none max-lg:text-base max-[460px]:hidden">OR</strong>);
+    let [heading, setHeading] = useState<React.JSX.Element>(<h1 className="text-5xl font-black text-slate-800 px-5 pointer-events-none select-none max-lg:text-4xl max-[460px]:hidden dark:text-zinc-500" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
+    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none select-none max-lg:text-base max-[460px]:hidden">OR</strong>);
     let [button, setButton] = useState<React.JSX.Element|null>(<Button classes="inline-block align-middle" click={browseFiles}>BROWSE FILES</Button>);
 
     function browseFiles() {
@@ -18,8 +18,8 @@ export default function Home() {
     }
 
     function resetUploader() {
-        setHeading(<h1 className="text-5xl font-black text-slate-800 px-5 pointer-events-none max-lg:text-4xl max-[460px]:hidden dark:text-zinc-500" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
-        setSubheading(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none">OR</strong>);
+        setHeading(<h1 className="text-5xl font-black text-slate-800 px-5 pointer-events-none select-none max-lg:text-4xl max-[460px]:hidden dark:text-zinc-500" ref={headingRef}>DROP FILES ONTO THIS PAGE</h1>);
+        setSubheading(<strong className="inline-block align-middle text-xl font-extrabold mr-4 pointer-events-none select-none max-lg:text-base max-[460px]:hidden">OR</strong>);
         setButton(<Button classes="inline-block align-middle" click={browseFiles}>BROWSE FILES</Button>);
     }
 
@@ -55,11 +55,11 @@ export default function Home() {
 
         let uploads = e.target.files;
 
-        setSubheading(<strong className="block text-xl text-center font-extrabold" ref={percentageLabel}>0&percnt; COMPLETE</strong>);
+        setSubheading(<strong className="block text-xl text-center font-extrabold select-none" ref={percentageLabel}>0&percnt; COMPLETE</strong>);
         setButton(<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress>);
 
         if (!uploads?.length) {
-            setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
+            setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none select-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
             return;
         }
 
@@ -81,20 +81,20 @@ export default function Home() {
             switch (e.target.status) {
                 case 200:
                     setHeading(<h1 className="text-5xl font-black text-emerald-400 cursor-pointer select-none" onClick={copyUploadURL} ref={headingRef}>{document.location.href.toUpperCase()}UPLOADS/{e.target.response.id.toString().toUpperCase()}</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold text-emerald-200 pointer-events-none">CLICK TO COPY</strong>);
-                    setButton(<Button classes="mt-8" click={resetUploader}>Upload More</Button>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold text-emerald-200 pointer-events-none select-none">CLICK TO COPY</strong>);
+                    setButton(<Button classes="mt-8" click={resetUploader}>UPLOAD MORE</Button>);
                     break;
                 case 400:
-                    setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
+                    setHeading(<h1 className="text-5xl font-black text-amber-400 pointer-events-none select-none">PLEASE CHOOSE AT LEAST 1 FILE TO UPLOAD</h1>);
                     break;
                 case 413:
                     let multiple = (uploads.length > 1);
                     setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none">UPLOADED FILE{multiple ? "S" : ""} {multiple ? "WERE" : "WAS"} TOO LARGE</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold red-300 pointer-events-none">THE MAXIMUM UPLOAD SIZE IS 5GB</strong>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold red-300 pointer-events-none select-none">THE MAXIMUM UPLOAD SIZE IS 5GB</strong>);
                     break;
                 default:
-                    setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none">AN UNEXPECTED SERVER ERROR OCCURED</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold text-red-300 pointer-events-none">PLEASE TRY AGAIN LATER</strong>);
+                    setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none select-none">AN UNEXPECTED SERVER ERROR OCCURED</h1>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold text-red-300 pointer-events-none select-none">PLEASE TRY AGAIN LATER</strong>);
                     break;
             }
         });

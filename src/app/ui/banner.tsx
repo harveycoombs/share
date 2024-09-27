@@ -19,6 +19,6 @@ export default function Banner({ children, classes }: Properties) {
     let classList = `relative p-1.5 text-sm font-medium text-center bg-blue-100 text-blue-600 max-lg:text-xs${classes?.length ? " " + classes : ""}`;
 
     return (
-        <div className={classList} ref={banner}>{children}<div className="absolute right-3 top-0 translate-y-px text-lg cursor-pointer hover:text-blue-400" onClick={closeBanner}><FontAwesomeIcon icon={faXmark} /></div></div>
+        <div className={classList} ref={banner}>{children}<div className="absolute right-3 top-0 translate-y-px text-lg select-none cursor-pointer hover:text-blue-400" onClick={closeBanner}><FontAwesomeIcon icon={faXmark} /></div></div>
     );
 }
