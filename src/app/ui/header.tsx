@@ -50,13 +50,13 @@ export default function Header() {
             let records: any[] = await response.json();
 
             if (!records.length) {
-                list.push(<div className="py-4 text-center font-medium text-sm text-slate-400 text-opacity-60 select-none">You don't have any upload history.</div>);
+                list.push(<div className="py-4 text-center font-medium text-sm text-slate-400 text-opacity-60 select-none dark:text-zinc-400">You don't have any upload history.</div>);
             }
 
             for (let record of records) {
-                list.push(<div className="px-1.5 py-1 mt-1 rounded-md bg-slate-200 bg-opacity-50">
-                    <Link href={`/uploads/${record.id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline">{record.id}</Link>
-                    <div className="text-sm font-medium text-slate-400">{new Date(record.id).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })} &middot; {record.files} Files &middot; {formatBytes(record.size)}</div>
+                list.push(<div className="px-1.5 py-1 mt-1 rounded-md bg-slate-200 bg-opacity-50 dark:bg-zinc-700">
+                    <Link href={`/uploads/${record.id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline dark:text-zinc-400">{record.id}</Link>
+                    <div className="text-sm font-medium text-slate-400 dark:text-zinc-500">{new Date(record.id).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })} &middot; {record.files} Files &middot; {formatBytes(record.size)}</div>
                 </div>);
             }
         } catch (ex: any) {
