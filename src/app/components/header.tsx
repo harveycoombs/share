@@ -7,12 +7,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faBug } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
-import Popup from "./popup";
-import Field from "./field";
-import TextBox from "./textbox";
-import Button from "./button";
-import Banner from "./banner";
-
+import Popup from "./ui/popup";
+import Field from "./ui/field";
+import TextBox from "./ui/textbox";
+import Button from "./ui/button";
+import Banner from "./ui/banner";
 
 export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
