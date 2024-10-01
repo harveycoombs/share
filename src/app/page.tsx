@@ -90,7 +90,7 @@ export default function Home() {
                 case 413:
                     let multiple = (uploads.length > 1);
                     setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none">UPLOADED FILE{multiple ? "S" : ""} {multiple ? "WERE" : "WAS"} TOO LARGE</h1>);
-                    setSubheading(<strong className="block text-center text-xl font-extrabold red-300 pointer-events-none select-none">THE MAXIMUM UPLOAD SIZE IS 5GB</strong>);
+                    setSubheading(<strong className="block text-center text-xl font-extrabold text-red-300 pointer-events-none select-none">THE MAXIMUM UPLOAD SIZE IS 5GB</strong>);
                     break;
                 default:
                     setHeading(<h1 className="text-5xl font-black text-red-500 pointer-events-none select-none">AN UNEXPECTED SERVER ERROR OCCURED</h1>);
