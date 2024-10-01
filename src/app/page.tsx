@@ -136,14 +136,14 @@ export default function Home() {
 
   return (
     <main className="grid place-items-center h-screen" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-      <section className="text-center">
-          {heading}
-          <div className="w-fit mt-8 mb-0 ml-auto mr-auto">
-              {subheading}
-              {button}
-          </div>
-      </section>
-      <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
+        <section className="text-center">
+            {heading}
+            <div className="w-fit mt-8 mb-0 ml-auto mr-auto">
+                {subheading}
+                {button}
+            </div>
+        </section>
+        <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
     </main>
   );
 }
