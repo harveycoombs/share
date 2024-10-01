@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { useRef, useState } from "react";
 import Link from "next/link";
 
@@ -11,6 +12,7 @@ import Field from "./field";
 import TextBox from "./textbox";
 import Button from "./button";
 import Banner from "./banner";
+
 
 export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
@@ -99,7 +101,7 @@ export default function Header() {
     return (
         <>
             <header className="absolute top-0 left-0 right-0">
-                <Banner><span>&#127881; Share 3.1.3 is here. Check out whats changed by clicking <a href="https://github.com/harveycoombs/share/releases" target="_blank" className="hover:underline">here</a>.</span></Banner>
+                <Banner><span>&#127881; Share 3.1.3 is here. Check out whats changed by clicking <Link href="https://github.com/harveycoombs/share/releases" target="_blank" className="hover:underline">here</Link>.</span></Banner>
                 <div className="flex justify-between items-center p-4 max-[460px]:p-3">
                     <div className="text-sm font-bold pointer-events-none select-none max-lg:hidden">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
                     <nav>
