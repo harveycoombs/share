@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
 import Header from "./ui/header";
+import Footer from "./ui/footer";
 
 const inter = Inter({
   weight: ["400", "500", "600", "700", "900"],
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className={`${inter.className} text-slate-300 h-screen dark:bg-zinc-950 dark:text-zinc-600`}>
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
