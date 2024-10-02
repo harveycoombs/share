@@ -10,23 +10,14 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import Popup from "./ui/popup";
 import Field from "./ui/field";
 import TextBox from "./ui/textbox";
-import Button from "./ui/button";
 import Banner from "./ui/banner";
 
 export default function Header() {
     let [historyIsVisible, setHistoryVisibility] = useState(false);
     let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
-    let [bugReportingFormIsVisible, setBugReportingFormVisibility] = useState(false);
-    let [reportBugButton, setReportBugButton] = useState<React.JSX.Element>(<Button classes="w-full mt-3" click={submitBugReport}>SUBMIT REPORT</Button>);
-
-    let bugTitleField = useRef<HTMLInputElement>(null);
-    let bugDescriptionField = useRef<HTMLTextAreaElement>(null);
-
     function openHistory() {
-        setBugReportingFormVisibility(false);
         setHistoryVisibility(true);
-        
         getHistory();
     }
 
@@ -68,35 +59,6 @@ export default function Header() {
         setHistory(list);
     }
 
-    function openBugReportingForm() {
-        setHistoryVisibility(false);
-        setBugReportingFormVisibility(true);
-    }
-
-
-    async function submitBugReport() {
-        console.log(bugTitleField?.current, bugDescriptionField?.current);
-
-        if (!bugTitleField?.current || !bugDescriptionField?.current) return;
-
-        setReportBugButton(<Button classes="w-full mt-3 pointer-events-none opacity-50">SUBMITTING...</Button>);
-
-        try {
-            let response = await fetch("/api/report", {
-                method: "POST",
-                body: new URLSearchParams({ title: bugTitleField.current.value ?? "", description: bugDescriptionField.current.textContent ?? "" })
-            });
-
-            let result = await response.json();
-
-            if (result.success) {
-                setReportBugButton(<strong className="mt-2 text-emerald-400 font-medium">Report submitted. You can now close this window.</strong>);
-            }
-        } catch {
-            setReportBugButton(<strong className="mt-2 text-red-500 font-medium">Unable to submit report. Please try again later.</strong>);
-        }
-    }
-
     return (
         <>
             <header className="absolute top-0 left-0 right-0">
@@ -105,22 +67,12 @@ export default function Header() {
                     <div className="text-sm font-bold pointer-events-none select-none max-lg:hidden">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
                     <nav>
                         <HeaderNavigationItem title="View Upload History" icon={faClockRotateLeft} click={openHistory} />
-                        <HeaderNavigationItem title="Report an Issue" icon={faBug}  click={openBugReportingForm} />
+                        <HeaderNavigationItem url="https://github.com/harveycoombs/share/issues/new" title="Report an Issue" icon={faBug} />
                         <HeaderNavigationItem url="https://github.com/harveycoombs/share" title="View on GitHub" icon={faGithub} />
                     </nav>
                 </div>
             </header>
             {historyIsVisible ? <Popup title="Upload History" close={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
-            
-            {bugReportingFormIsVisible ? <Popup title="Report An Issue" close={() => setBugReportingFormVisibility(false)}>
-                <div className="mt-2">
-                    <label className="block mt-3 mb-1.5 text-xs font-bold select-none">TITLE</label>
-                    <Field type="text" classes="w-full" innerref={bugTitleField} />
-                    <label className="block mt-3 mb-1.5 text-xs font-bold select-none">DESCRIPTION</label>
-                    <TextBox classes="w-full resize-none" rows="5" innerref={bugDescriptionField} />
-                    {reportBugButton}
-                </div>
-            </Popup> : ""}
         </>
     );
 }
