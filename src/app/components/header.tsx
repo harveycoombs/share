@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -8,8 +8,6 @@ import { faClockRotateLeft, faBug } from "@fortawesome/free-solid-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import Popup from "./ui/popup";
-import Field from "./ui/field";
-import TextBox from "./ui/textbox";
 import Banner from "./ui/banner";
 
 export default function Header() {
