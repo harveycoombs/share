@@ -21,5 +21,5 @@ export async function GET(request: Request): Promise<NextResponse> {
         };
     }));
 
-    return NextResponse.json(history, { status: 200 });
+    return NextResponse.json(history.reverse(), { status: 200 });
 }
