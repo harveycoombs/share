@@ -36,7 +36,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     
     let response = NextResponse.json({ id: now }, { status: 200 });
     
-    let historyCookie = cookies().get("history")?.value ?? "[]";
+    let historyCookie = (await cookies()).get("history")?.value ?? "[]";
     let ids: number[] = JSON.parse(historyCookie);
 
     ids.push(now);
