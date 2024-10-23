@@ -3,7 +3,7 @@ import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 
 export async function GET(request: Request): Promise<NextResponse> {
-    let historyCookie = cookies().get("history")?.value ?? "[]";
+    let historyCookie = (await cookies()).get("history")?.value ?? "[]";
     let ids: number[] = JSON.parse(historyCookie);
    
     let history = await Promise.all(ids.map(async (id) => {
