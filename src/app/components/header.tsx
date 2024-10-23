@@ -60,7 +60,7 @@ export default function Header() {
     return (
         <>
             <header className="absolute top-0 left-0 right-0">
-                <Banner><span>&#127881; Share 3.2.0 is here. Check out whats changed by clicking <Link href="https://github.com/harveycoombs/share/releases/tag/3.2.0" target="_blank" className="hover:underline">here</Link>.</span></Banner>
+                <Banner><span>&#127881; Share 3.2.1 is here. Check out whats changed by clicking <Link href="https://github.com/harveycoombs/share/releases/tag/3.2.0" target="_blank" className="hover:underline">here</Link>.</span></Banner>
                 <div className="flex justify-between items-center p-4 max-[460px]:p-3">
                     <div className="text-sm font-bold pointer-events-none select-none max-lg:hidden">UPLOADS OLDER THAN 30 DAYS ARE DELETED &middot; 5GB MAXIMUM UPLOAD SIZE</div>
                     <nav>
