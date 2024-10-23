@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 
-export async function GET(request: Request): Promise<NextResponse> {
+export async function GET(): Promise<NextResponse> {
     let historyCookie = (await cookies()).get("history")?.value ?? "[]";
     let ids: number[] = JSON.parse(historyCookie);
    
