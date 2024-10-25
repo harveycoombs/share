@@ -23,7 +23,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         
         try {
             let buffer = Buffer.from(await file.arrayBuffer());
-            await fs.writeFile(`./uploads/${now}/${file.name}`, buffer);
+            await fs.writeFile(`./uploads/${now}/${file.name}`, new Uint8Array(buffer));
         } catch (ex: any) {
             errors.push({
                 error: ex.message,
