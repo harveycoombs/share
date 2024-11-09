@@ -21,10 +21,12 @@ export async function GET(_: any, { params }: any) {
             return NextResponse.json({ error: "The specified upload does not exist." }, { status: 404 });
         case 1:
             let content = await fs.readFile(`./uploads/${id}/${files[0]}`);
+            let stats = await fs.stat(`./uploads/${id}/${files[0]}`);
 
             return new NextResponse(content, {
                 headers: {
-                    "Content-Type": mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream"
+                    "Content-Type": mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream",
+                    "Content-Length": stats.size.toString()
                 }
             });
         default:
