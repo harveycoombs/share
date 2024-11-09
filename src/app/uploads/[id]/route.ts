@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import mime from "mime";
 import AdmZip from "adm-zip";
 
-export async function GET(_: any, { params }: any) {
+export async function GET(request: any, { params }: any) {
     let { id } = params;
 
     let files: string[] = [];
@@ -48,4 +48,4 @@ export async function GET(_: any, { params }: any) {
                 return NextResponse.json({ error: "An unexpected server error occured." }, { status: 500 });
             }
     }
-  }
+}
