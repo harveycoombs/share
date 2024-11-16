@@ -15,8 +15,8 @@ export default function Home() {
     let percentageLabel = useRef<HTMLHeadingElement>(null);
     let headingRef = useRef<HTMLHeadingElement>(null);
     
-    let [heading, setHeading] = useState<React.JSX.Element|null>(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none" ref={headingRef}>Drop Files onto this Page</h1>);
-    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<h2 className="text-xl font-semibold my-8 pointer-events-none select-none">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
+    let [heading, setHeading] = useState<React.JSX.Element|null>(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={headingRef}>Drop Files onto this Page</h1>);
+    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<h2 className="text-xl font-semibold my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
 
     let [buttonsAreVisible, setButtonsVisibility] = useState<boolean>(true);
     let [resetButtonIsVisible, setResetButtonVisibility] = useState<boolean>(false);
@@ -91,13 +91,13 @@ export default function Home() {
         let uploads = e.target.files;
 
         if (!uploads?.length) {
-            setHeading(<h1 className="text-6xl font-semibold duration-150 text-amber-400 pointer-events-none select-none">Please upload at least 1 file to continue</h1>);
+            setHeading(<h1 className="text-6xl font-semibold duration-150 text-amber-400 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4">Please upload at least 1 file to continue</h1>);
             setSubheading(null);
             return;
         }
 
-        setHeading(<h1 className="text-6xl font-semibold pointer-events-none select-none" ref={percentageLabel}>0&#37; Uploaded</h1>);
-        setSubheading(<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150" max="100" value="0" ref={progressBar}></progress>);
+        setHeading(<h1 className="text-6xl font-semibold pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={percentageLabel}>0&#37; Uploaded</h1>);
+        setSubheading(<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150 max-[800px]:text-base max-[800px]:px-4" max="100" value="0" ref={progressBar}></progress>);
 
         setButtonsVisibility(false);
 
@@ -122,20 +122,20 @@ export default function Home() {
 
             switch (e.target.status) {
                 case 200:
-                    setHeading(<h1 className="text-6xl font-semibold text-emerald-400 duration-150 cursor-pointer select-none" onClick={copyUploadURL} ref={headingRef}>{document.location.href}uploads/{e.target.response.id.toString()}</h1>);
-                    setSubheading(<h2 className="block text-center text-xl font-semibold text-emerald-200 pointer-events-none select-none my-8">Click the URL above to copy to clipboard</h2>);
+                    setHeading(<h1 className="text-6xl font-semibold text-emerald-400 duration-150 cursor-pointer select-none max-[800px]:text-5xl max-[800px]:px-4" onClick={copyUploadURL} ref={headingRef}>{document.location.href}uploads/{e.target.response.id.toString()}</h1>);
+                    setSubheading(<h2 className="block text-center text-xl font-semibold text-emerald-200 pointer-events-none select-none my-8 max-[800px]:text-base max-[800px]:px-4">Click the URL above to copy to clipboard</h2>);
                     break;
                 case 400:
-                    setHeading(<h1 className="text-6xl font-semibold text-amber-400 duration-150 pointer-events-none select-none mb-8">Please upload at least 1 file to continue</h1>);
+                    setHeading(<h1 className="text-6xl font-semibold text-amber-400 duration-150 pointer-events-none select-none mb-8 max-[800px]:text-5xl max-[800px]:px-4">Please upload at least 1 file to continue</h1>);
                     break;
                 case 413:
                     let multiple = (files.length > 1);
-                    setHeading(<h1 className="text-6xl font-semibold text-red-500 duration-150 pointer-events-none">Uploaded{multiple ? "s" : ""} {multiple ? "were" : "was"} too large</h1>);
-                    setSubheading(<h2 className="block text-center text-xl font-semibold text-red-300 pointer-events-none select-none my-8">The maximum upload size is 5 GB</h2>);
+                    setHeading(<h1 className="text-6xl font-semibold text-red-500 duration-150 pointer-events-none max-[800px]:text-5xl max-[800px]:px-4">Uploaded{multiple ? "s" : ""} {multiple ? "were" : "was"} too large</h1>);
+                    setSubheading(<h2 className="block text-center text-xl font-semibold text-red-300 pointer-events-none select-none my-8 max-[800px]:text-base max-[800px]:px-4">The maximum upload size is 5 GB</h2>);
                     break;
                 default:
-                    setHeading(<h1 className="text-6xl font-semibold text-red-500 duration-150 pointer-events-none select-none">An unexpected server error occured</h1>);
-                    setSubheading(<h2 className="block text-center text-xl font-semibold text-red-300 pointer-events-none select-none my-8">Please try again later</h2>);
+                    setHeading(<h1 className="text-6xl font-semibold text-red-500 duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4">An unexpected server error occured</h1>);
+                    setSubheading(<h2 className="block text-center text-xl font-semibold text-red-300 pointer-events-none select-none my-8 max-[800px]:text-base max-[800px]:px-4">Please try again later</h2>);
                     break;
             }
         });
@@ -144,8 +144,8 @@ export default function Home() {
     }
 
     function reset() {
-        setHeading(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none" ref={headingRef}>Drop Files onto this Page</h1>);
-        setSubheading(<h2 className="text-xl font-semibold my-8 pointer-events-none select-none">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
+        setHeading(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={headingRef}>Drop Files onto this Page</h1>);
+        setSubheading(<h2 className="text-xl font-semibold my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
 
         setButtonsVisibility(true);
         setResetButtonVisibility(false);
@@ -220,9 +220,9 @@ export default function Home() {
                 <section className="text-center">
                     {heading}
                     {subheading}
-                    {buttonsAreVisible ? <div className="w-fit mx-auto">
-                        <Button large={true} classes="mr-2" onClick={() => uploader?.current?.click()}>Browse Files</Button>
-                        <Button large={true} transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
+                    {buttonsAreVisible ? <div className="w-fit mx-auto max-[310px]:w-full max-[310px]:px-4">
+                        <Button large={true} classes="mr-2 max-[310px]:w-full max-[310px]:mr-0" onClick={() => uploader?.current?.click()}>Browse Files</Button>
+                        <Button large={true} classes="max-[310px]:w-full" transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
                     </div> : null}
                     {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
                 </section>

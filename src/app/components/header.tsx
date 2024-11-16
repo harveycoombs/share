@@ -21,5 +21,5 @@ export default function Header() {
 }
 
 function HeaderLink({ url, text }: any) {
-    return <Link href={url} className="text-sm font-semibold leading-none duration-150 hover:text-slate-500 hover:dark:text-slate-300/80">{text}</Link>
+    return <Link href={url} className="text-sm font-semibold leading-none duration-150 hover:text-slate-500 hover:dark:text-slate-300/80 max-[515px]:hidden">{text}</Link>
 }
