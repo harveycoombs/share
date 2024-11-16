@@ -49,7 +49,7 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
         
     } catch (ex: any) {
-        console.log(ex);
+        console.error(ex);
         response = NextResponse.json({ success: false }, { status: 500 });
     }
 
