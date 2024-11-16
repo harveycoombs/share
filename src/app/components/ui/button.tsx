@@ -4,13 +4,15 @@ interface Properties {
     children: React.ReactNode;
     classes?: string;
     url?: string;
-    click?: any;
+    transparent?: boolean;
+    [key: string]: any;
 }
 
-export default function Button({ children, classes, url, click }: Properties) {
-    let classList = `bg-blue-600 text-white text-xs font-semibold pt-2.5 pb-2.5 pl-4 pr-4 rounded select-none duration-150 hover:bg-blue-700 active:bg-blue-800${classes?.length ? " " + classes : ""}`;
+export default function Button({ children, classes, url, transparent, ...rest }: Properties) {
+    let appearance = transparent ? "bg-transparent text-slate-400/60 font-semibold hover:bg-slate-100/60 hover:text-slate-400" : "bg-indigo-500 text-white font-medium hover:bg-indigo-600 active:bg-indigo-700";
+    let classList = `text-[0.813rem] py-2.5 px-5 rounded-md select-none duration-150 ${appearance} ${classes?.length ? classes : ""}`;
 
     return (
-        url?.length ? <Link href={url} className={classList}>{children}</Link> : <button className={classList} onClick={click}>{children}</button>
+        url?.length ? <Link href={url} className={classList}>{children}</Link> : <button className={classList} {...rest}>{children}</button>
     );
 }
