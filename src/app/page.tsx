@@ -1,10 +1,12 @@
 "use client";
 import { useState, useRef } from "react";
+import Link from "next/link";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHistory } from "@fortawesome/free-solid-svg-icons";
+import { faHistory, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Button from "@/app/components/ui/button";
+import Popup from "@/app/components/ui/popup";
 
 export default function Home() {
     let uploader = useRef<HTMLInputElement>(null);
@@ -18,6 +20,9 @@ export default function Home() {
 
     let [buttonsAreVisible, setButtonsVisibility] = useState<boolean>(true);
     let [resetButtonIsVisible, setResetButtonVisibility] = useState<boolean>(false);
+
+    let [historyIsVisible, setHistoryVisibility] = useState(false);
+    let [history, setHistory] = useState<React.JSX.Element[]>([]);
 
     async function copyUploadURL() {
         if (!headingRef?.current) return;
@@ -146,18 +151,84 @@ export default function Home() {
         setResetButtonVisibility(false);
     }
 
+    function openHistory() {
+        setHistoryVisibility(true);
+        getHistory();
+    }
+
+    function formatBytes(bytes: number): string {
+        switch (true) {
+            case (bytes < 1024):
+                return `${bytes} B`;
+            case (bytes < 1024 * 1024):
+                return `${(bytes / 1024).toFixed(2)} kB`;
+            case (bytes < 1024 * 1024 * 1024):
+                return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+            default:
+                return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+        }
+    }
+
+    async function getHistory() {
+        let list: React.JSX.Element[] = [];
+        
+        try {
+            let response = await fetch("/api/history");
+            let records: any[] = await response.json();
+
+            if (!records.length) {
+                list.push(<div className="py-4 text-center font-medium text-sm text-slate-400 text-opacity-60 select-none dark:text-zinc-400">You don't have any upload history.</div>);
+            }
+
+            for (let record of records) {
+                list.push(<div className="w-[600px] px-1.5 py-1 mt-1 rounded-md flex justify-between items-center bg-slate-200 bg-opacity-50 dark:bg-zinc-700">
+                    <div>
+                        <Link href={`/uploads/${record.id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline dark:text-zinc-400">{record.id}</Link>
+                        <div className="text-sm font-medium text-slate-400 dark:text-zinc-500">{new Date(record.id).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })} &middot; {record.files} Files &middot; {formatBytes(record.size)}</div>
+                    </div><button className="w-7 h-7 rounded grid place-items-center mr-1 bg-slate-300/50 text-slate-400/70 duration-150 hover:bg-red-100 hover:text-red-400" onClick={() => deleteHistory(record.id)}><FontAwesomeIcon icon={faTrashAlt} /></button>
+                </div>);
+            }
+        } catch (ex: any) {
+            console.error(ex);
+            list.push(<div className="w-[600px] py-4 text-center font-medium text-sm text-red-500 select-none">Unable to retrieve upload history.</div>);
+        }
+
+        setHistory(list);
+    }
+
+    async function deleteHistory(id: number) {
+        try {
+            let response = await fetch("/api/history", {
+                method: "DELETE",
+                body: new URLSearchParams({ id: id.toString() })
+            });
+
+            if (!response.ok) {
+                alert("Unable to delete history. Please try again later.");
+                return;
+            }
+
+            getHistory();
+        } catch (ex: any) {
+            console.error(ex);
+        }
+    }
+
     return (
-        <main className="grid place-items-center h-screen" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-            <section className="text-center">
-                {heading}
-                {subheading}
-                {buttonsAreVisible ? <div className="w-fit mx-auto">
-                    <Button large={true} classes="mr-2" onClick={() => uploader?.current?.click()}>Browse Files</Button>
-                    <Button large={true} transparent={true}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
-                </div> : null}
-                {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
-            </section>
-            <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
-        </main>
+        <>
+            <main className="grid place-items-center h-screen" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+                <section className="text-center">
+                    {heading}
+                    {subheading}
+                    {buttonsAreVisible ? <div className="w-fit mx-auto">
+                        <Button large={true} classes="mr-2" onClick={() => uploader?.current?.click()}>Browse Files</Button>
+                        <Button large={true} transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
+                    </div> : null}
+                    {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
+                </section>
+                <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
+            </main>
+            {historyIsVisible ? <Popup title="Upload History" close={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
+        </>
     );
 }
