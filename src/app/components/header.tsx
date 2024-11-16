@@ -6,7 +6,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 export default function Header() {
     return (
-        <header className="absolute top-0 left-0 right-0">
+        <header className="absolute top-0 left-0 right-0 select-none">
             <div className="flex justify-between items-center p-6 max-[460px]:p-3">
                 <Link href="/" className="font-bold select-none leading-none duration-150 hover:opacity-70">Share <span className="text-slate-400/60">{process.env.APP_VERSION}</span></Link>
                 <nav className="flex items-center gap-8 flex-nowrap">
