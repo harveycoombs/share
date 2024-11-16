@@ -25,7 +25,7 @@ export default function Home() {
         let url = headingRef.current.innerText;
 
         await navigator.clipboard.writeText(url.toLowerCase());
-        headingRef.current.innerText = "COPIED!";
+        headingRef.current.innerText = "Copied to Clipboard";
 
         setTimeout(() => {
             if (headingRef?.current) {
