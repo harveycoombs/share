@@ -119,9 +119,7 @@ export default function Home() {
             if (e.target.readyState != 4) return;
 
             setResetButtonVisibility(true);
-
-            console.log(request.responseText);
-
+            
             switch (e.target.status) {
                 case 200:
                     setHeading(<h1 className="text-6xl font-semibold text-emerald-400 duration-150 cursor-pointer select-none max-[800px]:text-5xl max-[800px]:px-4" onClick={copyUploadURL} ref={headingRef}>{document.location.href}uploads/{e.target.response.id.toString()}</h1>);
