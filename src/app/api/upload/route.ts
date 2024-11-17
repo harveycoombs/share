@@ -3,12 +3,12 @@ import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 
 export async function POST(request: Request): Promise<NextResponse> {
-    try {
-        let now = new Date().getTime();    
+    let now = new Date().getTime();
 
+    try {
         let data = await request.formData();
         let files = data.getAll("files");
-        
+
         if (!files) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
 
         try {
@@ -34,21 +34,21 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
 
         if (errors.length) return NextResponse.json({ errors: errors }, { status: 500 });
-        
-        let response = NextResponse.json({ id: now }, { status: 200 });
-        
-        let historyCookie = (await cookies()).get("history")?.value ?? "[]";
-        let ids: number[] = JSON.parse(historyCookie);
-
-        ids.push(now);
-
-        response.cookies.set("history", JSON.stringify(ids), {
-            httpOnly: true,
-            maxAge: 3155760000
-        });
-
-        return response;
     } catch (ex: any) {
         return NextResponse.json({ error: ex.message }, { status: 500 });
     }
+
+    let response = NextResponse.json({ id: now }, { status: 200 });
+    
+    let historyCookie = (await cookies()).get("history")?.value ?? "[]";
+    let ids: number[] = JSON.parse(historyCookie);
+
+    ids.push(now);
+
+    response.cookies.set("history", JSON.stringify(ids), {
+        httpOnly: true,
+        maxAge: 3155760000
+    });
+
+    return response;
 }
