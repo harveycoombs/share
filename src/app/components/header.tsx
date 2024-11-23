@@ -12,7 +12,6 @@ export default function Header() {
                 <nav className="flex items-center gap-8 flex-nowrap">
                     <HeaderLink url="https://github.com/harveycoombs/share/issues/new" text="Report Issue" />
                     <HeaderLink url="/limits" text="Increase Limit" />
-                    <HeaderLink url="/developers" text="Developers" />
                     <Link href="https://github.com/harveycoombs/share" className="text-xl leading-none text-slate-400/60 duration-150 hover:text-slate-400"><FontAwesomeIcon icon={faGithub} /></Link>
                 </nav>
             </div>
