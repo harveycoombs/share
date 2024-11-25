@@ -13,7 +13,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
     title: "Share · Harvey Coombs",
-    description: "Written by Harvey Coombs"
+    description: "An easy-to-use file sharing platform."
 };
 
 export default function RootLayout({
