@@ -5,8 +5,8 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHistory, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
-import Button from "@/app/components/ui/button";
-import Popup from "@/app/components/ui/popup";
+import Button from "@/app/components/common/button";
+import Popup from "@/app/components/common/popup";
 
 export default function Home() {
     let uploader = useRef<HTMLInputElement>(null);
