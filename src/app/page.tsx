@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import Link from "next/link";
-
+import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHistory, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
@@ -217,7 +217,7 @@ export default function Home() {
     return (
         <>
             <main className="grid place-items-center h-screen" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-                <section className="text-center">
+                <motion.div className="text-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: "easeOut" }}>
                     {heading}
                     {subheading}
                     {buttonsAreVisible ? <div className="w-fit mx-auto max-[310px]:w-full max-[310px]:px-4">
@@ -225,7 +225,7 @@ export default function Home() {
                         <Button large={true} classes="max-[310px]:w-full" transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
                     </div> : null}
                     {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
-                </section>
+                </motion.div>
                 <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
             </main>
             {historyIsVisible ? <Popup title="Upload History" onClose={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
