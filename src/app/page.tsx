@@ -228,7 +228,7 @@ export default function Home() {
                 </section>
                 <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
             </main>
-            {historyIsVisible ? <Popup title="Upload History" close={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
+            {historyIsVisible ? <Popup title="Upload History" onClose={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
         </>
     );
 }
