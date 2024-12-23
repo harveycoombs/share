@@ -10,7 +10,7 @@ interface Properties {
 }
 
 export default function Button({ children, classes, url, transparent, large, ...rest }: Properties) {
-    let appearance = transparent ? "bg-transparent text-slate-400/60 font-semibold hover:bg-slate-100/60 hover:text-slate-400 dark:text-slate-400/75 hover:dark:bg-slate-800/60" : "bg-indigo-500 text-white font-medium hover:bg-indigo-600 active:bg-indigo-700";
+    let appearance = transparent ? "bg-transparent text-slate-400/60 font-semibold hover:bg-slate-100/60 hover:text-slate-400 dark:text-slate-400/75 hover:dark:bg-slate-800/60" : "bg-sky-400 text-white font-medium hover:bg-sky-500 active:bg-sky-600";
     let classList = `text-[0.813rem] ${large ? "py-2.5 px-5" : "py-2 px-4"} rounded-md select-none duration-150 ${appearance} ${classes?.length ? classes : ""}`;
 
     return (
