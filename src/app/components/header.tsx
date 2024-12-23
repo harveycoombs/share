@@ -14,9 +14,9 @@ export default function Header() {
                     <Logo width={126} height={24} />
                 </Link>
                 <nav className="flex items-center gap-8 flex-nowrap">
-                    <HeaderLink url="https://github.com/harveycoombs/share/issues/new" text="Report Issue" />
+                    <HeaderLink url="https://github.com/harveycoombs/share-surf/issues/new" text="Report Issue" />
                     <HeaderLink url="/limits" text="Increase Limit" />
-                    <Link href="https://github.com/harveycoombs/share" className="text-xl leading-none text-slate-400/60 duration-150 hover:text-slate-400"><FontAwesomeIcon icon={faGithub} /></Link>
+                    <Link href="https://github.com/harveycoombs/share-surf" className="text-xl leading-none text-slate-400/60 duration-150 hover:text-slate-400"><FontAwesomeIcon icon={faGithub} /></Link>
                 </nav>
             </div>
         </header>
