@@ -9,6 +9,8 @@ import Button from "@/app/components/common/button";
 import Popup from "@/app/components/common/popup";
 
 export default function Home() {
+    let [files, setFiles] = useState<FileList|null>(null);
+
     let uploader = useRef<HTMLInputElement>(null);
 
     let progressBar = useRef<HTMLProgressElement>(null);
@@ -216,7 +218,7 @@ export default function Home() {
 
     return (
         <>
-            <main className="grid place-items-center h-screen" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <main className="min-h-[calc(100vh-64px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
                 <motion.div className="text-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: "easeOut" }}>
                     {heading}
                     {subheading}
@@ -227,7 +229,7 @@ export default function Home() {
                     {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
                     <div className="text-sm text-slate-400/60 select-none font-medium mt-5">2GB Upload Limit</div>
                 </motion.div>
-                <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
+                <input type="file" ref={uploader} onInput={(e: any) => setFiles(e.target.files)} onChange={handleUpload} className="hidden" multiple />
             </main>
             {historyIsVisible ? <Popup title="Upload History" onClose={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
         </>

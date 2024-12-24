@@ -8,7 +8,7 @@ import Logo from "@/app/components/common/logo";
 
 export default function Header() {
     return (
-        <header className="absolute top-0 left-0 right-0 select-none">
+        <header className="sticky top-0 select-none">
             <div className="flex justify-between items-center p-5 max-[460px]:p-3">
                 <Link href="/" className="font-bold select-none leading-none duration-150 hover:opacity-70" draggable={false}>
                     <Logo width={126} height={24} />
