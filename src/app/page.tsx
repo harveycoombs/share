@@ -225,6 +225,7 @@ export default function Home() {
                         <Button large={true} classes="max-[310px]:w-full" transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
                     </div> : null}
                     {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
+                    <div className="text-sm text-slate-400/60 select-none font-medium mt-5">2GB Upload Limit</div>
                 </motion.div>
                 <input type="file" ref={uploader} onChange={handleUpload} className="hidden" multiple />
             </main>
