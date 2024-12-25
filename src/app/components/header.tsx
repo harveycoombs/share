@@ -17,7 +17,7 @@ export default function Header() {
                     <HeaderLink url="/about" text="About" />
                     <HeaderLink url="/support" text="Support" />
                     <HeaderLink url="/premium" text="Premium" />
-                    <Link href="/login" className="text-xl leading-none text-slate-400/60 duration-150 hover:text-slate-400 active:text-slate-500" draggable={false}><FontAwesomeIcon icon={faRightToBracket} /></Link>
+                    <Link href="/login" className="text-xl leading-none text-slate-400/60 duration-150 hover:text-slate-400 active:text-slate-500" title="Log In" draggable={false}><FontAwesomeIcon icon={faRightToBracket} /></Link>
                 </nav>
             </div>
         </header>
@@ -25,5 +25,5 @@ export default function Header() {
 }
 
 function HeaderLink({ url, text }: any) {
-    return <Link href={url} className="text-sm font-semibold leading-none duration-150 hover:text-slate-500 hover:dark:text-slate-300/80 max-[515px]:hidden" draggable={false}>{text}</Link>
+    return <Link href={url} className="text-sm font-medium leading-none duration-150 hover:text-slate-500 active:text-slate-400" draggable={false}>{text}</Link>
 }

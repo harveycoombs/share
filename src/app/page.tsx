@@ -18,7 +18,7 @@ export default function Home() {
     let headingRef = useRef<HTMLHeadingElement>(null);
     
     let [heading, setHeading] = useState<React.JSX.Element|null>(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={headingRef}>Drop Files onto this Page</h1>);
-    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<h2 className="text-xl font-semibold my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
+    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<h2 className="text-xl text-slate-400/60 font-medium my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
 
     let [buttonsAreVisible, setButtonsVisibility] = useState<boolean>(true);
     let [resetButtonIsVisible, setResetButtonVisibility] = useState<boolean>(false);
@@ -183,7 +183,7 @@ export default function Home() {
             }
 
             for (let record of records) {
-                list.push(<div className="w-[600px] px-1.5 py-1 mt-1 rounded-md flex justify-between items-center bg-slate-200 bg-opacity-50 dark:bg-zinc-700">
+                list.push(<div key={record.id} className="w-[600px] px-1.5 py-1 mt-1 rounded-md flex justify-between items-center bg-slate-200 bg-opacity-50 dark:bg-zinc-700">
                     <div>
                         <Link href={`/uploads/${record.id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline dark:text-zinc-400">{record.id}</Link>
                         <div className="text-sm font-medium text-slate-400 dark:text-zinc-500">{new Date(record.id).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })} &middot; {record.files} Files &middot; {formatBytes(record.size)}</div>
@@ -227,7 +227,7 @@ export default function Home() {
                         <Button large={true} classes="max-[310px]:w-full" transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
                     </div> : null}
                     {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
-                    <div className="text-sm select-none font-semibold mt-8">2GB Upload Limit</div>
+                    <div className="text-sm text-slate-400/60 select-none font-semibold mt-8">2GB Upload Limit</div>
                 </motion.div>
                 <input type="file" ref={uploader} onInput={(e: any) => setFiles(e.target.files)} onChange={handleUpload} className="hidden" multiple />
             </main>
