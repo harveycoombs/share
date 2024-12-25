@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,17 +10,16 @@ import Popup from "@/app/components/common/popup";
 
 export default function Home() {
     let [files, setFiles] = useState<FileList|null>(null);
+    let [loading, setLoading] = useState<boolean>(false);
 
     let uploader = useRef<HTMLInputElement>(null);
 
-    let progressBar = useRef<HTMLProgressElement>(null);
-    let percentageLabel = useRef<HTMLHeadingElement>(null);
-    let headingRef = useRef<HTMLHeadingElement>(null);
-    
-    let [heading, setHeading] = useState<React.JSX.Element|null>(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={headingRef}>Drop Files onto this Page</h1>);
-    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<h2 className="text-xl  font-semibold my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
+    let [heading, setHeading] = useState<string>("Drop Files onto this Page");
+    let [subheading, setSubheading] = useState<string>("Share is a no-frills file sharing service designed to be as convenient as possible");
 
-    let [buttonsAreVisible, setButtonsVisibility] = useState<boolean>(true);
+    let headingRef = useRef<HTMLHeadingElement>(null);
+    let progressBar = useRef<HTMLProgressElement>(null);    
+
     let [resetButtonIsVisible, setResetButtonVisibility] = useState<boolean>(false);
 
     let [historyIsVisible, setHistoryVisibility] = useState(false);
@@ -46,10 +45,9 @@ export default function Home() {
     
         let progress = (e.loaded / e.total) * 100;
     
-        if (progressBar.current && percentageLabel.current) {
-            progressBar.current.value = progress;
-            progressBar.current.innerHTML = `${Math.round(progress)}&percnt;`;
-            percentageLabel.current.innerHTML = `${Math.round(progress)}&percnt; Complete`;
+        if (progressBar.current && headingRef.current) {
+            progressBar.current.value = progress; 
+            headingRef.current.innerHTML = `${Math.round(progress)}% Complete`;
         }
     }
 
@@ -87,24 +85,14 @@ export default function Home() {
         }
     }
 
-    function handleUpload(e: any) {
-        e.preventDefault();
+    useEffect(() => {
+        if (!files?.length) return;
 
-        let uploads = e.target.files;
+        setHeading("0% Uploaded");
+        setLoading(true);
 
-        if (!uploads?.length) {
-            setHeading(<h1 className="text-6xl font-semibold duration-150 text-amber-400 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4">Please upload at least 1 file to continue</h1>);
-            setSubheading(null);
-            return;
-        }
-
-        setHeading(<h1 className="text-6xl font-semibold pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={percentageLabel}>0&#37; Uploaded</h1>);
-        setSubheading(<progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150 max-[800px]:text-base max-[800px]:px-4" max="100" value="0" ref={progressBar}></progress>);
-
-        setButtonsVisibility(false);
-
-        upload(uploads);
-    }
+        upload(files);
+    }, [files]);
 
     function upload(files: any) {
         let data = new FormData();
@@ -148,8 +136,7 @@ export default function Home() {
     function reset() {
         setHeading(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={headingRef}>Drop Files onto this Page</h1>);
         setSubheading(<h2 className="text-xl font-semibold my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
-
-        setButtonsVisibility(true);
+        setFiles(null);
         setResetButtonVisibility(false);
     }
 
@@ -220,16 +207,18 @@ export default function Home() {
         <>
             <main className="min-h-[calc(100vh-128px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
                 <motion.div className="text-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: "easeOut" }}>
-                    {heading}
-                    {subheading}
-                    {buttonsAreVisible ? <div className="w-fit mx-auto max-[310px]:w-full max-[310px]:px-4">
+                    <h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none" ref={headingRef}>{heading}</h1>
+                    {loading ? <progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150 max-[800px]:text-base max-[800px]:px-4" max="100" value="0" ref={progressBar}></progress> : <h2 className="text-xl font-semibold my-8 pointer-events-none select-none">{subheading}</h2>}
+
+                    {!files?.length ? <div className="w-fit mx-auto max-[310px]:w-full max-[310px]:px-4">
                         <Button large={true} classes="mr-2 max-[310px]:w-full max-[310px]:mr-0" onClick={() => uploader?.current?.click()}>Browse Files</Button>
                         <Button large={true} classes="max-[310px]:w-full" transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
                     </div> : null}
+
                     {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
                     <div className="text-sm text-slate-400/60 select-none font-semibold mt-8">2GB Upload Limit</div>
                 </motion.div>
-                <input type="file" ref={uploader} onInput={(e: any) => setFiles(e.target.files)} onChange={handleUpload} className="hidden" multiple />
+                <input type="file" ref={uploader} onInput={(e: any) => setFiles(e.target.files)} className="hidden" multiple />
             </main>
             {historyIsVisible ? <Popup title="Upload History" onClose={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
         </>
