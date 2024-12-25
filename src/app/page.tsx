@@ -18,7 +18,7 @@ export default function Home() {
     let headingRef = useRef<HTMLHeadingElement>(null);
     
     let [heading, setHeading] = useState<React.JSX.Element|null>(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={headingRef}>Drop Files onto this Page</h1>);
-    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<h2 className="text-xl text-slate-400/60 font-medium my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
+    let [subheading, setSubheading] = useState<React.JSX.Element|null>(<h2 className="text-xl  font-semibold my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
 
     let [buttonsAreVisible, setButtonsVisibility] = useState<boolean>(true);
     let [resetButtonIsVisible, setResetButtonVisibility] = useState<boolean>(false);
