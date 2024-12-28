@@ -46,9 +46,7 @@ export default function RootLayout({
         <html lang="en">
             <body className={`${inter.className} h-screen bg-white text-slate-800`}>
                 <Header />
-                <main className="min-h-[calc(100vh-116px)] grid place-items-center">
-                    {children}
-                </main>
+                {children}
                 <Footer />
             </body>
         </html>
