@@ -16,5 +16,5 @@ export default function Footer() {
 }
 
 function FooterIcon({ icon, title, url }: any) {
-    return <Link href={url} target="_blank" rel="noopener" title={title} className="inline-block align-middle ml-4 text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-100 hover:text-slate-400 active:text-slate-500/85"><FontAwesomeIcon icon={icon} /></Link>
+    return <Link href={url} target="_blank" rel="noopener" title={title} className="inline-block align-middle ml-4 text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85"><FontAwesomeIcon icon={icon} /></Link>
 }
