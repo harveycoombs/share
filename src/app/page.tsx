@@ -1,5 +1,5 @@
 "use client";
-import { useRef } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faExternalLinkAlt, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +9,9 @@ import Button from "@/app/components/common/button";
 import Link from "next/link";
 
 export default function Home() {
+    let file = useState<File|null>(null);
+    let id = useState<number>(0);
+
     let uploader = useRef<HTMLInputElement>(null);
 
     return (
