@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faExternalLinkAlt, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -9,10 +9,46 @@ import Button from "@/app/components/common/button";
 import Link from "next/link";
 
 export default function Home() {
-    let file = useState<File|null>(null);
-    let id = useState<number>(0);
+    let [file, setFile] = useState<File|null>(null);
+    let [id, setID] = useState<number>(0);
+    let [loading, setLoading] = useState<boolean>(false);
 
     let uploader = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (!file) return;
+
+        setLoading(true);
+
+        let data = new FormData();
+        data.append("files", file);
+
+        let request = new XMLHttpRequest();
+
+        request.open("POST", "/api/upload", true);
+        request.responseType = "json";
+
+        request.upload.addEventListener("progress", updateProgressBar);
+
+        request.addEventListener("readystatechange", (e: any) => {
+            if (e.target.readyState != 4) return;
+
+            setLoading(false);
+
+            switch (e.target.status) {
+                case 200:
+                    break;
+                case 413:
+                    break;
+                default:
+                    break;
+            }
+        });
+    }, [file]);
+
+    function updateProgressBar() {
+        
+    }
 
     return (
         <main className="min-h-[calc(100vh-116px)] grid place-items-center">
@@ -26,7 +62,7 @@ export default function Home() {
                     <h1 className="text-3xl font-medium">Drop files onto this page to upload</h1>
 
                     <div className="mt-5">
-                        <Button classes="inline-block align-middle">Browse Files</Button>
+                        <Button classes="inline-block align-middle" onClick={() => uploader?.current?.click()}>Browse Files</Button>
                         <Button classes="inline-block align-middle ml-2" transparent={true}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
                     </div>
 
@@ -46,7 +82,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <input type="file" className="hidden" ref={uploader} />
+            <input type="file" className="hidden" ref={uploader} onInput={(e: any) => setFile(e.target.files[0])} />
         </main>
     );
 }
