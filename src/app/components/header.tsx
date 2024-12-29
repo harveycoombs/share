@@ -1,29 +1,54 @@
-import React from "react";
+"use client";
+import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import AccountSettings from "@/app/components/common/popups/account";
+import LoginForm from "@/app/components/common/popups/login";
 import { faRightToBracket, faUser } from "@fortawesome/free-solid-svg-icons";
 
-import Logo from "@/app/components/common/logo";
-
 export default function Header() {
+    let [user, setUser] = useState<any>(null);
+
+    useEffect(() => {
+        (async () => {
+            let response = await fetch("/api/user/session");
+            let json = await response.json();
+
+            if (!response.ok) {
+                setUser(null);
+                return;
+            }
+
+            setUser(json.user);
+        })();
+    }, []);
+
+    let [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
+    let [loginFormIsVisible, setLoginFormVisibility] = useState<boolean>(false);
+
     return (
-        <header className="sticky top-0 select-none">
-            <div className="flex justify-between items-center p-5 max-[460px]:p-3">
-                <Link href="/" className="font-bold select-none leading-none duration-150 hover:opacity-70" draggable={false}>
-                    <Logo width={126} height={24} />
-                </Link>
-                <nav className="flex items-center gap-8 flex-nowrap">
-                    <HeaderLink url="/about" text="About" />
-                    <HeaderLink url="/support" text="Support" />
-                    <HeaderLink url="/premium" text="Premium" />
-                    <Link href="/login" className="text-xl leading-none text-slate-400/60 duration-150 hover:text-slate-400 active:text-slate-500" title="Log In" draggable={false}><FontAwesomeIcon icon={faRightToBracket} /></Link>
+        <>
+            <header className="p-4 flex justify-between select-none">
+                <Link href="/"><Image src="/images/icon.png" alt="Share" width={28} height={28} /></Link>
+                <nav>
+                    <HeaderLink title="About" url="/about" />
+                    <HeaderLink title="Support" url="/support" />
+                    <HeaderLink title="Premium" url="/premium" />
+                    {user ? <HeaderIcon icon={faUser} title={`Signed in as ${user.firstname} ${user.lastname}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
                 </nav>
-            </div>
-        </header>
+            </header>
+            {accountSettingsAreVisible && <AccountSettings user={user} onClose={() => setAccountSettingsVisibility(false)} />}
+            {loginFormIsVisible && <LoginForm onClose={() => setLoginFormVisibility(false)} />}
+        </>
     );
 }
 
-function HeaderLink({ url, text }: any) {
-    return <Link href={url} className="text-sm font-medium leading-none duration-150 hover:text-slate-500 active:text-slate-400" draggable={false}>{text}</Link>
+function HeaderLink({ title, url }: any) {
+    return <Link href={url} className="inline-block align-middle text-sm font-medium leading-none mr-8 cursor-pointer duration-150 hover:text-slate-500 active:text-slate-400" draggable={false}>{title}</Link>;
+}
+
+function HeaderIcon({ icon, title, ...rest }: any) {
+    return <div title={title} className="inline-block align-middle text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }

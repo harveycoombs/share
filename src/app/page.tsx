@@ -1,102 +1,27 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import { motion } from "framer-motion";
+import { useState, useRef, useEffect } from "react";
+import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHistory, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faExternalLinkAlt, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
+import Logo from "@/app/components/common/logo";
 import Button from "@/app/components/common/button";
-import Popup from "@/app/components/common/popup";
+import Link from "next/link";
 
 export default function Home() {
-    let [files, setFiles] = useState<FileList|null>(null);
+    let [file, setFile] = useState<File|null>(null);
+    let [id, setID] = useState<number>(0);
     let [loading, setLoading] = useState<boolean>(false);
 
     let uploader = useRef<HTMLInputElement>(null);
 
-    let [heading, setHeading] = useState<string>("Drop Files onto this Page");
-    let [subheading, setSubheading] = useState<string>("Share is a no-frills file sharing service designed to be as convenient as possible");
-
-    let headingRef = useRef<HTMLHeadingElement>(null);
-    let progressBar = useRef<HTMLProgressElement>(null);    
-
-    let [resetButtonIsVisible, setResetButtonVisibility] = useState<boolean>(false);
-
-    let [historyIsVisible, setHistoryVisibility] = useState(false);
-    let [history, setHistory] = useState<React.JSX.Element[]>([]);
-
-    async function copyUploadURL() {
-        if (!headingRef?.current) return;
-
-        let url = headingRef.current.innerText;
-
-        await navigator.clipboard.writeText(url.toLowerCase());
-        headingRef.current.innerText = "Copied to Clipboard";
-
-        setTimeout(() => {
-            if (headingRef?.current) {
-                headingRef.current.innerText = url;
-            }
-        }, 1200);
-    }
-
-    function updateProgressBar(e: any) {
-        if (!e.lengthComputable) return;
-    
-        let progress = (e.loaded / e.total) * 100;
-    
-        if (progressBar.current && headingRef.current) {
-            progressBar.current.value = progress; 
-            headingRef.current.innerHTML = `${Math.round(progress)}% Complete`;
-        }
-    }
-
-    function handleDragOverEvent(e: any) {
-        e.preventDefault();
-
-        if (!headingRef?.current || uploader?.current?.files?.length) return;
-        if (!headingRef.current.classList.contains("text-slate-500")) handleDragEnterEvent();
-    }
-    
-    function handleDragEnterEvent() {
-        if (!headingRef?.current || uploader?.current?.files?.length) return;
-
-        headingRef.current.classList.add("text-slate-500");
-        headingRef.current.classList.remove("text-slate-800");
-    }
-    
-    function handleDragLeaveEvent() {
-        if (!headingRef?.current || uploader?.current?.files?.length) return;
-
-        headingRef.current.classList.add("text-slate-800");
-        headingRef.current.classList.remove("text-slate-500");
-    }
-
-    function handleDropEvent(e: any) {
-        e.preventDefault();
-
-        if (uploader?.current?.files?.length) return;
-
-        if (uploader?.current) {
-            uploader.current.files = e.dataTransfer.files;
-            uploader.current.dispatchEvent(new Event("change", { bubbles: true }));
-
-            handleDragLeaveEvent();
-        }
-    }
-
     useEffect(() => {
-        if (!files?.length) return;
+        if (!file) return;
 
-        setHeading("0% Uploaded");
         setLoading(true);
 
-        upload(files);
-    }, [files]);
-
-    function upload(files: any) {
         let data = new FormData();
-        for (let file of files) data.append("files", file);
+        data.append("files", file);
 
         let request = new XMLHttpRequest();
 
@@ -108,119 +33,56 @@ export default function Home() {
         request.addEventListener("readystatechange", (e: any) => {
             if (e.target.readyState != 4) return;
 
-            setResetButtonVisibility(true);
+            setLoading(false);
 
             switch (e.target.status) {
                 case 200:
-                    setHeading(<h1 className="text-6xl font-semibold text-emerald-400 duration-150 cursor-pointer select-none max-[800px]:text-5xl max-[800px]:px-4" onClick={copyUploadURL} ref={headingRef}>{document.location.href}uploads/{e.target.response.id.toString()}</h1>);
-                    setSubheading(<h2 className="block text-center text-xl font-semibold text-emerald-200 pointer-events-none select-none my-8 max-[800px]:text-base max-[800px]:px-4">Click the URL above to copy to clipboard</h2>);
-                    break;
-                case 400:
-                    setHeading(<h1 className="text-6xl font-semibold text-amber-400 duration-150 pointer-events-none select-none mb-8 max-[800px]:text-5xl max-[800px]:px-4">Please upload at least 1 file to continue</h1>);
                     break;
                 case 413:
-                    let multiple = (files.length > 1);
-                    setHeading(<h1 className="text-6xl font-semibold text-red-500 duration-150 pointer-events-none max-[800px]:text-5xl max-[800px]:px-4">Uploaded{multiple ? "s" : ""} {multiple ? "were" : "was"} too large</h1>);
-                    setSubheading(<h2 className="block text-center text-xl font-semibold text-red-300 pointer-events-none select-none my-8 max-[800px]:text-base max-[800px]:px-4">The maximum upload size is 5 GB</h2>);
                     break;
                 default:
-                    setHeading(<h1 className="text-6xl font-semibold text-red-500 duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4">An unexpected server error occured</h1>);
-                    setSubheading(<h2 className="block text-center text-xl font-semibold text-red-300 pointer-events-none select-none my-8 max-[800px]:text-base max-[800px]:px-4">Please try again later</h2>);
                     break;
             }
         });
+    }, [file]);
 
-        request.send(data);
-    }
-
-    function reset() {
-        setHeading(<h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none max-[800px]:text-5xl max-[800px]:px-4" ref={headingRef}>Drop Files onto this Page</h1>);
-        setSubheading(<h2 className="text-xl font-semibold my-8 pointer-events-none select-none max-[800px]:text-base max-[800px]:px-4">Share is a no-frills file sharing service designed to be as convenient as possible</h2>);
-        setFiles(null);
-        setResetButtonVisibility(false);
-    }
-
-    function openHistory() {
-        setHistoryVisibility(true);
-        getHistory();
-    }
-
-    function formatBytes(bytes: number): string {
-        switch (true) {
-            case (bytes < 1024):
-                return `${bytes} B`;
-            case (bytes < 1024 * 1024):
-                return `${(bytes / 1024).toFixed(2)} kB`;
-            case (bytes < 1024 * 1024 * 1024):
-                return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-            default:
-                return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
-        }
-    }
-
-    async function getHistory() {
-        let list: React.JSX.Element[] = [];
+    function updateProgressBar() {
         
-        try {
-            let response = await fetch("/api/history");
-            let records: any[] = await response.json();
-
-            if (!records.length) {
-                list.push(<div className="py-4 text-center font-medium text-sm text-slate-400 text-opacity-60 select-none dark:text-zinc-400">You don't have any upload history.</div>);
-            }
-
-            for (let record of records) {
-                list.push(<div key={record.id} className="w-[600px] px-1.5 py-1 mt-1 rounded-md flex justify-between items-center bg-slate-200 bg-opacity-50 dark:bg-zinc-700">
-                    <div>
-                        <Link href={`/uploads/${record.id}`} target="_blank" className="text-slate-500 font-bold decoration-2 hover:underline dark:text-zinc-400">{record.id}</Link>
-                        <div className="text-sm font-medium text-slate-400 dark:text-zinc-500">{new Date(record.id).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "numeric" })} &middot; {record.files} Files &middot; {formatBytes(record.size)}</div>
-                    </div><button className="w-7 h-7 rounded grid place-items-center mr-1 bg-slate-300/50 text-slate-400/70 duration-150 hover:bg-red-100 hover:text-red-400" onClick={() => deleteHistory(record.id)}><FontAwesomeIcon icon={faTrashAlt} /></button>
-                </div>);
-            }
-        } catch (ex: any) {
-            console.error(ex);
-            list.push(<div className="w-[600px] py-4 text-center font-medium text-sm text-red-500 select-none">Unable to retrieve upload history.</div>);
-        }
-
-        setHistory(list);
-    }
-
-    async function deleteHistory(id: number) {
-        try {
-            let response = await fetch("/api/history", {
-                method: "DELETE",
-                body: new URLSearchParams({ id: id.toString() })
-            });
-
-            if (!response.ok) {
-                alert("Unable to delete history. Please try again later.");
-                return;
-            }
-
-            getHistory();
-        } catch (ex: any) {
-            console.error(ex);
-        }
     }
 
     return (
-        <>
-            <main className="min-h-[calc(100vh-128px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-                <motion.div className="text-center" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: "easeOut" }}>
-                    <h1 className="text-6xl font-semibold duration-150 pointer-events-none select-none" ref={headingRef}>{heading}</h1>
-                    {loading ? <progress className="appearance-none w-96 h-3 mt-8 bg-slate-200 border-none rounded duration-150 max-[800px]:text-base max-[800px]:px-4" max="100" value="0" ref={progressBar}></progress> : <h2 className="text-xl font-semibold my-8 pointer-events-none select-none">{subheading}</h2>}
+        <main className="min-h-[calc(100vh-116px)] grid place-items-center">
+            <section className="text-center w-500 mx-auto select-none">
+                <div>
+                    <div className="w-fit mx-auto"><Logo width={288} height={56} /></div>
+                    <strong className="block font-medium text-slate-400 mt-4">The no-frills file sharing service</strong>
+                </div>
 
-                    {!files?.length ? <div className="w-fit mx-auto max-[310px]:w-full max-[310px]:px-4">
-                        <Button large={true} classes="mr-2 max-[310px]:w-full max-[310px]:mr-0" onClick={() => uploader?.current?.click()}>Browse Files</Button>
-                        <Button large={true} classes="max-[310px]:w-full" transparent={true} onClick={openHistory}><FontAwesomeIcon icon={faHistory} /> View Upload History</Button>
-                    </div> : null}
+                <div className="mt-16">
+                    <h1 className="text-3xl font-medium">Drop files onto this page to upload</h1>
 
-                    {resetButtonIsVisible ? <Button large={true} onClick={reset}>Upload More</Button> : null}
-                    <div className="text-sm text-slate-400/60 select-none font-semibold mt-8">2GB Upload Limit</div>
-                </motion.div>
-                <input type="file" ref={uploader} onInput={(e: any) => setFiles(e.target.files)} className="hidden" multiple />
-            </main>
-            {historyIsVisible ? <Popup title="Upload History" onClose={() => setHistoryVisibility(false)}>{history}</Popup> : ""}
-        </>
+                    <div className="mt-5">
+                        <Button classes="inline-block align-middle" onClick={() => uploader?.current?.click()}>Browse Files</Button>
+                        <Button classes="inline-block align-middle ml-2" transparent={true}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
+                    </div>
+
+                    <div className="my-6 text-blue-500 text-center">
+                        <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
+                        <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
+                    </div>
+                </div>
+
+                <div className="flex gap-2.5 w-full p-2.5 rounded-lg bg-slate-100 text-slate-400">
+                    <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded shrink-0 aspect-square pointer-events-none" />
+
+                    <div className="text-left">
+                        <Link href="https://collate.run/" target="_blank" rel="noopener" className="block text-sm font-semibold text-slate-500 mb-1.5 hover:underline"><FontAwesomeIcon icon={faExternalLinkAlt} /> Collate: Find &amp; summarise anything on the web with AI</Link>
+                        <p className="text-[0.8rem] font-medium pointer-events-none">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio tempore maxime facere est recusandae.</p>
+                    </div>
+                </div>
+            </section>
+
+            <input type="file" className="hidden" ref={uploader} onInput={(e: any) => setFile(e.target.files[0])} />
+        </main>
     );
 }
