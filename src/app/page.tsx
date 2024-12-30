@@ -50,6 +50,12 @@ export default function Home() {
         
     }
 
+    function resetUploader() {
+        setID(0);
+        setFile(null);
+        setLoading(false);
+    }
+
     return (
         <main className="min-h-[calc(100vh-116px)] grid place-items-center">
             <section className="text-center w-500 mx-auto select-none">
