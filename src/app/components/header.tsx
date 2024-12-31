@@ -14,13 +14,13 @@ export default function Header() {
     useEffect(() => {
         (async () => {
             let response = await fetch("/api/user/session");
-            let json = await response.json();
-
+            
             if (!response.ok) {
                 setUser(null);
                 return;
             }
 
+            let json = await response.json();
             setUser(json.user);
         })();
     }, []);

@@ -12,6 +12,8 @@ export default function Home() {
     let [file, setFile] = useState<File|null>(null);
     let [id, setID] = useState<number>(0);
     let [loading, setLoading] = useState<boolean>(false);
+    let [error, setError] = useState<string>("");
+    let [progress, setProgress] = useState<number>(0);
 
     let uploader = useRef<HTMLInputElement>(null);
 
@@ -28,7 +30,10 @@ export default function Home() {
         request.open("POST", "/api/upload", true);
         request.responseType = "json";
 
-        request.upload.addEventListener("progress", updateProgressBar);
+        request.upload.addEventListener("progress", (e: ProgressEvent) => {
+            if (!e.lengthComputable) return;
+            setProgress((e.loaded / e.total) * 100);
+        });
 
         request.addEventListener("readystatechange", (e: any) => {
             if (e.target.readyState != 4) return;
@@ -37,21 +42,24 @@ export default function Home() {
 
             switch (e.target.status) {
                 case 200:
+                    setID(e.target.response.id);
                     break;
                 case 413:
+                    setError("File is too large");
                     break;
                 default:
+                    setError("Something went wrong");
                     break;
             }
         });
-    }, [file]);
 
-    function updateProgressBar() {
-        
-    }
+        request.send(data);
+    }, [file]);
 
     function resetUploader() {
         setID(0);
+        setError("");
+        setProgress(0);
         setFile(null);
         setLoading(false);
     }
@@ -65,17 +73,24 @@ export default function Home() {
                 </div>
 
                 <div className="mt-16">
-                    <h1 className="text-3xl font-medium">Drop files onto this page to upload</h1>
+                    {loading ? <>
+                        <strong>{progress}&#37;</strong>
+                        <progress className="appearance-none w-full h-3 border-none rounded duration-150" max={100} value={progress}></progress>
+                    </> : <h1 className="text-3xl font-medium">{
+                        error.length ? error : 
+                        id ? `${document.location.href}uploads/${id}` :
+                        "Drop files onto this page to upload"
+                    }</h1>}
 
-                    <div className="mt-5">
+                    {!loading && <div className="mt-5">
                         <Button classes="inline-block align-middle" onClick={() => uploader?.current?.click()}>Browse Files</Button>
                         <Button classes="inline-block align-middle ml-2" transparent={true}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
-                    </div>
+                    </div>}
 
-                    <div className="my-6 text-blue-500 text-center">
+                    {!loading && <div className="my-6 text-blue-500 text-center">
                         <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
                         <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
-                    </div>
+                    </div>}
                 </div>
 
                 <div className="flex gap-2.5 w-full p-2.5 rounded-lg bg-slate-100 text-slate-400">
