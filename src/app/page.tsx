@@ -87,7 +87,7 @@ export default function Home() {
                         <Button classes="inline-block align-middle ml-2" transparent={true}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
                     </div>}
 
-                    {!loading && <div className="w-fit mx-auto my-6 text-blue-500 text-center">
+                    {!loading && <div className="w-fit mx-auto mt-5 mb-6 text-blue-500 text-center">
                         <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
                         <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
                     </div>}
