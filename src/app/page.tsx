@@ -66,34 +66,34 @@ export default function Home() {
 
     return (
         <main className="min-h-[calc(100vh-116px)] grid place-items-center">
-            <section className="text-center w-500 mx-auto select-none">
-                <div>
+            <section className="text-center w-fit select-none">
+                <div className="w-fit mx-auto">
                     <div className="w-fit mx-auto"><Logo width={288} height={56} /></div>
                     <strong className="block font-medium text-slate-400 mt-4">The no-frills file sharing service</strong>
                 </div>
 
-                <div className="mt-16">
+                <div className="w-fit mx-auto text-center mt-16">
                     {loading ? <>
                         <strong>{progress}&#37;</strong>
-                        <progress className="appearance-none w-full h-3 border-none rounded duration-150" max={100} value={progress}></progress>
+                        <progress className="appearance-none w-500 h-3 border-none rounded duration-150" max={100} value={progress}></progress>
                     </> : <h1 className="text-3xl font-medium">{
                         error.length ? error : 
                         id ? `${document.location.href}uploads/${id}` :
                         "Drop files onto this page to upload"
                     }</h1>}
 
-                    {!loading && <div className="mt-5">
+                    {!loading && <div className="w-fit mx-auto mt-5">
                         <Button classes="inline-block align-middle" onClick={() => uploader?.current?.click()}>Browse Files</Button>
                         <Button classes="inline-block align-middle ml-2" transparent={true}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
                     </div>}
 
-                    {!loading && <div className="my-6 text-blue-500 text-center">
+                    {!loading && <div className="w-fit mx-auto my-6 text-blue-500 text-center">
                         <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
                         <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
                     </div>}
                 </div>
 
-                <div className="flex gap-2.5 w-full p-2.5 rounded-lg bg-slate-100 text-slate-400">
+                <div className="w-500 mx-auto flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400">
                     <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded shrink-0 aspect-square pointer-events-none" />
 
                     <div className="text-left">
