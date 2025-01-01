@@ -87,13 +87,13 @@ export default function Home() {
                         <Button classes="inline-block align-middle ml-2" transparent={true}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
                     </div>}
 
-                    {!loading && <div className="w-fit mx-auto mt-5 mb-6 text-blue-500 text-center">
+                    {!loading && <div className="w-fit mx-auto mt-5 text-blue-500 text-center">
                         <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
                         <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
                     </div>}
                 </div>
 
-                <div className="w-500 mx-auto flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400">
+                <div className="w-500 mx-auto mt-16 flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400">
                     <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded shrink-0 aspect-square pointer-events-none" />
 
                     <div className="text-left">
