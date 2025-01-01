@@ -5,7 +5,7 @@ import { faGithub, faLinkedin, faXTwitter } from "@fortawesome/free-brands-svg-i
 export default function Footer() {
     return (
         <footer className="p-4 flex justify-between items-center select-none text-slate-400/60">
-            <div className="text-sm font-medium">2021 &ndash; {new Date().getFullYear()} &middot; Share &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener">Harvey Coombs</Link></div>
+            <div className="text-sm font-medium">2021 &ndash; {new Date().getFullYear()} &middot; Share {process.env.APP_VERSION} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener">Harvey Coombs</Link></div>
             <div>
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                 <FooterIcon icon={faXTwitter} title="X / Twitter" url="https://x.com/harveycoombs23" />
