@@ -85,8 +85,8 @@ export default function Home() {
 
                 <div className="w-fit mx-auto text-center mt-16">
                     {loading ? <>
-                        <strong>{progress}&#37;</strong>
-                        <progress className="appearance-none w-500 h-3 border-none rounded duration-150" max={100} value={progress}></progress>
+                        <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
+                        <progress className="appearance-none w-500 h-3 border-none rounded-full duration-150" max={100} value={Math.round(progress)}></progress>
                     </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : ""}`} onClick={copyUploadURL}>{
                         error.length ? error : 
                         id ? `${document.location.href}uploads/${id}` :

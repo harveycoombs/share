@@ -2,6 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-    box-sizing: border-box;
+@layer utilities {
+    * {
+        box-sizing: border-box;
+    }
+
+    progress {
+        width: 100%;
+        height: 0.75rem;
+        border: none;
+        border-radius: 100px;
+        background-color: #F3F4F6;
+        color: #6366F1;
+    }
+
+    progress::-webkit-progress-bar {
+        background-color: #F3F4F6;
+        border-radius: 100px;
+    }
+
+    progress::-webkit-progress-value {
+        background-color: #6366F1;
+        border-radius: 100px;
+        transition: width 0.3s ease-in-out;
+    }
+
+    progress::-moz-progress-bar {
+        background-color: #6366F1;
+        border-radius: 100px;
+        transition: width 0.3s ease-in-out;
+    }
+
+    progress:hover::-webkit-progress-value {
+        opacity: 0.9;
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
+
+    progress:hover::-moz-progress-bar {
+        opacity: 0.9;
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+    }
 }
