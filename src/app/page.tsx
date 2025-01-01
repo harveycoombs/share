@@ -64,6 +64,17 @@ export default function Home() {
         setLoading(false);
     }
 
+    async function copyUploadURL(e: any) {
+        if (!id) return;
+
+        let url = e.target.innerText;
+
+        await navigator.clipboard.writeText(url.toLowerCase());
+        e.target.innerText = "Copied to Clipboard";
+
+        setTimeout(() => e.target.innerText = url, 1200);
+    }
+
     return (
         <main className="min-h-[calc(100vh-116px)] grid place-items-center">
             <section className="text-center w-fit select-none">
@@ -76,18 +87,18 @@ export default function Home() {
                     {loading ? <>
                         <strong>{progress}&#37;</strong>
                         <progress className="appearance-none w-500 h-3 border-none rounded duration-150" max={100} value={progress}></progress>
-                    </> : <h1 className="text-3xl font-medium">{
+                    </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : ""}`} onClick={copyUploadURL}>{
                         error.length ? error : 
                         id ? `${document.location.href}uploads/${id}` :
                         "Drop files onto this page to upload"
                     }</h1>}
 
                     {!loading && <div className="w-fit mx-auto mt-5">
-                        <Button classes="inline-block align-middle" onClick={() => uploader?.current?.click()}>Browse Files</Button>
+                        <Button classes="inline-block align-middle" onClick={() => id || error.length ? resetUploader() : uploader?.current?.click()}>{id || error.length ? "Upload More" : "Browse Files"}</Button>
                         <Button classes="inline-block align-middle ml-2" transparent={true}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
                     </div>}
 
-                    {!loading && <div className="w-fit mx-auto mt-5 text-blue-500 text-center">
+                    {!loading && !id && <div className="w-fit mx-auto mt-5 text-blue-500 text-center">
                         <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
                         <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
                     </div>}
