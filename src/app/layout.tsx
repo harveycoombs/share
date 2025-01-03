@@ -44,6 +44,12 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
+            <head>
+                <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
+                <link rel="canonical" href="https://share.surf" />
+                <script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.GOOGLE_ADSENSE_ID}`} crossOrigin="anonymous"></script>
+            </head>
+
             <body className={`${inter.className} h-screen bg-white text-slate-800`}>
                 <Header />
                 {children}
