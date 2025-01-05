@@ -39,11 +39,11 @@ export default function LoginForm({ onClose }: Properties) {
                 window.location.href = "/";
                 break;
             case 400:
-                setFeedback(<div className="text-sm text-amber-500 text-center mt-2.5">Invalid credentials</div>);
+                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Invalid credentials</div>);
                 setWarningExistence(true);
                 break;
             default:
-                setFeedback(<div className="text-sm text-red-500 text-center mt-2.5">Something went wrong</div>);
+                setFeedback(<div className="text-sm font-medium text-red-500 text-center mt-5">Something went wrong</div>);
                 setErrorExistence(true);
                 break;
         }
@@ -51,7 +51,7 @@ export default function LoginForm({ onClose }: Properties) {
 
     return (
         <Popup title="Sign In" onClose={onClose}>
-            <form className="w-72" onSubmit={login}>
+            <form className="w-72" onSubmit={login} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
                 <strong className="block font-semibold text-lg text-center mt-2 select-none">Welcome Back</strong>
                 <div className="text-sm font-medium text-center text-slate-400 select-none">Sign in using the form below</div>
                 {feedback}
