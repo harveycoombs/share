@@ -66,7 +66,7 @@ export default function RegistrationForm({ onClose }: Properties) {
                 <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Password</Label>
                 <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
                 <Button classes="block w-full mt-2.5" loading={loading}>Continue</Button>
-                <Button transparent={true} classes="block w-full mt-2.5">I Already Have An Account</Button>
+                <Button transparent={true} classes="block w-full mt-2.5" onClick={onClose}>I Already Have An Account</Button>
                 <div className="text-sm text-slate-400/60 text-center select-none mt-2.5">
                     <Link href="https://github.com/harveycoombs/share/issues/new" className="hover:underline">Report Issue</Link>
                 </div>

@@ -14,6 +14,7 @@ interface Properties {
 export default function LoginForm({ onClose }: Properties) {
     let [email, setEmailAddress] = useState<string>("");
     let [password, setPassword] = useState<string>("");
+    let [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
 
     let [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
     let [loading, setLoading] = useState<boolean>(false);
@@ -62,6 +63,8 @@ export default function LoginForm({ onClose }: Properties) {
             <Field type="email" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setEmailAddress(e.target.value)} />
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Password</Label>
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
+            <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Confirm Password</Label>
+            <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPasswordConfirmation(e.target.value)} />
             <Button classes="block w-full mt-2.5" loading={loading}>Continue</Button>
             <Button transparent={true} classes="block w-full mt-2.5" onClick={() => setRegistrationFormVisibility(true)}>Register</Button>
             <div className="text-sm text-slate-400/60 text-center select-none mt-2.5">
