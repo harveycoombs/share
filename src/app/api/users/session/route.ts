@@ -1,7 +1,19 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 
 import { getUserByEmailAddress, verifyCredentials } from "@/data/users";
-import { createJWT } from "@/data/jwt";
+import { authenticate, createJWT } from "@/data/jwt";
+
+export async function GET(_: Request): Promise<NextResponse> {
+    let cookieJar = await cookies();
+    let token = cookieJar.get("token")?.value;
+    let user = await authenticate(token ?? "");
+
+    if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+
+    return NextResponse.json({ user });
+}
+
 
 export async function POST(request: Request): Promise<NextResponse> {
     let data = await request.formData();
