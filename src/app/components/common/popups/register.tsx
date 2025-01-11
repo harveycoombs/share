@@ -30,7 +30,7 @@ export default function RegistrationForm({ onClose }: Properties) {
         setErrorExistence(false);
         setWarningExistence(false);
 
-        let response = await fetch("/api/users", {
+        let response = await fetch("/api/user", {
             method: "POST",
             body: new URLSearchParams({ firstName, lastName, emailAddress, password })
         });

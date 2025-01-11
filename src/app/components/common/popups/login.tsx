@@ -30,7 +30,7 @@ export default function LoginForm({ onClose }: Properties) {
         setErrorExistence(false);
         setWarningExistence(false);
 
-        let response = await fetch("/api/users/session", {
+        let response = await fetch("/api/user/session", {
             method: "POST",
             body: new URLSearchParams({ email, password })
         });

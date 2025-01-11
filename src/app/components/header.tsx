@@ -34,7 +34,7 @@ export default function Header() {
                 <Link href="/"><Image src="/images/icon.png" alt="Share" width={28} height={28} /></Link>
                 <nav>
                     <HeaderLink title="About" url="/about" />
-                    {user ? <HeaderIcon icon={faUser} title={`Signed in as ${user.firstname} ${user.lastname}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
+                    {user ? <HeaderIcon icon={faUser} title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
                 </nav>
             </header>
             {accountSettingsAreVisible && <AccountSettings user={user} onClose={() => setAccountSettingsVisibility(false)} />}

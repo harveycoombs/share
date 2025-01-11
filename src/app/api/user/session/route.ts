@@ -6,8 +6,8 @@ import { authenticate, createJWT } from "@/data/jwt";
 
 export async function GET(_: Request): Promise<NextResponse> {
     let cookieJar = await cookies();
-    let token = cookieJar.get("token")?.value;
-    let user = await authenticate(token ?? "");
+    let token = cookieJar.get("token")?.value ?? "";
+    let user = await authenticate(token);
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
@@ -28,6 +28,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
 
     let user = await getUserByEmailAddress(email);
+
     if (!user) return NextResponse.json({ success: false }, { status: 500 });
 
     let credentials = createJWT(user);
