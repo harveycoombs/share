@@ -50,3 +50,18 @@ export async function createUser(firstName: string, lastName: string, emailAddre
 
 	return result?.insertId ?? 0;
 }
+
+export async function getUploadHistory(userid: number): Promise<any[]> {
+    let [result]: any = await pool.query("SELECT * FROM uploads WHERE user_id = ?", [userid]);
+    return result;
+}
+
+export async function insertUploadHistory(userid: number, id: number, files: number, size: number): Promise<boolean> {
+    let [result]: any = await pool.query("INSERT INTO uploads (user_id, upload_id, files, size) VALUES (?, ?, ?, ?)", [userid, id, files, size]);
+    return result.affectedRows > 0;
+}
+
+export async function deleteUploadHistory(userid: number, id: number): Promise<boolean> {
+    let [result]: any = await pool.query("DELETE FROM uploads WHERE user_id = ? AND upload_id = ?", [userid, id]);
+    return result.affectedRows > 0;
+}

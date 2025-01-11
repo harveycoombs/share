@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
+import { authenticate } from "@/data/jwt";
 
 export async function GET(): Promise<NextResponse> {
+    let cookieJar = await cookies();
+    let token = cookieJar.get("token")?.value;
+    let user = await authenticate(token ?? "");
+
+    if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+    
     let historyCookie = (await cookies()).get("history")?.value ?? "[]";
     let ids: number[] = JSON.parse(historyCookie);
    
