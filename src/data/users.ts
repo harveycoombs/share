@@ -14,7 +14,7 @@ export async function getUserByEmailAddress(emailAddress: string): Promise<any> 
 
 
 export async function getUserDetails(userid: number): Promise<any> {
-    let [result]: any = await pool.query("SELECT user_id, first_name, last_name, email_address FROM users WHERE user_id = ?", [userid]);
+    let [result]: any = await pool.query("SELECT user_id, first_name, last_name, email_address, creation_date FROM users WHERE user_id = ?", [userid]);
     return result[0];
 }
 

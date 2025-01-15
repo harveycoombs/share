@@ -37,7 +37,7 @@ export default function Header() {
                     {user ? <HeaderIcon icon={faUser} title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
                 </nav>
             </header>
-            {accountSettingsAreVisible && <AccountSettings user={user} onClose={() => setAccountSettingsVisibility(false)} />}
+            {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
             {loginFormIsVisible && <LoginForm onClose={() => setLoginFormVisibility(false)} />}
         </>
     );

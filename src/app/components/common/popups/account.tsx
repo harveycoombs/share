@@ -1,21 +1,39 @@
+"use client";
+import { useState, useEffect } from "react";
+
 import Popup from "@/app/components/common/popup";
 
 interface Properties {
-    userid: number;
     onClose: () => void;
 }
 
-export default function AccountSettings({ userid, onClose }: Properties) {
+export default function AccountSettings({ onClose }: Properties) {
+    let [user, setUser] = useState<any>(null);
+
+    useEffect(() => {
+        (async () => {
+            let response = await fetch("/api/user");
+            let json = await response.json();
+
+            setUser(json.user);
+        })();
+    }, []);
+
     return (
         <Popup title="Account Settings" onClose={onClose}>
             <div className="flex gap-3 w-500">
-                <div className="w-28"></div>
+                <div className="w-28">
+                    <SidebarItem title="General" />
+                    <SidebarItem title="Account" />
+                    <SidebarItem title="Advanced" />
+                    <div className="p-1.5 mb-1 rounded text-[0.8rem] leading-none text-red-500 font-medium duration-150 cursor-pointer select-none hover:bg-red-50 active:bg-red-100">Log Out</div>
+                </div>
                 <div>b</div>
             </div>
         </Popup>
     );
 }
 
-function SidebarItem({ title, ...rest }: any) {
-    return <div className="px-2 py-1 rounded text-sm leading-none font-medium" {...rest}>{title}</div>;
+function SidebarItem({ title, classes, ...rest }: any) {
+    return <div className="p-1.5 mb-1 rounded text-[0.8rem] leading-none text-slate-400 font-medium duration-150 cursor-pointer select-none hover:bg-slate-50 active:bg-slate-100" {...rest}>{title}</div>;
 }

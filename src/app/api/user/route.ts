@@ -14,7 +14,7 @@ export async function GET(_: Request): Promise<NextResponse> {
     return NextResponse.json({ details });
 }
 
-export async function POST(request: Request): Promise<NextResponse> {
+/*export async function POST(request: Request): Promise<NextResponse> {
     let data = await request.formData();
 }
 
@@ -23,4 +23,4 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 }
 
 export async function DELETE(request: Request): Promise<NextResponse> {
-}
+}*/
