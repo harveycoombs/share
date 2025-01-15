@@ -118,10 +118,10 @@ export default function Home() {
                     {loading ? <>
                         <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
                         <progress className="appearance-none w-500 h-3 border-none rounded-full duration-150" max={100} value={Math.round(progress)}></progress>
-                    </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : ""}`} onClick={copyUploadURL}>{
+                    </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : dragging ? " text-slate-500" : ""}`} onClick={copyUploadURL}>{
                         error.length ? error : 
                         id ? `${document.location.href}uploads/${id}` :
-                        "Drop files onto this page to upload"
+                        `${dragging ? "Drop" : "Drag"} files ${dragging ? "onto" : "over"} this page to upload`
                     }</h1>}
 
                     {!loading && <div className="w-fit mx-auto mt-5">
