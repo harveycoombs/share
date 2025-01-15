@@ -79,28 +79,28 @@ export default function Home() {
     function handleDragOverEvent(e: any) {
         e.preventDefault();
 
-        if (!dragging && !uploader?.current?.files?.length) handleDragEnterEvent();
+        if (!dragging && !file) handleDragEnterEvent();
     }
     
     function handleDragEnterEvent() {
-        if (uploader?.current?.files?.length) return;
+        if (file) return;
 
         setDragging(true);
     }
     
     function handleDragLeaveEvent() {
-        if (uploader?.current?.files?.length) return;
+        if (file) return;
         setDragging(false);
     }
 
     function handleDropEvent(e: any) {
         e.preventDefault();
 
-        if (uploader?.current?.files?.length) return;
+        if (file) return;
 
         if (uploader?.current) {
             uploader.current.files = e.dataTransfer.files;
-            uploader.current.dispatchEvent(new Event("change", { bubbles: true }));
+            uploader.current.dispatchEvent(new Event("input", { bubbles: true }));
 
             handleDragLeaveEvent();
         }

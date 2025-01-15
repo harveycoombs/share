@@ -56,8 +56,8 @@ export async function getUploadHistory(userid: number): Promise<any[]> {
     return result;
 }
 
-export async function insertUploadHistory(userid: number, id: number, files: number, size: number): Promise<boolean> {
-    let [result]: any = await pool.query("INSERT INTO uploads (user_id, upload_id, files, size) VALUES (?, ?, ?, ?)", [userid, id, files, size]);
+export async function insertUploadHistory(userid: number, name: string, files: number, size: number): Promise<boolean> {
+    let [result]: any = await pool.query("INSERT INTO uploads (user_id, name, files, size) VALUES (?, ?, ?, ?)", [userid, name, files, size]);
     return result.affectedRows > 0;
 }
 

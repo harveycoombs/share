@@ -42,7 +42,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     let user = await authenticate(token ?? "");
 
     if (user) {
-        await insertUploadHistory(user.user_id, now, files.length, files.map(file => file.size).reduce((a, b) => a + b, 0));
+        await insertUploadHistory(user.user_id, now.toString(), files.length, files.map(file => file.size).reduce((a, b) => a + b, 0));
     }
 
     return NextResponse.json({ id: now }, { status: 200 });

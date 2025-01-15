@@ -31,7 +31,7 @@ export default function Header() {
     return (
         <>
             <header className="p-4 flex justify-between select-none">
-                <Link href="/"><Image src="/images/icon.png" alt="Share" width={28} height={28} /></Link>
+                <div className="cursor-pointer duration-150 hover:opacity-80 active:opacity-60" onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
                 <nav>
                     <HeaderLink title="About" url="/about" />
                     {user ? <HeaderIcon icon={faUser} title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
