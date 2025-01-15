@@ -21,6 +21,7 @@ export default function AccountSettings({ onClose }: Properties) {
 
     function logout() {
         fetch("/api/user/session", { method: "DELETE" });
+
         onClose();
         window.location.reload();
     }

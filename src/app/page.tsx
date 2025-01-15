@@ -12,6 +12,7 @@ export default function Home() {
     let [file, setFile] = useState<File|null>(null);
     let [id, setID] = useState<number>(0);
     let [loading, setLoading] = useState<boolean>(false);
+    let [dragging, setDragging] = useState<boolean>(false);
     let [error, setError] = useState<string>("");
     let [progress, setProgress] = useState<number>(0);
 
@@ -75,8 +76,38 @@ export default function Home() {
         setTimeout(() => e.target.innerText = url, 1200);
     }
 
+    function handleDragOverEvent(e: any) {
+        e.preventDefault();
+
+        if (!dragging && !uploader?.current?.files?.length) handleDragEnterEvent();
+    }
+    
+    function handleDragEnterEvent() {
+        if (uploader?.current?.files?.length) return;
+
+        setDragging(true);
+    }
+    
+    function handleDragLeaveEvent() {
+        if (uploader?.current?.files?.length) return;
+        setDragging(false);
+    }
+
+    function handleDropEvent(e: any) {
+        e.preventDefault();
+
+        if (uploader?.current?.files?.length) return;
+
+        if (uploader?.current) {
+            uploader.current.files = e.dataTransfer.files;
+            uploader.current.dispatchEvent(new Event("change", { bubbles: true }));
+
+            handleDragLeaveEvent();
+        }
+    }
+
     return (
-        <main className="min-h-[calc(100vh-116px)] grid place-items-center">
+        <main className="min-h-[calc(100vh-116px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
             <section className="text-center w-fit select-none">
                 <div className="w-fit mx-auto">
                     <div className="w-fit mx-auto"><Logo width={288} height={56} /></div>
