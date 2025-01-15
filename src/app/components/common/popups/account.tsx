@@ -19,6 +19,12 @@ export default function AccountSettings({ onClose }: Properties) {
         })();
     }, []);
 
+    function logout() {
+        fetch("/api/user/session", { method: "DELETE" });
+        onClose();
+        window.location.reload();
+    }
+
     return (
         <Popup title="Account Settings" onClose={onClose}>
             <div className="flex gap-3 w-500">
@@ -26,7 +32,7 @@ export default function AccountSettings({ onClose }: Properties) {
                     <SidebarItem title="General" />
                     <SidebarItem title="Account" />
                     <SidebarItem title="Advanced" />
-                    <div className="p-1.5 mb-1 rounded text-[0.8rem] leading-none text-red-500 font-medium duration-150 cursor-pointer select-none hover:bg-red-50 active:bg-red-100">Log Out</div>
+                    <div className="p-1.5 mb-1 rounded text-[0.8rem] leading-none text-red-500 font-medium duration-150 cursor-pointer select-none hover:bg-red-50 active:bg-red-100" onClick={logout}>Log Out</div>
                 </div>
                 <div>b</div>
             </div>
