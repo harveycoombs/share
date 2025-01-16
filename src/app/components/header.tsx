@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import AccountSettings from "@/app/components/common/popups/account";
 import LoginForm from "@/app/components/common/popups/login";
-import { faRightToBracket, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
     let [user, setUser] = useState<any>(null);
@@ -34,7 +34,7 @@ export default function Header() {
                 <div className="cursor-pointer duration-150 hover:opacity-80 active:opacity-60" onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
                 <nav>
                     <HeaderLink title="About" url="/about" />
-                    {user ? <HeaderIcon icon={faUser} title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
+                    {user ? <HeaderIcon icon={faGear} title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
                 </nav>
             </header>
             {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
