@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 import { authenticate } from "@/data/jwt";
+import { getUploadHistory } from "@/data/users";
 
 export async function GET(): Promise<NextResponse> {
     let cookieJar = await cookies();
@@ -10,29 +11,12 @@ export async function GET(): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
     
-    let historyCookie = (await cookies()).get("history")?.value ?? "[]";
-    let ids: number[] = JSON.parse(historyCookie);
-   
-    let history = await Promise.all(ids.map(async (id) => {
-        try {
-            let files = await fs.readdir(`./uploads/${id}`);
-
-            let size = (await Promise.all(files.map(async (file) => {            
-                let stats = await fs.stat(`./uploads/${id}/${file}`);
-                return stats.size;
-            }))).reduce((a, b) => a + b, 0);
-
-            return {
-                id: id,
-                files: files.length,
-                size: size
-            };
-        } catch {
-            return null;
-        }
+    let history = await Promise.all((await getUploadHistory(user.user_id)).map(async (upload) => {
+        upload.available = await fs.access(`./uploads/${upload.upload_id}`).then(() => true).catch(() => false);
+        return upload;
     }));
 
-    return NextResponse.json(history.filter(upload => upload).reverse(), { status: 200 });
+    return NextResponse.json({ history }, { status: 200 });
 }
 
 export async function DELETE(request: Request): Promise<NextResponse> {
@@ -52,9 +36,7 @@ export async function DELETE(request: Request): Promise<NextResponse> {
         response.cookies.set("history", JSON.stringify(ids), {
             httpOnly: true,
             maxAge: 3155760000
-        });
-
-        
+        });        
     } catch (ex: any) {
         console.error(ex);
         response = NextResponse.json({ success: false }, { status: 500 });

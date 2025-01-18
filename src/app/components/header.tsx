@@ -33,7 +33,7 @@ export default function Header() {
             <header className="p-4 flex justify-between select-none">
                 <div className="cursor-pointer duration-150 hover:opacity-80 active:opacity-60" onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
                 <nav>
-                    <HeaderLink title="About" url="/about" />
+                    <HeaderLink title="Report Issue" url="https://github.com/harveycoombs/share/issues/new" target="_blank" rel="noopener" />
                     {user ? <HeaderIcon icon={faGear} title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
                 </nav>
             </header>
@@ -43,8 +43,8 @@ export default function Header() {
     );
 }
 
-function HeaderLink({ title, url }: any) {
-    return <Link href={url} className="inline-block align-middle text-sm font-medium leading-none mr-8 cursor-pointer duration-150 hover:text-slate-500 active:text-slate-400" draggable={false}>{title}</Link>;
+function HeaderLink({ title, url, ...rest }: any) {
+    return <Link href={url} className="inline-block align-middle text-sm font-medium leading-none mr-8 cursor-pointer duration-150 hover:text-slate-500 active:text-slate-400" draggable={false} {...rest}>{title}</Link>;
 }
 
 function HeaderIcon({ icon, title, ...rest }: any) {

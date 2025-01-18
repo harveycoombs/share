@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 
 import Popup from "@/app/components/common/popup";
+import Field from "@/app/components/common/field";
 
 interface Properties {
     onClose: () => void;
@@ -27,7 +28,9 @@ export default function AccountSettings({ onClose }: Properties) {
         switch (currentSection) {
             case "general":
                 setSectionTitle("General Settings");
-                setSectionContent(<div>Lorem ipsum</div>);
+                setSectionContent(<>
+                    <Field />
+                </>);
                 break;
             case "account":
                 setSectionTitle("Account Details");

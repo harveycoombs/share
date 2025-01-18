@@ -52,7 +52,7 @@ export async function createUser(firstName: string, lastName: string, emailAddre
 }
 
 export async function getUploadHistory(userid: number): Promise<any[]> {
-    let [result]: any = await pool.query("SELECT * FROM uploads WHERE user_id = ?", [userid]);
+    let [result]: any = await pool.query("SELECT *, 0 AS available FROM uploads WHERE user_id = ?", [userid]);
     return result;
 }
 
