@@ -9,20 +9,20 @@ interface Properties {
 }
 
 export default function AccountSettings({ onClose }: Properties) {
-    let [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
         (async () => {
-            let response = await fetch("/api/user");
-            let json = await response.json();
+            const response = await fetch("/api/user");
+            const json = await response.json();
 
             setUser(json.user);
         })();
     }, []);
 
-    let [currentSection, setCurrentSection] = useState<string>("general");
-    let [sectionTitle, setSectionTitle] = useState<string>();
-    let [sectionContent, setSectionContent] = useState<React.JSX.Element>();
+    const [currentSection, setCurrentSection] = useState<string>("general");
+    const [sectionTitle, setSectionTitle] = useState<string>();
+    const [sectionContent, setSectionContent] = useState<React.JSX.Element>();
 
     useEffect(() => {
         switch (currentSection) {

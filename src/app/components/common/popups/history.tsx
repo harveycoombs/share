@@ -13,15 +13,15 @@ interface Properties {
 }
 
 export default function UploadHistory({ onClose }: Properties) {
-    let [uploads, setUploads] = useState<any[]>([]);
-    let [loading, setLoading] = useState(true);
+    const [uploads, setUploads] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setLoading(true);
 
         (async () => {
-            let response = await fetch("/api/history");
-            let json = await response.json();
+            const response = await fetch("/api/history");
+            const json = await response.json();
 
             setUploads(json.history ?? []);
             setLoading(false);
@@ -63,6 +63,6 @@ export function Upload({ data }: any) {
 }
 
 function UploadOption({ icon, url, ...rest }: any) {
-    let classList = "inline-block align-middle leading-none ml-1 text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-200/60 active:bg-slate-200";
+    const classList = "inline-block align-middle leading-none ml-1 text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-200/60 active:bg-slate-200";
     return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={icon} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }

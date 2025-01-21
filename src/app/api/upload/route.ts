@@ -6,10 +6,10 @@ import { authenticate } from "@/data/jwt";
 import { insertUploadHistory } from "@/data/users";
 
 export async function POST(request: Request): Promise<NextResponse> {
-    let now = new Date().getTime();
+    const now = new Date().getTime();
 
-    let data = await request.formData();
-    let files: any[] = data.getAll("files");
+    const data = await request.formData();
+    const files: any[] = data.getAll("files");
 
     if (!files) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
 
@@ -19,13 +19,13 @@ export async function POST(request: Request): Promise<NextResponse> {
         return NextResponse.json({ error: ex.message }, { status: 500 });
     }
     
-    let errors: any[] = [];
+    const errors: any[] = [];
     
-    for (let file of files) {
+    for (const file of files) {
         if (!(file instanceof File)) continue;
         
         try {
-            let buffer = Buffer.from(await file.arrayBuffer());
+            const buffer = Buffer.from(await file.arrayBuffer());
             await fs.writeFile(`./uploads/${now}/${file.name}`, new Uint8Array(buffer));
         } catch (ex: any) {
             errors.push({
@@ -37,9 +37,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (errors.length) return NextResponse.json({ errors: errors }, { status: 500 });
 
-    let cookieJar = await cookies();
-    let token = cookieJar.get("token")?.value;
-    let user = await authenticate(token ?? "");
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
 
     if (user) {
         await insertUploadHistory(user.user_id, now.toString(), files.length, files.map(file => file.size).reduce((a, b) => a + b, 0));

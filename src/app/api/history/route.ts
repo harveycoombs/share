@@ -5,13 +5,13 @@ import { authenticate } from "@/data/jwt";
 import { getUploadHistory } from "@/data/users";
 
 export async function GET(): Promise<NextResponse> {
-    let cookieJar = await cookies();
-    let token = cookieJar.get("token")?.value;
-    let user = await authenticate(token ?? "");
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
     
-    let history = await Promise.all((await getUploadHistory(user.user_id)).map(async (upload) => {
+    const history = await Promise.all((await getUploadHistory(user.user_id)).map(async (upload) => {
         upload.available = await fs.access(`./uploads/${upload.upload_id}`).then(() => true).catch(() => false);
         return upload;
     }));
@@ -20,16 +20,16 @@ export async function GET(): Promise<NextResponse> {
 }
 
 export async function DELETE(request: Request): Promise<NextResponse> {
-    let data = await request.formData();
-    let id = parseInt(data.get("id")?.toString() ?? "0");
+    const data = await request.formData();
+    const id = parseInt(data.get("id")?.toString() ?? "0");
 
     let response = NextResponse.json({ success: true }, { status: 200 });
 
     try {
         await fs.unlink(`./uploads/${id}`);
 
-        let historyCookie = (await cookies()).get("history")?.value ?? "[]";
-        let ids: number[] = JSON.parse(historyCookie);
+        const historyCookie = (await cookies()).get("history")?.value ?? "[]";
+        const ids: number[] = JSON.parse(historyCookie);
 
         ids.splice(ids.indexOf(id), 1);
 

@@ -12,15 +12,15 @@ interface Properties {
 }
 
 export default function LoginForm({ onClose }: Properties) {
-    let [email, setEmailAddress] = useState<string>("");
-    let [password, setPassword] = useState<string>("");
+    const [email, setEmailAddress] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
 
-    let [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
-    let [loading, setLoading] = useState<boolean>(false);
-    let [errorExists, setErrorExistence] = useState<boolean>(false);
-    let [warningExists, setWarningExistence] = useState<boolean>(false);
+    const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorExists, setErrorExistence] = useState<boolean>(false);
+    const [warningExists, setWarningExistence] = useState<boolean>(false);
 
-    let [registrationFormIsVisible, setRegistrationFormVisibility] = useState<boolean>(false);
+    const [registrationFormIsVisible, setRegistrationFormVisibility] = useState<boolean>(false);
 
     async function login(e: any) {
         e.preventDefault();
@@ -30,7 +30,7 @@ export default function LoginForm({ onClose }: Properties) {
         setErrorExistence(false);
         setWarningExistence(false);
 
-        let response = await fetch("/api/user/session", {
+        const response = await fetch("/api/user/session", {
             method: "POST",
             body: new URLSearchParams({ email, password })
         });

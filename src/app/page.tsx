@@ -11,25 +11,25 @@ import UploadHistory from "@/app/components/common/popups/history";
 
 
 export default function Home() {
-    let [file, setFile] = useState<File|null>(null);
-    let [id, setID] = useState<number>(0);
-    let [loading, setLoading] = useState<boolean>(false);
-    let [dragging, setDragging] = useState<boolean>(false);
-    let [error, setError] = useState<string>("");
-    let [progress, setProgress] = useState<number>(0);
-    let [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
+    const [file, setFile] = useState<File|null>(null);
+    const [id, setID] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [dragging, setDragging] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    const [progress, setProgress] = useState<number>(0);
+    const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
 
-    let uploader = useRef<HTMLInputElement>(null);
+    const uploader = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (!file) return;
 
         setLoading(true);
 
-        let data = new FormData();
+        const data = new FormData();
         data.append("files", file);
 
-        let request = new XMLHttpRequest();
+        const request = new XMLHttpRequest();
 
         request.open("POST", "/api/upload", true);
         request.responseType = "json";
@@ -71,7 +71,7 @@ export default function Home() {
     async function copyUploadURL(e: any) {
         if (!id) return;
 
-        let url = e.target.innerText;
+        const url = e.target.innerText;
 
         await navigator.clipboard.writeText(url.toLowerCase());
         e.target.innerText = "Copied to Clipboard";

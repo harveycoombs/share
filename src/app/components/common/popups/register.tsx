@@ -11,16 +11,16 @@ interface Properties {
 }
 
 export default function RegistrationForm({ onClose }: Properties) {
-    let [firstName, setFirstName] = useState<string>("");
-    let [lastName, setLastName] = useState<string>("");
-    let [emailAddress, setEmailAddress] = useState<string>("");
-    let [password, setPassword] = useState<string>("");
-    let [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
+    const [firstName, setFirstName] = useState<string>("");
+    const [lastName, setLastName] = useState<string>("");
+    const [emailAddress, setEmailAddress] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
 
-    let [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
-    let [loading, setLoading] = useState<boolean>(false);
-    let [errorExists, setErrorExistence] = useState<boolean>(false);
-    let [warningExists, setWarningExistence] = useState<boolean>(false);
+    const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorExists, setErrorExistence] = useState<boolean>(false);
+    const [warningExists, setWarningExistence] = useState<boolean>(false);
 
     async function register(e: any) {
         e.preventDefault();
@@ -30,7 +30,7 @@ export default function RegistrationForm({ onClose }: Properties) {
         setErrorExistence(false);
         setWarningExistence(false);
 
-        let response = await fetch("/api/user", {
+        const response = await fetch("/api/user", {
             method: "POST",
             body: new URLSearchParams({ firstName, lastName, emailAddress, password })
         });

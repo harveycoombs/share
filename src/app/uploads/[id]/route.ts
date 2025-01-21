@@ -4,7 +4,7 @@ import mime from "mime";
 import AdmZip from "adm-zip";
 
 export async function GET(request: any, { params }: any) {
-    let { id } = params;
+    const { id } = params;
 
     let files: string[] = [];
 
@@ -20,8 +20,8 @@ export async function GET(request: any, { params }: any) {
         case 0:
             return NextResponse.json({ error: "The specified upload does not exist." }, { status: 404 });
         case 1:
-            let content = await fs.readFile(`./uploads/${id}/${files[0]}`);
-            let stats = await fs.stat(`./uploads/${id}/${files[0]}`);
+            const content = await fs.readFile(`./uploads/${id}/${files[0]}`);
+            const stats = await fs.stat(`./uploads/${id}/${files[0]}`);
 
             return new NextResponse(content, {
                 headers: {
@@ -30,14 +30,14 @@ export async function GET(request: any, { params }: any) {
                 }
             });
         default:
-            let zip = new AdmZip();
+            const zip = new AdmZip();
 
             try {
-                for (let file of files) {
+                for (const file of files) {
                     zip.addLocalFile(`./uploads/${id}/${file}`);
                 }
                 
-                let buffer = await zip.toBufferPromise();
+                const buffer = await zip.toBufferPromise();
 
                 return new NextResponse(buffer, {
                     headers: {

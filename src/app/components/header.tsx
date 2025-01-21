@@ -9,24 +9,24 @@ import LoginForm from "@/app/components/common/popups/login";
 import { faGear, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
-    let [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
         (async () => {
-            let response = await fetch("/api/user/session");
+            const response = await fetch("/api/user/session");
             
             if (!response.ok) {
                 setUser(null);
                 return;
             }
 
-            let json = await response.json();
+            const json = await response.json();
             setUser(json.user);
         })();
     }, []);
 
-    let [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
-    let [loginFormIsVisible, setLoginFormVisibility] = useState<boolean>(false);
+    const [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
+    const [loginFormIsVisible, setLoginFormVisibility] = useState<boolean>(false);
 
     return (
         <>
