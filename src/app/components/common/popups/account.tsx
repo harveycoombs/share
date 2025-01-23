@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Popup from "@/app/components/common/popup";
 import Field from "@/app/components/common/field";
 import Label from "@/app/components/common/label";
+import Button from "@/app/components/common/button";
 
 interface Properties {
     onClose: () => void;
@@ -42,6 +43,10 @@ export default function AccountSettings({ onClose }: Properties) {
             <div className="w-1/2">
                 <Label classes="block w-full">Email Address</Label>
                 <Field type="email" small={true} classes="block w-full" />
+            </div>
+            <div className="w-1/2">
+                <Label classes="block invisible">Save Changes</Label>
+                <Button small={true} classes="block w-full">Save Changes</Button>
             </div>
         </div>
     </>;
