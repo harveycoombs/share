@@ -44,7 +44,7 @@ export default function UploadHistory({ onClose }: Properties) {
     );
 }
 
-export function Upload({ data }: any) {
+function Upload({ data }: any) {
     function deleteUpload() {
         // to-do
         
