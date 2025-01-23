@@ -26,31 +26,6 @@ export default function AccountSettings({ onClose }: Properties) {
     const [sectionTitle, setSectionTitle] = useState<string>();
     const [sectionContent, setSectionContent] = useState<React.JSX.Element>();
 
-    const accountDetailsSection = <>
-        <div className="mt-2 w-full flex gap-2">
-            <div className="w-1/2">
-                <Label classes="block w-full">First Name</Label>
-                <Field small={true} classes="block w-full" />
-            </div>
-
-            <div className="w-1/2">
-                <Label classes="block w-full">Last Name</Label>
-                <Field small={true} classes="block w-full" />
-            </div>
-        </div>
-
-        <div className="mt-2 w-full flex gap-2">
-            <div className="w-1/2">
-                <Label classes="block w-full">Email Address</Label>
-                <Field type="email" small={true} classes="block w-full" />
-            </div>
-            <div className="w-1/2">
-                <Label classes="block invisible">Save Changes</Label>
-                <Button small={true} classes="block w-full">Save Changes</Button>
-            </div>
-        </div>
-    </>;
-
     useEffect(() => {
         switch (currentSection) {
             case "general":
@@ -59,7 +34,30 @@ export default function AccountSettings({ onClose }: Properties) {
                 break;
             case "account":
                 setSectionTitle("Account Details");
-                setSectionContent(accountDetailsSection);
+                setSectionContent(<>
+                    <div className="mt-2 w-full flex gap-2">
+                        <div className="w-1/2">
+                            <Label classes="block w-full">First Name</Label>
+                            <Field small={true} classes="block w-full" defaultValue={user?.first_name ?? ""} />
+                        </div>
+            
+                        <div className="w-1/2">
+                            <Label classes="block w-full">Last Name</Label>
+                            <Field small={true} classes="block w-full" defaultValue={user?.last_name ?? ""} />
+                        </div>
+                    </div>
+            
+                    <div className="mt-2 w-full flex gap-2">
+                        <div className="w-1/2">
+                            <Label classes="block w-full">Email Address</Label>
+                            <Field type="email" small={true} classes="block w-full" defaultValue={user?.email_address ?? ""} />
+                        </div>
+                        <div className="w-1/2">
+                            <Label classes="block invisible">Save Changes</Label>
+                            <Button small={true} classes="block w-full">Save Changes</Button>
+                        </div>
+                    </div>
+                </>);
                 break;
             case "advanced":
                 setSectionTitle("Advanced Settings");
