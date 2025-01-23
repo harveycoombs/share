@@ -15,9 +15,11 @@ interface Properties {
 export default function UploadHistory({ onClose }: Properties) {
     const [uploads, setUploads] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     useEffect(() => {
         setLoading(true);
+        setError("");
 
         (async () => {
             const response = await fetch("/api/history");
@@ -25,13 +27,18 @@ export default function UploadHistory({ onClose }: Properties) {
 
             setUploads(json.history ?? []);
             setLoading(false);
+
+            if (response.ok) return;
+
+            setError((response.status == 401) ? "Sign in to view your upload history" : json.error);
         })();
     }, []);
 
     return (
         <Popup title="Upload History" onClose={onClose}>{
-            loading ? <div className="w-500 min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
-            : uploads.length ? <div className="w-500 min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} />)}</div> 
+            error.length ? <div className="w-500 min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
+            : loading ? <div className="w-500 min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
+            : uploads.length ? <div className="w-500 min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} />)}</div>
             : <div className="w-500 min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
         }</Popup>
     );
