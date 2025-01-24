@@ -22,7 +22,7 @@ export default function AccountSettings({ onClose }: Properties) {
         })();
     }, []);
 
-    const [currentSection, setCurrentSection] = useState<string>("general");
+    const [currentSection, setCurrentSection] = useState<string>("account");
     const [sectionTitle, setSectionTitle] = useState<string>();
     const [sectionContent, setSectionContent] = useState<React.JSX.Element>();
 
@@ -77,9 +77,7 @@ export default function AccountSettings({ onClose }: Properties) {
         <Popup title="Settings" onClose={onClose}>
             <div className="flex gap-3 w-500">
                 <div className="w-28 shrink-0">
-                    <SidebarItem title="General" selected={currentSection == "general"} onClick={() => setCurrentSection("general")} />
                     <SidebarItem title="Account" selected={currentSection == "account"} onClick={() => setCurrentSection("account")} />
-                    <SidebarItem title="Advanced" selected={currentSection == "advanced"} onClick={() => setCurrentSection("advanced")} />
                     <div className="p-1.5 mb-1 rounded text-[0.8rem] leading-none text-red-500 font-medium duration-150 cursor-pointer select-none hover:bg-red-50 active:bg-red-100" onClick={logout}>Log Out</div>
                 </div>
                 <div className="w-full">

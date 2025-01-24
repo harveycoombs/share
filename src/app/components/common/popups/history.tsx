@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch, faDownload, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCircleNotch, faDownload, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/popup";
 import { formatBytes } from "@/data/utils";
@@ -54,7 +54,7 @@ function Upload({ data }: any) {
         <AnimatePresence>
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden ${data.available ? "pointer-events-none select-none" : ""}`}>
                 <div>
-                    <strong className="block text-sm font-bold text-slate-500">{data.name}</strong>
+                    <strong className="flex items-center gap-1 text-sm"><div className="font-bold text-slate-500">{data.name}</div><div className="ml-1 text-slate-400/75"><FontAwesomeIcon icon={faPenToSquare} /></div></strong>
                     <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
                 </div>
 
