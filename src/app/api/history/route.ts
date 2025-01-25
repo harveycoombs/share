@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 import { authenticate } from "@/data/jwt";
-import { getUploadHistory, renameUpload } from "@/data/users";
+import { getUploadHistory, renameUpload, deleteUpload } from "@/data/users";
 
 export async function GET(): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -39,26 +39,23 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
 export async function DELETE(request: Request): Promise<NextResponse> {
     const data = await request.formData();
-    const id = parseInt(data.get("id")?.toString() ?? "0");
+    const id = parseInt(data.get("uploadid")?.toString() ?? "0");
 
-    let response = NextResponse.json({ success: true }, { status: 200 });
+    if (!id) return NextResponse.json({ error: "Invalid upload ID." }, { status: 400 });
+
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
+
+    if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     try {
         await fs.unlink(`./uploads/${id}`);
+        const success = await deleteUpload(user.user_id, id);
 
-        const historyCookie = (await cookies()).get("history")?.value ?? "[]";
-        const ids: number[] = JSON.parse(historyCookie);
-
-        ids.splice(ids.indexOf(id), 1);
-
-        response.cookies.set("history", JSON.stringify(ids), {
-            httpOnly: true,
-            maxAge: 3155760000
-        });        
+        return NextResponse.json({ success }, { status: 200 });
     } catch (ex: any) {
         console.error(ex);
-        response = NextResponse.json({ success: false }, { status: 500 });
+        return NextResponse.json({ success: false }, { status: 500 });
     }
-
-    return response;
 }
