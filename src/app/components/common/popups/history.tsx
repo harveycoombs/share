@@ -45,7 +45,7 @@ export default function UploadHistory({ onClose }: Properties) {
 }
 
 function Upload({ data }: any) {
-    const [uploadTitle, setUploadTitle] = useState<string>(data.name);
+    const [uploadTitle, setUploadTitle] = useState<string>(data.title?.length ? data.title : data.name);
     const [editing, setEditing] = useState<boolean|null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");

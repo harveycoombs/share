@@ -67,6 +67,6 @@ export async function deleteUpload(userid: number, id: number): Promise<boolean>
 }
 
 export async function renameUpload(userid: number, id: number, name: string): Promise<boolean> {
-    const [result]: any = await pool.query("UPDATE uploads SET name = ? WHERE user_id = ? AND upload_id = ?", [name, userid, id]);
+    const [result]: any = await pool.query("UPDATE uploads SET title = ? WHERE user_id = ? AND upload_id = ?", [name, userid, id]);
     return result.affectedRows > 0;
 }
