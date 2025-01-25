@@ -81,13 +81,11 @@ function Upload({ data }: any) {
                         setError("Something went wrong");
                         break;
                 }
-
-                return;
             }
 
             setLoading(false);
         })();
-    });
+    }, [editing]);
 
     return (
         <AnimatePresence>

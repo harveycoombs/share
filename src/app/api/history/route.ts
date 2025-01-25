@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 import { authenticate } from "@/data/jwt";
-import { getUploadHistory } from "@/data/users";
+import { getUploadHistory, renameUpload } from "@/data/users";
 
 export async function GET(): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -17,6 +17,24 @@ export async function GET(): Promise<NextResponse> {
     }));
 
     return NextResponse.json({ history }, { status: 200 });
+}
+
+export async function PATCH(request: Request): Promise<NextResponse> {
+    const data = await request.formData();
+    const id = parseInt(data.get("uploadid")?.toString() ?? "0");
+    const name = data.get("name")?.toString() ?? "";
+
+    if (!id) return NextResponse.json({ error: "Invalid upload ID." }, { status: 400 });
+    if (!name) return NextResponse.json({ error: "Invalid upload name." }, { status: 400 });
+
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
+
+    if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+
+    const success = await renameUpload(user.user_id, id, name);
+    return NextResponse.json({ success }, { status: 200 });
 }
 
 export async function DELETE(request: Request): Promise<NextResponse> {

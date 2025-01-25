@@ -61,7 +61,12 @@ export async function insertUploadHistory(userid: number, name: string, files: n
     return result.affectedRows > 0;
 }
 
-export async function deleteUploadHistory(userid: number, id: number): Promise<boolean> {
+export async function deleteUpload(userid: number, id: number): Promise<boolean> {
     const [result]: any = await pool.query("DELETE FROM uploads WHERE user_id = ? AND upload_id = ?", [userid, id]);
+    return result.affectedRows > 0;
+}
+
+export async function renameUpload(userid: number, id: number, name: string): Promise<boolean> {
+    const [result]: any = await pool.query("UPDATE uploads SET name = ? WHERE user_id = ? AND upload_id = ?", [name, userid, id]);
     return result.affectedRows > 0;
 }
