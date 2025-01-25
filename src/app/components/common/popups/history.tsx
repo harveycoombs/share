@@ -45,7 +45,7 @@ export default function UploadHistory({ onClose }: Properties) {
 }
 
 function Upload({ data }: any) {
-    const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
+    const [feedback, setFeedback] = useState<string>("");
 
     const [uploadTitle, setUploadTitle] = useState<string>(data.title?.length ? data.title : data.name);
     const [editing, setEditing] = useState<boolean|null>(null);
@@ -54,7 +54,7 @@ function Upload({ data }: any) {
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
     
     function deleteUpload() {
-        setFeedback(null);
+        setFeedback("");
         setDeleteLoading(true);
 
         (async () => {
@@ -68,18 +68,18 @@ function Upload({ data }: any) {
             setDeleteLoading(false);
 
             if (!response.ok || !json.success) {
-                setFeedback(<div className="text-red-500">Something went wrong</div>);
+                setFeedback("Something went wrong");
                 return;
             }
 
-            setFeedback(<div className="text-emerald-500">Upload deleted</div>);
+            //setFeedback(<div className="text-emerald-500">Upload deleted</div>);
         })();
     }
 
     useEffect(() => {
         if (editing || editing == null) return;
 
-        setFeedback(null);
+        setFeedback("");
         setEditLoading(true);
 
         (async () => {
@@ -96,13 +96,13 @@ function Upload({ data }: any) {
             if (!response.ok || !json.success) {
                 switch (response.status) {
                     case 401:
-                        setFeedback(<div className="text-red-500">Sign in to change upload names</div>);
+                        setFeedback("Sign in to change upload names");
                         break;
                     case 404:
-                        setFeedback(<div className="text-red-500">Upload not found</div>);
+                        setFeedback("Upload not found");
                         break;
                     default:
-                        setFeedback(<div className="text-red-500">Something went wrong</div>);
+                        setFeedback("Something went wrong");
                         break;
                 }
             }
@@ -114,7 +114,7 @@ function Upload({ data }: any) {
     return (
         <AnimatePresence>
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden ${data.available ? "pointer-events-none select-none" : ""}`}>
-                {feedback}
+                {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
                     <strong className="flex items-center gap-1 text-sm">
                         {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-none" autoFocus /> : <div className="font-bold text-slate-500">{uploadTitle}</div>}

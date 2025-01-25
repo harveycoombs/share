@@ -66,8 +66,8 @@ export default function AccountSettings({ onClose }: Properties) {
         }
     }, [currentSection]);
 
-    function logout() {
-        fetch("/api/user/session", { method: "DELETE" });
+    async function logout() {
+        await fetch("/api/user/session", { method: "DELETE" });
 
         onClose();
         window.location.reload();
