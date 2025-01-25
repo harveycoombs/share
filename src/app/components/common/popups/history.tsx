@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleNotch, faDownload, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCircleNotch, faDownload, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/popup";
 import { formatBytes } from "@/data/utils";
@@ -45,16 +45,60 @@ export default function UploadHistory({ onClose }: Properties) {
 }
 
 function Upload({ data }: any) {
+    const [uploadTitle, setUploadTitle] = useState<string>(data.name);
+    const [editing, setEditing] = useState<boolean|null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    
     function deleteUpload() {
         // to-do
-        
     }
+
+    useEffect(() => {
+        if (editing || editing == null) return;
+
+        setError("");
+        setLoading(true);
+
+        (async () => {
+            const response = await fetch("/api/history", {
+                method: "PATCH",
+                body: new URLSearchParams({
+                    uploadid: data.upload_id,
+                    name: uploadTitle
+                })
+            });
+
+            if (!response.ok) {
+                switch (response.status) {
+                    case 401:
+                        setError("Sign in to change upload names");
+                        break;
+                    case 404:
+                        setError("Upload not found");
+                        break;
+                    default:
+                        setError("Something went wrong");
+                        break;
+                }
+
+                return;
+            }
+
+            setLoading(false);
+        })();
+    });
 
     return (
         <AnimatePresence>
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden ${data.available ? "pointer-events-none select-none" : ""}`}>
                 <div>
-                    <strong className="flex items-center gap-1 text-sm"><div className="font-bold text-slate-500">{data.name}</div><div className="ml-1 text-slate-400/75"><FontAwesomeIcon icon={faPenToSquare} /></div></strong>
+                    <strong className="flex items-center gap-1 text-sm">
+                        {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-none" autoFocus /> : <div className="font-bold text-slate-500">{uploadTitle}</div>}
+                        <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
+                            {editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
+                        </div>
+                    </strong>
                     <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
                 </div>
 
