@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -52,6 +52,8 @@ function Upload({ data }: any) {
 
     const [editLoading, setEditLoading] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
+
+    const uploadRef = useRef<HTMLDivElement>(null);
     
     function deleteUpload() {
         setFeedback("");
@@ -72,7 +74,7 @@ function Upload({ data }: any) {
                 return;
             }
 
-            //setFeedback(<div className="text-emerald-500">Upload deleted</div>);
+            uploadRef?.current?.remove();
         })();
     }
 
@@ -113,7 +115,7 @@ function Upload({ data }: any) {
 
     return (
         <AnimatePresence>
-            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden ${data.available ? "pointer-events-none select-none" : ""}`}>
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden ${data.available ? "pointer-events-none select-none" : ""}`} ref={uploadRef}>
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
                     <strong className="flex items-center gap-1 text-sm">
