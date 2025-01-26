@@ -66,24 +66,11 @@ export default function AccountSettings({ onClose }: Properties) {
         }
     }, [currentSection]);
 
-    async function logout() {
-        await fetch("/api/user/session", { method: "DELETE" });
-
-        onClose();
-        window.location.reload();
-    }
-
     return (
         <Popup title="Settings" onClose={onClose}>
-            <div className="flex gap-3 w-500">
-                <div className="w-28 shrink-0">
-                    <SidebarItem title="Account" selected={currentSection == "account"} onClick={() => setCurrentSection("account")} />
-                    <div className="p-1.5 mb-1 rounded text-[0.8rem] leading-none text-red-500 font-medium duration-150 cursor-pointer select-none hover:bg-red-50 active:bg-red-100" onClick={logout}>Log Out</div>
-                </div>
-                <div className="w-full">
-                    <strong className="block text-sm font-semibold select-none">{sectionTitle}</strong>
-                    <div>{sectionContent}</div>
-                </div>
+            <div className="w-full">
+                <strong className="block text-sm font-semibold select-none">{sectionTitle}</strong>
+                <div>{sectionContent}</div>
             </div>
         </Popup>
     );

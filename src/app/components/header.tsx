@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import AccountSettings from "@/app/components/common/popups/account";
 import LoginForm from "@/app/components/common/popups/login";
-import { faGear, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { faGear, faRightFromBracket, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
     const [user, setUser] = useState<any>(null);
@@ -25,6 +25,11 @@ export default function Header() {
         })();
     }, []);
 
+    async function logout() {
+        await fetch("/api/user/session", { method: "DELETE" });
+        window.location.reload();
+    }
+
     const [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
     const [loginFormIsVisible, setLoginFormVisibility] = useState<boolean>(false);
 
@@ -34,7 +39,10 @@ export default function Header() {
                 <div className="cursor-pointer duration-150 hover:opacity-80 active:opacity-60" onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
                 <nav>
                     <HeaderLink title="Report Issue" url="https://github.com/harveycoombs/share/issues/new" target="_blank" rel="noopener" />
-                    {user ? <HeaderIcon icon={faGear} title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)} /> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
+                    {user ? <>
+                        <div className="w-[30px] h-[30px] inline-grid place-items-center rounded-full text-xs font-medium bg-blue-100 text-blue-500 mr-5" title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)}>{(user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase()}</div>
+                        <HeaderIcon icon={faRightFromBracket} title="Sign out" onClick={logout} />
+                    </> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
                 </nav>
             </header>
             {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
@@ -50,3 +58,5 @@ function HeaderLink({ title, url, ...rest }: any) {
 function HeaderIcon({ icon, title, ...rest }: any) {
     return <div title={title} className="inline-block align-middle text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }
+
+// <HeaderIcon icon={faGear} />
