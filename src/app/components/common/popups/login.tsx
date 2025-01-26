@@ -35,8 +35,6 @@ export default function LoginForm({ onClose }: Properties) {
             body: new URLSearchParams({ email, password })
         });
 
-        setLoading(false);
-
         switch (response.status) {
             case 200:
                 window.location.href = "/";
@@ -44,10 +42,12 @@ export default function LoginForm({ onClose }: Properties) {
             case 400:
                 setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Invalid credentials</div>);
                 setWarningExistence(true);
+                setLoading(false);
                 break;
             default:
                 setFeedback(<div className="text-sm font-medium text-red-500 text-center mt-5">Something went wrong</div>);
                 setErrorExistence(true);
+                setLoading(false);
                 break;
         }
     }
