@@ -1,7 +1,7 @@
 import { authenticate } from "@/data/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { getUserDetails } from "@/data/users";
+import { createUser, emailExists, getUserDetails } from "@/data/users";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -14,13 +14,19 @@ export async function GET(_: Request): Promise<NextResponse> {
     return NextResponse.json({ details });
 }
 
-/*export async function POST(request: Request): Promise<NextResponse> {
+export async function POST(request: Request): Promise<NextResponse> {
     const data = await request.formData();
-}
+    
+    const firstName = data.get("firstName")?.toString() ?? "";
+    const lastName = data.get("lastName")?.toString() ?? "";
+    const email = data.get("emailAddress")?.toString() ?? "";
+    const password = data.get("password")?.toString() ?? "";
 
-export async function PATCH(request: Request): Promise<NextResponse> {
-    const data = await request.formData();
-}
+    if (!firstName || !lastName || !email || !password) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
-export async function DELETE(request: Request): Promise<NextResponse> {
-}*/
+    const exists = await emailExists(email);
+    if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
+
+    const success = await createUser(firstName, lastName, email, password);
+    return NextResponse.json({ success });
+}

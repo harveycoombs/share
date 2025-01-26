@@ -30,6 +30,20 @@ export default function RegistrationForm({ onClose }: Properties) {
         setErrorExistence(false);
         setWarningExistence(false);
 
+        if (!firstName || !lastName || !emailAddress || !password || !passwordConfirmation) {
+            setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">One or more fields were not provided</div>);
+            setWarningExistence(true);
+            setLoading(false);
+            return;
+        }
+
+        if (password != passwordConfirmation) {
+            setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Passwords do not match</div>);
+            setWarningExistence(true);
+            setLoading(false);
+            return;
+        }
+
         const response = await fetch("/api/user", {
             method: "POST",
             body: new URLSearchParams({ firstName, lastName, emailAddress, password })
@@ -42,7 +56,7 @@ export default function RegistrationForm({ onClose }: Properties) {
                 window.location.href = "/";
                 break;
             case 409:
-                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Email address already exists</div>);
+                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Email address already in use</div>);
                 setWarningExistence(true);
                 break;
             default:
@@ -68,7 +82,7 @@ export default function RegistrationForm({ onClose }: Properties) {
                 <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
                 <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Confirm Password</Label>
                 <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPasswordConfirmation(e.target.value)} />
-                <Button classes="block w-full mt-2.5" loading={loading}>Continue</Button>
+                <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Continue</Button>
                 <Button transparent={true} classes="block w-full mt-2.5" onClick={onClose}>I Already Have An Account</Button>
                 <div className="text-sm text-slate-400/60 text-center select-none mt-2.5">
                     <Link href="https://github.com/harveycoombs/share/issues/new" className="hover:underline">Report Issue</Link>
