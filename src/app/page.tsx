@@ -114,15 +114,15 @@ export default function Home() {
             <main className="min-h-[calc(100vh-116px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
                 <section className="text-center w-fit select-none">
                     <div className="w-fit mx-auto">
-                        <div className="w-fit mx-auto"><Logo width={288} height={56} /></div>
-                        <strong className="block font-medium text-slate-400 mt-4">The no-frills file sharing service</strong>
+                        <div className="w-fit mx-auto max-sm:scale-90"><Logo width={288} height={56} /></div>
+                        <strong className="block font-medium text-slate-400 mt-4 max-sm:text-sm">The no-frills file sharing service</strong>
                     </div>
 
                     <div className="w-fit mx-auto text-center mt-16">
                         {loading ? <>
                             <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
                             <progress className="appearance-none w-500 h-3 border-none rounded-full duration-150" max={100} value={Math.round(progress)}></progress>
-                        </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : dragging ? " text-slate-500" : ""}`} onClick={copyUploadURL}>{
+                        </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : dragging ? " text-slate-500" : ""} max-sm:text-2xl`} onClick={copyUploadURL}>{
                             error.length ? error : 
                             id ? `${document.location.href}uploads/${id}` :
                             `${dragging ? "Drop" : "Drag"} files ${dragging ? "onto" : "over"} this page to upload`
@@ -139,7 +139,7 @@ export default function Home() {
                         </div>}
                     </div>
 
-                    <div className="w-500 mx-auto mt-16 flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400">
+                    <div className="w-500 mx-auto mt-16 flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400 max-[532px]:w-full max-[532px]:mx-4">
                         <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded shrink-0 aspect-square pointer-events-none" />
 
                         <div className="text-left">
