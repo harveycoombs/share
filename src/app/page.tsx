@@ -140,7 +140,7 @@ export default function Home() {
                     </div>
 
                     <div className="w-500 mx-auto mt-16 flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400 max-[532px]:w-full max-[532px]:mx-4">
-                        <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded shrink-0 aspect-square pointer-events-none" />
+                        <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded-sm shrink-0 aspect-square pointer-events-none" />
 
                         <div className="text-left">
                             <Link href="https://collate.run/" target="_blank" rel="noopener" className="block text-sm font-semibold text-slate-500 mb-1.5 hover:underline"><FontAwesomeIcon icon={faExternalLinkAlt} /> Collate: Find &amp; summarise anything on the web with AI</Link>

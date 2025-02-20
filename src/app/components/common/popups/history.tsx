@@ -119,7 +119,7 @@ function Upload({ data }: any) {
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
                     <strong className="flex items-center gap-1 text-sm">
-                        {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-none" autoFocus /> : <div className="font-bold text-slate-500">{uploadTitle}</div>}
+                        {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500">{uploadTitle}</div>}
                         <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
                             {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
                         </div>

@@ -77,5 +77,5 @@ export default function AccountSettings({ onClose }: Properties) {
 }
 
 function SidebarItem({ title, selected, classes, ...rest }: any) {
-    return <div className={`p-1.5 mb-1 rounded text-[0.8rem] leading-none text-slate-400 font-medium ${selected ? "bg-slate-50" : ""} duration-150 cursor-pointer select-none hover:bg-slate-50 active:bg-slate-100`} {...rest}>{title}</div>;
+    return <div className={`p-1.5 mb-1 rounded-sm text-[0.8rem] leading-none text-slate-400 font-medium ${selected ? "bg-slate-50" : ""} duration-150 cursor-pointer select-none hover:bg-slate-50 active:bg-slate-100`} {...rest}>{title}</div>;
 }

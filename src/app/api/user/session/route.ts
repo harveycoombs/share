@@ -14,7 +14,6 @@ export async function GET(_: Request): Promise<NextResponse> {
     return NextResponse.json({ user });
 }
 
-
 export async function POST(request: Request): Promise<NextResponse> {
     try {
         const data = await request.formData();
