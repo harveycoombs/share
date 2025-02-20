@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCircleNotch, faDownload, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
-import Popup from "@/app/components/common/popup";
-import { formatBytes } from "@/data/utils";
+import Popup from "@/app/components/common/Popup";
+import { formatBytes } from "@/lib/utils";
 
 interface Properties {
     onClose: () => void;

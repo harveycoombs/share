@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import Popup from "@/app/components/common/popup";
-import Button from "@/app/components/common/button";
-import Field from "@/app/components/common/field";
-import Label from "@/app/components/common/label";
+import Popup from "@/app/components/common/Popup";
+import Button from "@/app/components/common/Button";
+import Field from "@/app/components/common/Field";
+import Label from "@/app/components/common/Label";
 
 interface Properties {
     onClose: () => void;

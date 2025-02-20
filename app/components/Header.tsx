@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import AccountSettings from "@/app/components/common/popups/account";
-import LoginForm from "@/app/components/common/popups/login";
+import AccountSettings from "@/app/components/common/popups/AccountSettings";
+import LoginForm from "@/app/components/common/popups/LoginForm";
 import { faGear, faRightFromBracket, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {

@@ -1,7 +1,7 @@
-import { authenticate } from "@/data/jwt";
+import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { createUser, emailExists, getUserDetails } from "@/data/users";
+import { createUser, emailExists, getUserDetails } from "@/lib/users";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();

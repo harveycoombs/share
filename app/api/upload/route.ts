@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 
-import { authenticate } from "@/data/jwt";
-import { insertUploadHistory } from "@/data/users";
+import { authenticate } from "@/lib/jwt";
+import { insertUploadHistory } from "@/lib/users";
 
 export async function POST(request: Request): Promise<NextResponse> {
     const now = new Date().getTime();

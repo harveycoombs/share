@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-import { getUserByEmailAddress, verifyCredentials } from "@/data/users";
-import { authenticate, createJWT } from "@/data/jwt";
+import { getUserByEmailAddress, verifyCredentials } from "@/lib/users";
+import { authenticate, createJWT } from "@/lib/jwt";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();

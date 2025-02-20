@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 
-import Popup from "@/app/components/common/popup";
-import Field from "@/app/components/common/field";
-import Label from "@/app/components/common/label";
-import Button from "@/app/components/common/button";
+import Popup from "@/app/components/common/Popup";
+import Field from "@/app/components/common/Field";
+import Label from "@/app/components/common/Label";
+import Button from "@/app/components/common/Button";
 
 interface Properties {
     onClose: () => void;

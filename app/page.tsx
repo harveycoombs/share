@@ -5,9 +5,9 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faExternalLinkAlt, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
-import Logo from "@/app/components/common/logo";
-import Button from "@/app/components/common/button";
-import UploadHistory from "@/app/components/common/popups/history";
+import Logo from "@/app/components/common/Logo";
+import Button from "@/app/components/common/Button";
+import UploadHistory from "@/app/components/common/popups/UploadHistory";
 
 
 export default function Home() {
