@@ -67,8 +67,8 @@ export default function RegistrationForm({ onClose }: Properties) {
     }
 
     return (
-        <Popup title="Register" onClose={onClose}>
-            <form className="w-72" onSubmit={register} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
+        <Popup title="Register" onClose={onClose} classes="w-72 max-[290px]:w-15/16">
+            <form onSubmit={register} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
                 <strong className="block font-semibold text-lg text-center mt-2 select-none">Get More out of Share</strong>
                 <div className="text-sm font-medium text-center text-slate-400 select-none">Register using the form below</div>
                 {feedback}

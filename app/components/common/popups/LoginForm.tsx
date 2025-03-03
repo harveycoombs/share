@@ -53,8 +53,8 @@ export default function LoginForm({ onClose }: Properties) {
     }
 
     return (
-        <>{registrationFormIsVisible ? <RegistrationForm onClose={onClose} /> : <Popup title="Sign In" onClose={onClose}>
-        <form className="w-72" onSubmit={login} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
+        <>{registrationFormIsVisible ? <RegistrationForm onClose={onClose} /> : <Popup title="Sign In" onClose={onClose} classes="w-72 max-[290px]:w-15/16">
+        <form className="" onSubmit={login} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
             <strong className="block font-semibold text-lg text-center mt-2 select-none">Welcome Back</strong>
             <div className="text-sm font-medium text-center text-slate-400 select-none">Sign in using the form below</div>
             {feedback}

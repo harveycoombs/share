@@ -35,11 +35,11 @@ export default function UploadHistory({ onClose }: Properties) {
     }, []);
 
     return (
-        <Popup title="Upload History" onClose={onClose}>{
-            error.length ? <div className="w-500 min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
-            : loading ? <div className="w-500 min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
-            : uploads.length ? <div className="w-500 min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} />)}</div>
-            : <div className="w-500 min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
+        <Popup title="Upload History" onClose={onClose} classes="w-500 max-[532px]:w-15/16">{
+            error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
+            : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
+            : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} />)}</div>
+            : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
         }</Popup>
     );
 }
@@ -115,7 +115,7 @@ function Upload({ data }: any) {
 
     return (
         <AnimatePresence>
-            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden ${data.available ? "pointer-events-none select-none" : ""}`} ref={uploadRef}>
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5 ${data.available ? "pointer-events-none select-none" : ""}`} ref={uploadRef}>
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
                     <strong className="flex items-center gap-1 text-sm">
