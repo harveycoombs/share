@@ -109,6 +109,24 @@ export default function Home() {
         }
     }
 
+    useEffect(() => {
+        const handlePaste = (e: ClipboardEvent) => {
+            if (!e.clipboardData?.files?.length) return;
+
+            const transfer = new DataTransfer();
+
+            for (let pastedFile of e.clipboardData.files) {
+                transfer.items.add(pastedFile);
+            }
+
+            setFile(transfer.files[0]);
+            uploader.current?.dispatchEvent(new Event("change"));
+        };
+
+        window.addEventListener("paste", handlePaste);
+        return () => window.removeEventListener("paste", handlePaste);
+    }, []);
+
     return (
         <>
             <main className="min-h-[calc(100vh-118px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
@@ -125,7 +143,7 @@ export default function Home() {
                         </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : dragging ? " text-slate-500" : ""} max-sm:text-2xl`} onClick={copyUploadURL}>{
                             error.length ? error : 
                             id ? `${document.location.href}uploads/${id}` :
-                            `${dragging ? "Drop" : "Drag"} files ${dragging ? "onto" : "over"} this page to upload`
+                            `${dragging ? "Drop" : "Drag or paste"} files ${dragging ? "onto" : "over"} this page to upload`
                         }</h1>}
 
                         {!loading && <div className="w-fit mx-auto mt-5">
@@ -139,7 +157,7 @@ export default function Home() {
                         </div>}
                     </div>
 
-                    <div className="w-500 mx-auto mt-16 flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400 max-[532px]:w-full max-[532px]:mx-4">
+                    <div className="invisible w-500 mx-auto mt-16 flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400 max-[532px]:w-full max-[532px]:mx-4">
                         <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded-sm shrink-0 aspect-square pointer-events-none" />
 
                         <div className="text-left">
