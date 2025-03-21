@@ -23,9 +23,15 @@ export async function GET(request: any, { params }: any) {
             const content = await fs.readFile(`./uploads/${id}/${files[0]}`);
             const stats = await fs.stat(`./uploads/${id}/${files[0]}`);
 
+            let contentType = mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream";
+
+            if (contentType == "text/html") {
+                contentType = "text/plain";
+            }
+
             return new NextResponse(content, {
                 headers: {
-                    "Content-Type": mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream",
+                    "Content-Type": contentType,
                     "Content-Length": stats.size.toString()
                 }
             });
