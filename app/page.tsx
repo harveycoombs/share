@@ -109,20 +109,20 @@ export default function Home() {
         }
     }
 
+    function handlePaste(e: ClipboardEvent) {
+        if (!e.clipboardData?.files?.length) return;
+
+        const transfer = new DataTransfer();
+
+        for (let pastedFile of e.clipboardData.files) {
+            transfer.items.add(pastedFile);
+        }
+
+        setFile(transfer.files[0]);
+        uploader.current?.dispatchEvent(new Event("change"));
+    }
+
     useEffect(() => {
-        const handlePaste = (e: ClipboardEvent) => {
-            if (!e.clipboardData?.files?.length) return;
-
-            const transfer = new DataTransfer();
-
-            for (let pastedFile of e.clipboardData.files) {
-                transfer.items.add(pastedFile);
-            }
-
-            setFile(transfer.files[0]);
-            uploader.current?.dispatchEvent(new Event("change"));
-        };
-
         window.addEventListener("paste", handlePaste);
         return () => window.removeEventListener("paste", handlePaste);
     }, []);
