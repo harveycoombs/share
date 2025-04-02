@@ -56,8 +56,8 @@ export async function getUploadHistory(userid: number): Promise<any[]> {
     return result;
 }
 
-export async function insertUploadHistory(userid: number, name: string, files: number, size: number): Promise<boolean> {
-    const [result]: any = await pool.query("INSERT INTO uploads (user_id, name, files, size) VALUES (?, ?, ?, ?)", [userid, name, files, size]);
+export async function insertUploadHistory(userid: number, name: string, ip: string, files: number, size: number): Promise<boolean> {
+    const [result]: any = await pool.query("INSERT INTO uploads (user_id, name, ip_address, files, size) VALUES (?, ?, ?, ?, ?)", [userid, name, ip, files, size]);
     return result.affectedRows > 0;
 }
 
