@@ -14,7 +14,7 @@ const inter = Inter({
 const description = "An easy-to-use file sharing platform.";
 
 export const metadata: Metadata = {
-    title: `Share · ${process.env.APP_VERSION}`,
+    title: `Share · ${process.env.NEXT_PUBLIC_APP_VERSION}`,
     description: description,
     icons: { icon: "/images/icon.png" },
     openGraph: {

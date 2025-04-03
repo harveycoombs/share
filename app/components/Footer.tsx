@@ -10,7 +10,7 @@ export default function Footer() {
 
     return (
         <footer className="p-4 flex justify-between items-center select-none text-slate-400/60">
-            <div className="text-sm font-medium max-sm:text-xs">2021 &ndash; {new Date().getFullYear()} &middot; Share {process.env.APP_VERSION} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
+            <div className="text-sm font-medium max-sm:text-xs">2021 &ndash; {new Date().getFullYear()} &middot; Share {process.env.NEXT_PUBLIC_APP_VERSION} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
             <div>
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                 <FooterIcon icon={faReddit} title="Reddit" url="https://www.reddit.com/user/Harvey-Coombs" />
