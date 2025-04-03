@@ -2,13 +2,16 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import AccountSettings from "@/app/components/common/popups/AccountSettings";
-import LoginForm from "@/app/components/common/popups/LoginForm";
-import { faGear, faRightFromBracket, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import Settings from "@/app/components/common/popups/Settings";
+import { faGear, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
+    const path = usePathname();
+    if (path == "/login" || path == "/register") return null;
+
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
@@ -25,13 +28,7 @@ export default function Header() {
         })();
     }, []);
 
-    async function logout() {
-        await fetch("/api/user/session", { method: "DELETE" });
-        window.location.reload();
-    }
-
-    const [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
-    const [loginFormIsVisible, setLoginFormVisibility] = useState<boolean>(false);
+    const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
 
     return (
         <>
@@ -40,13 +37,12 @@ export default function Header() {
                 <nav>
                     <HeaderLink title="Report Issue" url="https://github.com/harveycoombs/share/issues/new" target="_blank" rel="noopener" />
                     {user ? <>
-                        <div className="w-[30px] h-[30px] inline-grid place-items-center rounded-full text-xs font-medium bg-blue-100 text-blue-500 mr-5" title={`Signed in as ${user.first_name} ${user.last_name}`} onClick={() => setAccountSettingsVisibility(true)}>{(user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase()}</div>
-                        <HeaderIcon icon={faRightFromBracket} title="Sign out" onClick={logout} />
-                    </> : <HeaderIcon icon={faRightToBracket} title="Sign in" onClick={() => setLoginFormVisibility(true)} />}
+                        <div className="w-[30px] h-[30px] inline-grid place-items-center rounded-full text-xs font-medium bg-blue-100 text-blue-500 mr-5" title={`Signed in as ${user.first_name} ${user.last_name}`}>{(user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase()}</div>
+                        <HeaderIcon icon={faGear} title="Sign out" onClick={() => setSettingsVisibility(true)} />
+                    </> : <HeaderIcon icon={faRightToBracket} title="Sign in" />}
                 </nav>
             </header>
-            {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
-            {loginFormIsVisible && <LoginForm onClose={() => setLoginFormVisibility(false)} />}
+            {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
         </>
     );
 }
@@ -58,5 +54,3 @@ function HeaderLink({ title, url, ...rest }: any) {
 function HeaderIcon({ icon, title, ...rest }: any) {
     return <div title={title} className="inline-block align-middle text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }
-
-// <HeaderIcon icon={faGear} />

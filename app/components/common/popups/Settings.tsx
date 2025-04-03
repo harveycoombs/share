@@ -10,7 +10,7 @@ interface Properties {
     onClose: () => void;
 }
 
-export default function AccountSettings({ onClose }: Properties) {
+export default function Settings({ onClose }: Properties) {
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
@@ -25,6 +25,11 @@ export default function AccountSettings({ onClose }: Properties) {
     const [currentSection, setCurrentSection] = useState<string>("account");
     const [sectionTitle, setSectionTitle] = useState<string>();
     const [sectionContent, setSectionContent] = useState<React.JSX.Element>();
+
+    async function logout() {
+        await fetch("/api/user/session", { method: "DELETE" });
+        window.location.reload();
+    }
 
     useEffect(() => {
         switch (currentSection) {
