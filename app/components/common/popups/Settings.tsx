@@ -13,74 +13,96 @@ interface Properties {
 export default function Settings({ onClose }: Properties) {
     const [user, setUser] = useState<any>(null);
 
+    const [firstName, setFirstName] = useState<string>("");
+    const [lastName, setLastName] = useState<string>("");
+    const [emailAddress, setEmailAddress] = useState<string>("");
+
+    const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
+    const [deletionIntent, setDeletionIntent] = useState<boolean>(false);
+
+    const [updating, setUpdating] = useState<boolean>(false);
+    const [deleting, setDeleting] = useState<boolean>(false);
+
     useEffect(() => {
         (async () => {
             const response = await fetch("/api/user");
             const json = await response.json();
 
-            setUser(json.user);
+            setUser(json.details);
+
+            setFirstName(json.details.first_name);
+            setLastName(json.details.last_name);
+            setEmailAddress(json.details.email_address);
         })();
     }, []);
 
-    const [currentSection, setCurrentSection] = useState<string>("account");
-    const [sectionTitle, setSectionTitle] = useState<string>();
-    const [sectionContent, setSectionContent] = useState<React.JSX.Element>();
+    async function updateDetails() {
+        setUpdating(true);
 
-    async function logout() {
-        await fetch("/api/user/session", { method: "DELETE" });
-        window.location.reload();
+        const response = await fetch("/api/user", {
+            method: "PATCH",
+            body: new URLSearchParams({ firstName, lastName, emailAddress })
+        });
+
+        const json = await response.json();
+
+        setUpdating(false);
+
+        setFeedback(json.updated ? <div className="bg-green-400 w-full text-center p-1 rounded">Details updated successfully</div> : <div className="bg-red-400 w-full text-center p-1 rounded">Something went wrong</div>);
     }
 
-    useEffect(() => {
-        switch (currentSection) {
-            case "general":
-                setSectionTitle("General Settings");
-                setSectionContent(<div>Lorem ipsum dolor sit amet consectetur adipisicing elit.</div>);
-                break;
-            case "account":
-                setSectionTitle("Account Details");
-                setSectionContent(<>
+    async function deleteAccount() {
+        const response = await fetch("/api/user", {
+            method: "DELETE"
+        });
+
+        const json = await response.json();
+
+        setDeleting(false);
+
+        if (!json.deleted) {
+            setFeedback(<div className="bg-red-400 w-full text-center p-1 rounded">Something went wrong</div>);
+            return;
+        }
+        
+        window.location.href = "/";
+    }
+
+    return (
+        <Popup title="Settings" onClose={onClose}>
+            {feedback && <div className="w-full mb-2 text-sm text-white font-medium">{feedback}</div>}
+            <div className="w-full">
+                <div>
                     <div className="mt-2 w-full flex gap-2">
                         <div className="w-1/2">
                             <Label classes="block w-full">First Name</Label>
-                            <Field small={true} classes="block w-full" defaultValue={user?.first_name ?? ""} />
+                            <Field small={true} classes="block w-full" defaultValue={user?.first_name ?? ""} onInput={(e: any) => setFirstName(e.target.value)} />
                         </div>
             
                         <div className="w-1/2">
                             <Label classes="block w-full">Last Name</Label>
-                            <Field small={true} classes="block w-full" defaultValue={user?.last_name ?? ""} />
+                            <Field small={true} classes="block w-full" defaultValue={user?.last_name ?? ""} onInput={(e: any) => setLastName(e.target.value)} />
                         </div>
                     </div>
             
                     <div className="mt-2 w-full flex gap-2">
                         <div className="w-1/2">
                             <Label classes="block w-full">Email Address</Label>
-                            <Field type="email" small={true} classes="block w-full" defaultValue={user?.email_address ?? ""} />
+                            <Field type="email" small={true} classes="block w-full" defaultValue={user?.email_address ?? ""} onInput={(e: any) => setEmailAddress(e.target.value)} />
                         </div>
+
                         <div className="w-1/2">
-                            <Label classes="block invisible">Save Changes</Label>
-                            <Button small={true} classes="block w-full">Save Changes</Button>
+                            <Label classes="block w-full">Avatar</Label>
+                            <div className="py-2 w-full text-[0.8rem] font-medium text-slate-600 italic -translate-y-px pointer-events-none">Coming Soon</div>
                         </div>
                     </div>
-                </>);
-                break;
-            case "advanced":
-                setSectionTitle("Advanced Settings");
-                setSectionContent(<div>Lorem ipsum dolor sit amet.</div>);
-                break;
-        }
-    }, [currentSection]);
+                </div>
 
-    return (
-        <Popup title="Settings" onClose={onClose}>
-            <div className="w-full">
-                <strong className="block text-sm font-semibold select-none">{sectionTitle}</strong>
-                <div>{sectionContent}</div>
+                <div className="mt-3 w-full flex gap-2">
+                    <Button classes="w-1/2" onClick={updateDetails} loading={updating}>Save Changes</Button>
+                    <Button classes="w-1/2 bg-red-500 hover:bg-red-600" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
+                </div>
             </div>
         </Popup>
     );
-}
-
-function SidebarItem({ title, selected, classes, ...rest }: any) {
-    return <div className={`p-1.5 mb-1 rounded-sm text-[0.8rem] leading-none text-slate-400 font-medium ${selected ? "bg-slate-50" : ""} duration-150 cursor-pointer select-none hover:bg-slate-50 active:bg-slate-100`} {...rest}>{title}</div>;
 }

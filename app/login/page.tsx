@@ -14,9 +14,7 @@ export default function Login() {
 
                 <LoginForm />
 
-                <div className="text-sm text-slate-400/60 text-center select-none mt-2.5">
-                    <Link href="/recover" className="hover:underline">Recover Account</Link> &middot; <Link href="https://github.com/harveycoombs/share/issues/new" className="hover:underline">Report Issue</Link>
-                </div>
+                <Link href="https://github.com/harveycoombs/share/issues/new" className="block text-sm text-slate-400/60 text-center select-none mt-2.5 hover:underline">Report Issue</Link>
             </section>
         </main> 
     );

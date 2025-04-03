@@ -1,7 +1,7 @@
 import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { createUser, emailExists, getUserDetails } from "@/lib/users";
+import { createUser, deleteUser, emailExists, getUserDetails, updateUser } from "@/lib/users";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -29,4 +29,37 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const success = await createUser(firstName, lastName, email, password);
     return NextResponse.json({ success });
+}
+
+export async function PATCH(request: Request): Promise<NextResponse> {
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
+
+    if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+
+    const data = await request.formData();
+    
+    const firstName = data.get("firstName")?.toString() ?? "";
+    const lastName = data.get("lastName")?.toString() ?? "";
+    const email = data.get("emailAddress")?.toString() ?? "";
+
+    if (!firstName?.length || !lastName?.length || !email?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+
+    const exists = await emailExists(email, user.user_id);
+    if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
+
+    const updated = await updateUser(user.user_id, firstName, lastName, email);
+    return NextResponse.json({ updated });
+}
+
+export async function DELETE(_: Request): Promise<NextResponse> {
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
+
+    if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+
+    const deleted = await deleteUser(user.user_id);
+    return NextResponse.json({ deleted });
 }
