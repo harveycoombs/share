@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import LoginForm from "@/app/login/form";
 import Logo from "@/app/components/common/Logo";
+import LoginForm from "@/app/login/form";
 
 export default function Login() {
     return (
