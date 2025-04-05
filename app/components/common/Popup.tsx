@@ -13,7 +13,7 @@ interface Properties {
 
 export default function Popup({ title, onClose, children, classes, ...rest }: Properties) {
     return (
-        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/60" id="popup" onMouseDown={(e: any) => {if (e.target.matches("#popup")) onClose() }}>
+        <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/60 backdrop-blur-xs" id="popup" onMouseDown={(e: any) => {if (e.target.matches("#popup")) onClose() }}>
             <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { duration: 0.15, ease: "easeOut" }}} className={`bg-white p-3 rounded-lg${classes?.length ? " " + classes : ""}`} {...rest}>
                 <div className="flex justify-between items-center leading-none pb-1.5">
                     <strong className="text-sm font-medium text-slate-400/60 select-none">{title}</strong>

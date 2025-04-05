@@ -1,10 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
 import Button from "@/app/components/common/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera } from "@fortawesome/free-solid-svg-icons";
 
 interface Properties {
     onClose: () => void;
@@ -73,34 +76,48 @@ export default function Settings({ onClose }: Properties) {
             {feedback && <div className="w-full mb-2 text-sm text-white font-medium">{feedback}</div>}
             <div className="w-full">
                 <div>
-                    <div className="mt-2 w-full flex gap-2">
-                        <div className="w-1/2">
-                            <Label classes="block w-full">First Name</Label>
-                            <Field small={true} classes="block w-full" defaultValue={user?.first_name ?? ""} onInput={(e: any) => setFirstName(e.target.value)} />
-                        </div>
-            
-                        <div className="w-1/2">
-                            <Label classes="block w-full">Last Name</Label>
-                            <Field small={true} classes="block w-full" defaultValue={user?.last_name ?? ""} onInput={(e: any) => setLastName(e.target.value)} />
-                        </div>
-                    </div>
-            
-                    <div className="mt-2 w-full flex gap-2">
-                        <div className="w-1/2">
-                            <Label classes="block w-full">Email Address</Label>
-                            <Field type="email" small={true} classes="block w-full" defaultValue={user?.email_address ?? ""} onInput={(e: any) => setEmailAddress(e.target.value)} />
+                    <div className="flex gap-3 items-center w-fit mx-auto my-4 select-none">
+                        <div className="relative rounded-md overflow-hidden cursor-pointer group">
+                            <Image src="/images/icon.png" alt="Share" width={56} height={56} className="object-cover" draggable={false} />
+                            <div className="absolute inset-0 bg-black/60 place-items-center hidden group-hover:grid">
+                                <FontAwesomeIcon icon={faCamera} className="text-white" />
+                            </div>
                         </div>
 
-                        <div className="w-1/2">
-                            <Label classes="block w-full">Avatar</Label>
-                            <div className="py-2 w-full text-[0.8rem] font-medium text-slate-600 italic -translate-y-px pointer-events-none">Coming Soon</div>
+                        <div>
+                            <strong className="block font-bold">{user?.first_name} {user?.last_name}</strong>
+                            <div className="text-xs text-slate-400/75 font-semibold">Joined {new Date(user?.creation_date).toLocaleDateString()}</div>
+                        </div>
+                    </div>
+
+                    <div className="mt-2 w-full flex gap-6">
+                        <div className="w-60">
+                            <Label classes="block w-full mt-2.75 mb-0.5">First Name</Label>
+                            <Field classes="block w-full" defaultValue={user?.first_name ?? ""} onInput={(e: any) => setFirstName(e.target.value)} />
+
+                            <Label classes="block w-full mt-2.75 mb-0.5">Last Name</Label>
+                            <Field classes="block w-full" defaultValue={user?.last_name ?? ""} onInput={(e: any) => setLastName(e.target.value)} />
+
+                            <Label classes="block w-full mt-2.75 mb-0.5">Email Address</Label>
+                            <Field type="email" classes="block w-full" defaultValue={user?.email_address ?? ""} onInput={(e: any) => setEmailAddress(e.target.value)} />
+                        </div>
+
+                        <div className="w-60">
+                            <Label classes="block w-full mt-2.75 mb-0.5">Old Password</Label>
+                            <Field type="password" classes="block w-full" />
+
+                            <Label classes="block w-full mt-2.75 mb-0.5">New Password</Label>
+                            <Field type="password" classes="block w-full" />
+
+                            <Label classes="block w-full mt-2.75 mb-0.5">Confirm New Password</Label>
+                            <Field type="password" classes="block w-full" />
                         </div>
                     </div>
                 </div>
 
-                <div className="mt-3 w-full flex gap-2">
-                    <Button classes="w-1/2" onClick={updateDetails} loading={updating}>Save Changes</Button>
-                    <Button classes="w-1/2 bg-red-500 hover:bg-red-600" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
+                <div className="mt-3 w-full flex gap-6">
+                    <Button classes="w-60" onClick={updateDetails} loading={updating}>Save Changes</Button>
+                    <Button classes="w-60 bg-red-500 hover:bg-red-600" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
                 </div>
             </div>
         </Popup>

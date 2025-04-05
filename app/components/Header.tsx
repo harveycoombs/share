@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGear, faRightFromBracket, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
 
 import Settings from "@/app/components/common/popups/Settings";
+import Button from "./common/Button";
 
 export default function Header() {
     const path = usePathname();
@@ -36,15 +37,17 @@ export default function Header() {
 
     return (
         <>
-            <header className="p-4 flex justify-between select-none">
+            <header className="p-3.5 flex justify-between select-none">
                 <div className="cursor-pointer duration-150 hover:opacity-80 active:opacity-60" onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
-                <nav>
-                    {user ? <>
-                        <div className="w-[30px] h-[30px] inline-grid place-items-center rounded-full text-xs font-medium bg-blue-100 text-blue-500" title={`Signed in as ${user.first_name} ${user.last_name}`}>{(user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase()}</div>
-                        <HeaderIcon icon={faGear} title="Settings" onClick={() => setSettingsVisibility(true)} />
-                        <HeaderIcon icon={faRightFromBracket} title="Log out" onClick={logout} />
-                    </> : <HeaderIcon icon={faRightToBracket} title="Log in" url="/login" />}
-                </nav>
+
+                {user ? <nav>
+                    <div className="w-[30px] h-[30px] inline-grid place-items-center rounded-full text-xs font-medium bg-blue-100 text-blue-500" title={`Signed in as ${user.first_name} ${user.last_name}`}>{(user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase()}</div>
+                    <HeaderIcon icon={faGear} title="Settings" onClick={() => setSettingsVisibility(true)} />
+                    <HeaderIcon icon={faRightFromBracket} title="Log out" onClick={logout} />
+                </nav> : <nav>
+                    <Button url="/login" classes="inline-block align-middle">Sign In</Button>
+                    <Button url="/register" classes="inline-block align-middle ml-2" transparent={true}>Sign Up</Button>
+                </nav>}
             </header>
             {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
         </>
