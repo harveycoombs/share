@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 import Popup from "@/app/components/common/Popup";
@@ -20,11 +20,17 @@ export default function Settings({ onClose }: Properties) {
     const [lastName, setLastName] = useState<string>("");
     const [emailAddress, setEmailAddress] = useState<string>("");
 
+    const [oldPassword, setOldPassword] = useState<string>("");
+    const [newPassword, setNewPassword] = useState<string>("");
+    const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
+
     const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
     const [deletionIntent, setDeletionIntent] = useState<boolean>(false);
 
     const [updating, setUpdating] = useState<boolean>(false);
     const [deleting, setDeleting] = useState<boolean>(false);
+
+    const avatarUploader = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         (async () => {
@@ -41,16 +47,22 @@ export default function Settings({ onClose }: Properties) {
 
     async function updateDetails() {
         setUpdating(true);
+        setFeedback(null);
+
+        if (newPassword?.length && newPassword != confirmNewPassword) {
+            setFeedback(<div className="bg-red-400 w-full text-center p-1 rounded">New passwords do not match</div>);
+            setUpdating(false);
+            return;
+        }
 
         const response = await fetch("/api/user", {
             method: "PATCH",
-            body: new URLSearchParams({ firstName, lastName, emailAddress })
+            body: new URLSearchParams({ firstName, lastName, emailAddress, oldPassword, newPassword })
         });
 
         const json = await response.json();
 
         setUpdating(false);
-
         setFeedback(json.updated ? <div className="bg-green-400 w-full text-center p-1 rounded">Details updated successfully</div> : <div className="bg-red-400 w-full text-center p-1 rounded">Something went wrong</div>);
     }
 
@@ -71,17 +83,42 @@ export default function Settings({ onClose }: Properties) {
         window.location.href = "/";
     }
 
+    async function handleAvatarUpload(e: any) {
+        const file = e.target.files[0];
+
+        if (!file) return;
+
+        const data = new FormData();
+        data.append("files", file);
+
+        const response = await fetch("/api/user/avatar", {
+            method: "POST",
+            body: data
+        });
+
+        const json = await response.json();
+
+        if (!json.uploaded) {
+            setFeedback(<div className="bg-red-400 w-full text-center p-1 rounded">Something went wrong</div>);
+            return;
+        }
+
+        setUser(user);
+    }
+
     return (
         <Popup title="Settings" onClose={onClose}>
             {feedback && <div className="w-full mb-2 text-sm text-white font-medium">{feedback}</div>}
             <div className="w-full">
                 <div>
                     <div className="flex gap-3 items-center w-fit mx-auto my-4 select-none">
-                        <div className="relative rounded-md overflow-hidden cursor-pointer group">
-                            <Image src="/images/icon.png" alt="Share" width={56} height={56} className="object-cover" draggable={false} />
-                            <div className="absolute inset-0 bg-black/60 place-items-center hidden group-hover:grid">
+                        <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
+                            <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt="Share" width={56} height={56} className="object-cover" draggable={false} />
+                            <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
                                 <FontAwesomeIcon icon={faCamera} className="text-white" />
                             </div>
+
+                            <input type="file" ref={avatarUploader} className="hidden" accept="image/*" onChange={handleAvatarUpload} />
                         </div>
 
                         <div>

@@ -12,7 +12,6 @@ export async function getUserByEmailAddress(emailAddress: string): Promise<any> 
 	return result[0];
 }
 
-
 export async function getUserDetails(userid: number): Promise<any> {
     const [result]: any = await pool.query("SELECT user_id, first_name, last_name, email_address, creation_date FROM users WHERE user_id = ? AND deleted = 0", [userid]);
     return result[0];
@@ -53,6 +52,13 @@ export async function createUser(firstName: string, lastName: string, emailAddre
 
 export async function updateUser(userid: number, firstName: string, lastName: string, emailAddress: string): Promise<boolean> {
     const [result]: any = await pool.query("UPDATE users SET first_name = ?, last_name = ?, email_address = ? WHERE user_id = ?", [firstName, lastName, emailAddress, userid]);
+    return result.affectedRows > 0;
+}
+
+export async function updateUserPassword(userid: number, password: string): Promise<boolean> {
+    const passwordHash = await Passwords.generateHash(password);
+    const [result]: any = await pool.query("UPDATE users SET password = ? WHERE user_id = ?", [passwordHash, userid]);
+
     return result.affectedRows > 0;
 }
 

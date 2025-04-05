@@ -129,7 +129,7 @@ export default function Home() {
 
     return (
         <>
-            <main className="min-h-[calc(100vh-118px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <main className="min-h-[calc(100vh-122px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
                 <section className="text-center w-fit select-none">
                     <div className="w-fit mx-auto">
                         <div className="w-fit mx-auto max-sm:scale-90"><Logo width={288} height={56} /></div>

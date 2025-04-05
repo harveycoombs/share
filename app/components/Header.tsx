@@ -1,19 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGear, faRightFromBracket, faRightToBracket } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 import Settings from "@/app/components/common/popups/Settings";
-import Button from "./common/Button";
+import Button from "@/app/components/common/Button";
 
 export default function Header() {
     const path = usePathname();
     if (path == "/login" || path == "/register") return null;
 
     const [user, setUser] = useState<any>(null);
+    const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
 
     useEffect(() => {
@@ -40,21 +40,24 @@ export default function Header() {
             <header className="p-3.5 flex justify-between select-none">
                 <div className="cursor-pointer duration-150 hover:opacity-80 active:opacity-60" onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
 
-                {user ? <nav>
-                    <div className="w-[30px] h-[30px] inline-grid place-items-center rounded-full text-xs font-medium bg-blue-100 text-blue-500" title={`Signed in as ${user.first_name} ${user.last_name}`}>{(user.first_name.charAt(0) + user.last_name.charAt(0)).toUpperCase()}</div>
-                    <HeaderIcon icon={faGear} title="Settings" onClick={() => setSettingsVisibility(true)} />
-                    <HeaderIcon icon={faRightFromBracket} title="Log out" onClick={logout} />
+                {user ? <nav className="relative">
+                    <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt={`${user?.first_name} ${user?.last_name}`} width={32} height={32} className="inline-block align-middle rounded-full object-cover" title={`Signed in as ${user.first_name} ${user.last_name}`} draggable={false} />
+
+                    <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                        <FontAwesomeIcon icon={faEllipsis} />
+                    </div>
+
+                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[105%] right-0 overflow-hidden bg-white rounded-lg shadow-lg w-38`}>
+                        <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-slate-700 hover:bg-slate-100/50 duration-150 cursor-pointer" onClick={() => setSettingsVisibility(true)}>Settings</div>
+                        <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-red-500 border-t border-slate-200/50 hover:bg-red-50 duration-150 cursor-pointer" onClick={logout}>Log out</div>
+                    </div>
                 </nav> : <nav>
                     <Button url="/login" classes="inline-block align-middle">Sign In</Button>
                     <Button url="/register" classes="inline-block align-middle ml-2" transparent={true}>Sign Up</Button>
                 </nav>}
             </header>
+
             {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
         </>
     );
-}
-
-function HeaderIcon({ icon, title, url, ...rest }: any) {
-    const classList = "inline-block align-middle text-lg text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85";
-    return url?.length ? <Link href={url} title={title} className={classList} {...rest}><FontAwesomeIcon icon={icon} /></Link> : <div title={title} className={classList} {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }

@@ -1,7 +1,7 @@
 import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { createUser, deleteUser, emailExists, getUserDetails, updateUser } from "@/lib/users";
+import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword } from "@/lib/users";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -32,6 +32,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {
+    let passwordUpdated = false;
+
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
@@ -44,13 +46,23 @@ export async function PATCH(request: Request): Promise<NextResponse> {
     const lastName = data.get("lastName")?.toString() ?? "";
     const email = data.get("emailAddress")?.toString() ?? "";
 
-    if (!firstName?.length || !lastName?.length || !email?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    const oldPassword = data.get("oldpassword")?.toString() ?? "";
+    const newPassword = data.get("newpassword")?.toString() ?? "";
+
+    if (oldPassword?.length && newPassword?.length) {
+        const validExistingPassword = await verifyCredentials(user.email_address, oldPassword);
+        if (!validExistingPassword) return NextResponse.json({ error: "Invalid existing password." }, { status: 401 });
+
+        passwordUpdated = await updateUserPassword(user.user_id, newPassword);
+    }
+
+    if ((!firstName?.length || !lastName?.length || !email?.length) && (!oldPassword?.length || !newPassword?.length)) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
     const exists = await emailExists(email, user.user_id);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
     const updated = await updateUser(user.user_id, firstName, lastName, email);
-    return NextResponse.json({ updated });
+    return NextResponse.json({ updated, passwordUpdated });
 }
 
 export async function DELETE(_: Request): Promise<NextResponse> {
