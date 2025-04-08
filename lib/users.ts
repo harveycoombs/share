@@ -62,18 +62,23 @@ export async function updateUserPassword(userid: number, password: string): Prom
     return result.affectedRows > 0;
 }
 
+export async function updateUserAuthCode(userid: number, code: number): Promise<boolean> {
+    const [result]: any = await pool.query("UPDATE users SET auth_code = ? WHERE user_id = ?", [code, userid]);
+    return result.affectedRows > 0;
+}
+
 export async function deleteUser(userid: number): Promise<boolean> {
     const [result]: any = await pool.query("UPDATE users SET deleted = 1 WHERE user_id = ?", [userid]);
     return result.affectedRows > 0;
 }
 
 export async function getUploadHistory(userid: number): Promise<any[]> {
-    const [result]: any = await pool.query("SELECT *, 0 AS available FROM uploads WHERE user_id = ?", [userid]);
+    const [result]: any = await pool.query("SELECT *, 0 AS available FROM uploads WHERE user_id = ? ORDER BY upload_date DESC", [userid]);
     return result;
 }
 
 export async function insertUploadHistory(userid: number, name: string, ip: string, files: number, size: number): Promise<boolean> {
-    const [result]: any = await pool.query("INSERT INTO uploads (user_id, name, ip_address, files, size) VALUES (?, ?, ?, ?, ?)", [userid, name, ip, files, size]);
+    const [result]: any = await pool.query("INSERT INTO uploads (user_id, name, ip_address, files, size, upload_date) VALUES (?, ?, ?, ?, ?, NOW())", [userid, name, ip, files, size]);
     return result.affectedRows > 0;
 }
 
@@ -85,4 +90,9 @@ export async function deleteUpload(userid: number, id: number): Promise<boolean>
 export async function renameUpload(userid: number, id: number, name: string): Promise<boolean> {
     const [result]: any = await pool.query("UPDATE uploads SET title = ? WHERE user_id = ? AND upload_id = ?", [name, userid, id]);
     return result.affectedRows > 0;
+}
+
+export async function verifyUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND auth_code = ?", [emailAddress, code]);
+    return result[0].total > 0;
 }

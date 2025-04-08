@@ -18,6 +18,15 @@ export default function RegistrationForm() {
     const [errorExists, setErrorExistence] = useState<boolean>(false);
     const [warningExists, setWarningExistence] = useState<boolean>(false);
 
+    const [verifying, setVerifying] = useState<boolean>(false);
+
+    const [firstDigit, setFirstDigit] = useState<string>("");
+    const [secondDigit, setSecondDigit] = useState<string>("");
+    const [thirdDigit, setThirdDigit] = useState<string>("");
+    const [fourthDigit, setFourthDigit] = useState<string>("");
+    const [fifthDigit, setFifthDigit] = useState<string>("");
+    const [sixthDigit, setSixthDigit] = useState<string>("");
+
     async function register(e: any) {
         e.preventDefault();
         
@@ -49,7 +58,7 @@ export default function RegistrationForm() {
 
         switch (response.status) {
             case 200:
-                window.location.href = "/";
+                setVerifying(true);
                 break;
             case 409:
                 setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Email address already in use</div>);
@@ -62,7 +71,41 @@ export default function RegistrationForm() {
         }
     }
 
-    return (
+    async function verify() {
+        if (!firstDigit?.length || !secondDigit?.length || !thirdDigit?.length || !fourthDigit?.length || !fifthDigit?.length || !sixthDigit?.length) {
+            setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Please enter all digits</div>);
+            return;
+        }
+
+        const code = `${firstDigit}${secondDigit}${thirdDigit}${fourthDigit}${fifthDigit}${sixthDigit}`;
+
+        setLoading(true);
+
+        const response = await fetch("/api/user/verify", {
+            method: "POST",
+            body: new URLSearchParams({ code })
+        }); 
+
+        setLoading(false);
+    }
+
+    return verifying ? (
+        <form onSubmit={verify} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
+            {feedback}
+            <Label classes="block mt-5" error={errorExists} warning={warningExists}>Verification Code</Label>
+
+            <div className="w-full mt-2.5 grid grid-cols-6 gap-2">
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFirstDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setSecondDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setThirdDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFourthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFifthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setSixthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+            </div>
+
+            <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Verify</Button>
+        </form>
+    ) : (
         <form onSubmit={register} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
             {feedback}
             <Label classes="block mt-5" error={errorExists} warning={warningExists}>First Name</Label>

@@ -1,7 +1,9 @@
 import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword } from "@/lib/users";
+
+import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword, updateUserAuthCode } from "@/lib/users";
+import { generateCode } from "@/lib/utils";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -27,8 +29,22 @@ export async function POST(request: Request): Promise<NextResponse> {
     const exists = await emailExists(email);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
-    const success = await createUser(firstName, lastName, email, password);
-    return NextResponse.json({ success });
+    const userid = await createUser(firstName, lastName, email, password);
+
+    if (userid) {
+        try {
+            const code = generateCode();
+            const updated = await updateUserAuthCode(userid, code);
+
+            if (updated) {
+                // to-do
+            }
+        } catch (ex: any) {
+            console.error(ex);
+        }
+    }
+
+    return NextResponse.json({ success: userid > 0 });
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {
