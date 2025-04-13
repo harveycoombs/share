@@ -47,7 +47,7 @@ export default function RootLayout({
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
                 <link rel="canonical" href="https://share.surf" />
-                <meta name="google-adsense-account" content="ca-pub-7873492896986281" />
+                <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_PUBLISHER_ID} />
             </head>
 
             <body className={`${inter.className} h-screen bg-white text-slate-800`}>
