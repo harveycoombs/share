@@ -1,13 +1,9 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faLinkedin, faReddit } from "@fortawesome/free-brands-svg-icons";
 
 export default function Footer() {
-    const path = usePathname();
-    if (path == "/login" || path == "/register") return null;
-
     return (
         <footer className="p-4 flex justify-between items-center select-none text-slate-400/60">
             <div className="text-sm font-medium max-sm:text-xs">2021 &ndash; {new Date().getFullYear()} &middot; Share {process.env.NEXT_PUBLIC_APP_VERSION} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>

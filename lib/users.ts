@@ -96,3 +96,48 @@ export async function verifyUserAuthCode(emailAddress: string, code: number): Pr
     const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND auth_code = ?", [emailAddress, code]);
     return result[0].total > 0;
 }
+
+export async function getTotalUsers(): Promise<any> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users");
+    return result[0].total;
+}
+
+export async function getTotalVerifiedUsers(): Promise<number> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users WHERE verified = 1");
+    return result[0].total;
+}
+
+export async function getTotalUnverifiedUsers(): Promise<number> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users WHERE verified = 0");
+    return result[0].total;
+}
+
+export async function getTotalDeletedUsers(): Promise<number> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users WHERE deleted = 1");
+    return result[0].total;
+}
+
+export async function getOldestUser(): Promise<any> {
+    const [result]: any = await pool.query("SELECT * FROM users ORDER BY creation_date ASC LIMIT 1");
+    return result[0];
+}
+
+export async function getNewestUser(): Promise<any> {
+    const [result]: any = await pool.query("SELECT * FROM users ORDER BY creation_date DESC LIMIT 1");
+    return result[0];
+}
+
+export async function getTotalUploads(): Promise<number> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads");
+    return result[0].total;
+}
+
+export async function getTotalUploadsFromGuests(): Promise<number> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id = 0");
+    return result[0].total;
+}
+
+export async function getTotalUploadsFromRegisteredUsers(): Promise<number> {
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id <> 0");
+    return result[0].total;
+}
