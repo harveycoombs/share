@@ -141,3 +141,8 @@ export async function getTotalUploadsFromRegisteredUsers(): Promise<number> {
     const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id <> 0");
     return result[0].total;
 }
+
+export async function getTotalUploadsStorageUsed(): Promise<number> {
+    const [result]: any = await pool.query("SELECT SUM(size) AS total FROM uploads");
+    return result[0].total;
+}
