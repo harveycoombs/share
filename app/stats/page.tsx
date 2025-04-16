@@ -39,22 +39,24 @@ export default function Stats() {
     }, []);
 
     return (
-        <main className="h-[calc(100vh-56px)] grid grid-cols-4 gap-4 p-4">
-            <StatisticPanel title="Uploads">
-                <StatisticField label="Total" value={totalUploads} />
-                <StatisticField label="Storage Used" value={formatBytes(totalUploadsStorageUsed)} />
-                <StatisticField label="Uploads From Guests" value={totalUploadsFromGuests} />
-                <StatisticField label="Uploads From Registered Users" value={totalUploadsFromRegisteredUsers} />
-            </StatisticPanel>
+        <main className="h-[calc(100vh-56px)] p-4">
+            <div className="grid grid-cols-4 gap-4">
+                <StatisticPanel title="Uploads">
+                    <StatisticField label="Total" value={totalUploads} />
+                    <StatisticField label="Storage Used" value={formatBytes(totalUploadsStorageUsed)} />
+                    <StatisticField label="Uploads From Guests" value={totalUploadsFromGuests} />
+                    <StatisticField label="Uploads From Registered Users" value={totalUploadsFromRegisteredUsers} />
+                </StatisticPanel>
 
-            <StatisticPanel title="Accounts">
-                <StatisticField label="Total" value={totalUsers} />
-                <StatisticField label="Latest Registration" value={`${newestUser?.user_id} - ${newestUser?.first_name} ${newestUser?.last_name} - ${new Date(newestUser?.creation_date).toLocaleDateString()}`} />
-                <StatisticField label="Earliest Registration" value={`${oldestUser?.user_id} - ${oldestUser?.first_name} ${oldestUser?.last_name} - ${new Date(oldestUser?.creation_date).toLocaleDateString()}`} />
-                <StatisticField label="Verified Users" value={totalVerifiedUsers} />
-                <StatisticField label="Unverified Users" value={totalUnverifiedUsers} />
-                <StatisticField label="Deleted Users" value={totalDeletedUsers} />
-            </StatisticPanel>
+                <StatisticPanel title="Accounts">
+                    <StatisticField label="Total" value={totalUsers} />
+                    <StatisticField label="Latest Registration" value={`${newestUser?.user_id} - ${newestUser?.first_name} ${newestUser?.last_name} - ${new Date(newestUser?.creation_date).toLocaleDateString()}`} />
+                    <StatisticField label="Earliest Registration" value={`${oldestUser?.user_id} - ${oldestUser?.first_name} ${oldestUser?.last_name} - ${new Date(oldestUser?.creation_date).toLocaleDateString()}`} />
+                    <StatisticField label="Verified Users" value={totalVerifiedUsers} />
+                    <StatisticField label="Unverified Users" value={totalUnverifiedUsers} />
+                    <StatisticField label="Deleted Users" value={totalDeletedUsers} />
+                </StatisticPanel>
+            </div>
         </main>
     );
 }
