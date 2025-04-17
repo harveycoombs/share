@@ -14,6 +14,8 @@ export default function Stats() {
     const [totalUploadsFromRegisteredUsers, setTotalUploadsFromRegisteredUsers] = useState<number>(0);
     const [totalUploadsStorageUsed, setTotalUploadsStorageUsed] = useState<number>(0);
 
+    const [mostCommonContentType, setMostCommonContentType] = useState<string>("");
+
     useEffect(() => {
         (async () => {
             const response = await fetch("/api/stats");
@@ -34,11 +36,12 @@ export default function Stats() {
     }, []);
 
     return (
-        <main className="h-[calc(100vh-56px)] p-4">
+        <main className="h-[calc(100vh-122px)] p-4">
             <div className="grid grid-cols-4 gap-4">
                 <StatisticPanel title="Uploads">
                     <StatisticField label="Total" value={totalUploads} />
                     <StatisticField label="Storage Used" value={formatBytes(totalUploadsStorageUsed)} />
+                    <StatisticField label="Most Common File Type" value={mostCommonContentType} />
                     <StatisticField label="Uploads From Guests" value={totalUploadsFromGuests} />
                     <StatisticField label="Uploads From Registered Users" value={totalUploadsFromRegisteredUsers} />
                 </StatisticPanel>
