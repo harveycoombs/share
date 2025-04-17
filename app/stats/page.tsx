@@ -38,7 +38,7 @@ export default function Stats() {
 
     return (
         <main className="h-[calc(100vh-122px)] p-4">
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-4 gap-4 max-2xl:grid-cols-3 max-xl:grid-cols-2 max-md:grid-cols-1">
                 <StatisticPanel title="Uploads">
                     <StatisticField label="Total" value={totalUploads} />
                     <StatisticField label="Storage Used" value={formatBytes(totalUploadsStorageUsed)} />
