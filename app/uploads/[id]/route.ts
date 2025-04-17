@@ -3,8 +3,8 @@ import fs from "fs/promises";
 import mime from "mime";
 import AdmZip from "adm-zip";
 
-export async function GET(request: any, { params }: any) {
-    const { id } = params;
+export async function GET(_: any, { params }: any) {
+    const { id } = await params;
 
     let files: string[] = [];
 

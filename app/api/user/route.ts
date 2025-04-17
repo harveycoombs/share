@@ -1,9 +1,11 @@
 import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { EmailParams, Recipient } from "mailersend";
 
 import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword, updateUserAuthCode } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
+import sendEmail from "@/lib/mail";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -37,7 +39,14 @@ export async function POST(request: Request): Promise<NextResponse> {
             const updated = await updateUserAuthCode(userid, code);
 
             if (updated) {
-                // to-do
+                const recipients = [new Recipient(email, `${firstName} ${lastName}`)];
+        
+                const emailParams = new EmailParams()
+                    .setFrom({ email: "noreply@share.surf", name: "Share.surf" })
+                    .setSubject("Share.surf - Verification")
+                    .setHtml(`<p>Hello ${firstName},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`);
+            
+                await sendEmail(emailParams, recipients);
             }
         } catch (ex: any) {
             console.error(ex);
