@@ -32,6 +32,7 @@ export default function Stats() {
             setTotalUploadsFromGuests(data.totalUploadsFromGuests);
             setTotalUploadsFromRegisteredUsers(data.totalUploadsFromRegisteredUsers);
             setTotalUploadsStorageUsed(data.storageUsed);
+            setMostCommonContentType(data.mostCommonContentType);
         })();
     }, []);
 
