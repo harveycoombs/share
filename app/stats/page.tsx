@@ -8,9 +8,7 @@ export default function Stats() {
     const [totalVerifiedUsers, setTotalVerifiedUsers] = useState<number>(0);
     const [totalUnverifiedUsers, setTotalUnverifiedUsers] = useState<number>(0);
     const [totalDeletedUsers, setTotalDeletedUsers] = useState<number>(0);
-    const [oldestUser, setOldestUser] = useState<any>(null);
-    const [newestUser, setNewestUser] = useState<any>(null);
-
+    
     const [totalUploads, setTotalUploads] = useState<number>(0);
     const [totalUploadsFromGuests, setTotalUploadsFromGuests] = useState<number>(0);
     const [totalUploadsFromRegisteredUsers, setTotalUploadsFromRegisteredUsers] = useState<number>(0);
@@ -28,9 +26,6 @@ export default function Stats() {
             setTotalVerifiedUsers(data.totalVerifiedUsers);
             setTotalUnverifiedUsers(data.totalUnverifiedUsers);
             setTotalDeletedUsers(data.totalDeletedUsers);
-            setOldestUser(data.oldestUser);
-            setNewestUser(data.newestUser);
-            
             setTotalUploads(data.totalUploads);
             setTotalUploadsFromGuests(data.totalUploadsFromGuests);
             setTotalUploadsFromRegisteredUsers(data.totalUploadsFromRegisteredUsers);
@@ -50,8 +45,6 @@ export default function Stats() {
 
                 <StatisticPanel title="Accounts">
                     <StatisticField label="Total" value={totalUsers} />
-                    <StatisticField label="Latest Registration" value={`${newestUser?.user_id} - ${newestUser?.first_name} ${newestUser?.last_name} - ${new Date(newestUser?.creation_date).toLocaleDateString()}`} />
-                    <StatisticField label="Earliest Registration" value={`${oldestUser?.user_id} - ${oldestUser?.first_name} ${oldestUser?.last_name} - ${new Date(oldestUser?.creation_date).toLocaleDateString()}`} />
                     <StatisticField label="Verified Users" value={totalVerifiedUsers} />
                     <StatisticField label="Unverified Users" value={totalUnverifiedUsers} />
                     <StatisticField label="Deleted Users" value={totalDeletedUsers} />
