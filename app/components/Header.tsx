@@ -10,7 +10,7 @@ import Button from "@/app/components/common/Button";
 
 export default function Header() {
     const path = usePathname();
-    if (path == "/login" || path == "/register" || path == "/stats") return null;
+    if (path == "/login" || path == "/register") return null;
 
     const [user, setUser] = useState<any>(null);
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
