@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
+
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
