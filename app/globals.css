@@ -27,7 +27,7 @@
         border: none;
         border-radius: 100px;
         background-color: #F3F4F6;
-        color: #6366F1;
+        color: #3B82F6;
     }
 
     progress::-webkit-progress-bar {
@@ -49,11 +49,11 @@
 
     progress:hover::-webkit-progress-value {
         opacity: 0.9;
-        box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
     }
 
     progress:hover::-moz-progress-bar {
         opacity: 0.9;
-        box-shadow: 0 0 10px rgba(99, 102, 241, 0.5);
+        box-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
     }
 }
