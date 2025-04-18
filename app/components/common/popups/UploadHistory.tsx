@@ -35,7 +35,7 @@ export default function UploadHistory({ onClose }: Properties) {
     }, []);
 
     return (
-        <Popup title="Upload History" onClose={onClose} classes="w-500 max-[532px]:w-15/16">{
+        <Popup title="Upload History" onClose={onClose} classes="w-125 max-[532px]:w-15/16">{
             error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
             : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
             : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} />)}</div>

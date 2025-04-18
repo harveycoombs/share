@@ -139,7 +139,7 @@ export default function Home() {
                     <div className="w-fit mx-auto text-center mt-16">
                         {loading ? <>
                             <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
-                            <progress className="appearance-none w-500 h-3 border-none rounded-full duration-150" max={100} value={Math.round(progress)}></progress>
+                            <progress className="appearance-none w-125 h-3 border-none rounded-full duration-150" max={100} value={Math.round(progress)}></progress>
                         </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : dragging ? " text-slate-500" : ""} max-sm:text-2xl`} onClick={copyUploadURL}>{
                             error.length ? error : 
                             id ? `${document.location.href}uploads/${id}` :
@@ -155,15 +155,6 @@ export default function Home() {
                             <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
                             <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
                         </div>}
-                    </div>
-
-                    <div className="invisible w-500 mx-auto mt-16 flex gap-2.5 p-2.5 rounded-lg bg-slate-100 text-slate-400 max-[532px]:w-full max-[532px]:mx-4">
-                        <Image src="/images/collate-icon.png" alt="Collate AI" width={75} height={75} className="block rounded-sm shrink-0 aspect-square pointer-events-none" />
-
-                        <div className="text-left">
-                            <Link href="https://collate.run/" target="_blank" rel="noopener" className="block text-sm font-semibold text-slate-500 mb-1.5 hover:underline"><FontAwesomeIcon icon={faExternalLinkAlt} /> Collate: Find &amp; summarise anything on the web with AI</Link>
-                            <p className="text-[0.8rem] font-medium pointer-events-none">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio tempore maxime facere est recusandae.</p>
-                        </div>
                     </div>
                 </section>
 
