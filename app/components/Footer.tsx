@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faLinkedin, faReddit } from "@fortawesome/free-brands-svg-icons";
+import { faGithub, faLinkedin, faRedditAlien } from "@fortawesome/free-brands-svg-icons";
 
 export default function Footer() {
     return (
@@ -12,7 +12,7 @@ export default function Footer() {
                 <Link href="https://ai.share.surf" className="text-sm hover:underline">AI Tools</Link>
                 <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" className="text-sm hover:underline">Donate</Link>
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
-                <FooterIcon icon={faReddit} title="Reddit" url="https://www.reddit.com/user/Harvey-Coombs" />
+                <FooterIcon icon={faRedditAlien} title="Reddit" url="https://www.reddit.com/user/Harvey-Coombs" />
                 <FooterIcon icon={faLinkedin} title="LinkedIn" url="https://www.linkedin.com/in/harvey-coombs-24573214a" />
             </div>
         </footer>
