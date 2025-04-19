@@ -13,7 +13,7 @@ export default function Footer() {
                 <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" className="text-sm hover:underline">Donate</Link>
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                 <FooterIcon icon={faRedditAlien} title="Reddit" url="https://www.reddit.com/user/Harvey-Coombs" />
-                <FooterIcon icon={faLinkedin} title="LinkedIn" url="https://www.linkedin.com/in/harvey-coombs-24573214a" />
+                <FooterIcon icon={faLinkedin} title="LinkedIn" url="https://www.linkedin.com/in/harveycoombs" />
             </div>
         </footer>
     );
