@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-import { formatBytes } from "@/lib/utils";
+import { formatBytes, formatNumber } from "@/lib/utils";
 
 export default function Stats() {
     const [totalUsers, setTotalUsers] = useState<number>(0);
@@ -71,7 +71,7 @@ function StatisticField({ label, value }: any) {
     return (
         <div className="flex items-center mt-3">
             <div className="w-1/2 text-slate-400 select-none">{label}</div>
-            <div className="w-1/2 font-bold text-right">{value}</div>
+            <div className="w-1/2 font-bold text-right">{typeof value == "number" ? formatNumber(value) : value}</div>
         </div>
     );
 }

@@ -10,3 +10,8 @@ export function formatBytes(bytes: number): string {
 export function generateCode(length: number = 6): number {
     return Math.floor(Math.pow(10, length - 1) + Math.random() * (Math.pow(10, length) - Math.pow(10, length - 1) - 1));
 }
+
+export function formatNumber(raw: number): string {
+    const formatter = new Intl.NumberFormat("en-US");
+    return formatter.format(raw);
+}
