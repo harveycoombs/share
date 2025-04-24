@@ -53,7 +53,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
     }
 
-    return NextResponse.json({ success: userid > 0 });
+    return NextResponse.json({ success: !!userid?.length });
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {

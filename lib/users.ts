@@ -43,11 +43,11 @@ export async function emailExists(emailAddress: string, userid: string|null = nu
 	return result[0].total > 0;
 }
 
-export async function createUser(firstName: string, lastName: string, emailAddress: string, password: string): Promise<number> {
+export async function createUser(firstName: string, lastName: string, emailAddress: string, password: string): Promise<string> {
 	const passwordHash = await Passwords.generateHash(password);
 	const [result]: any = await pool.query("INSERT INTO users (user_id, creation_date, first_name, last_name, email_address, password) VALUES ((SELECT UUID()), (SELECT NOW()), ?, ?, ?, ?)", [firstName, lastName, emailAddress, passwordHash]);
 
-	return result?.insertId ?? 0;
+	return result?.insertId;
 }
 
 export async function updateUser(userid: string, firstName: string, lastName: string, emailAddress: string): Promise<boolean> {
