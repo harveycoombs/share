@@ -42,6 +42,8 @@ export default function Home() {
 
             setLoading(false);
 
+            console.log("status", e.target.status);
+
             switch (e.target.status) {
                 case 200:
                     setID(e.target.response.id);
