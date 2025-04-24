@@ -13,6 +13,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!files) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
 
+    if (files.reduce((total: number, file: any) => total + file.size, 0) >= 2147483648) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
+
     try {
         await fs.mkdir(`./uploads/${now}`);
     } catch (ex: any) {
