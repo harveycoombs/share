@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Script from "next/script";
 
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
 
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
+
 
 const inter = Inter({
     weight: ["400", "500", "600", "700", "900"],
@@ -48,7 +50,8 @@ export default function RootLayout({
             <head>
                 <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
                 <link rel="canonical" href="https://share.surf" />
-                <meta name="google-adsense-account" content="ca-pub-7732415226592325" />
+
+                <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7873492896986281" crossOrigin="anonymous"></Script>
             </head>
 
             <body className={`${inter.className} h-screen bg-white text-slate-800`}>
