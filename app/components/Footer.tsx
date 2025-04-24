@@ -10,6 +10,8 @@ export default function Footer() {
             <div className="flex items-center gap-4">
                 <Link href="/stats" className="text-sm hover:underline">Stats</Link>
                 <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" className="text-sm hover:underline">Donate</Link>
+                <Link href="/documents/privacy-policy.pdf" className="text-sm hover:underline">Privacy Policy</Link>
+                <Link href="/documents/terms-of-service.pdf" className="text-sm hover:underline">Terms of Service</Link>
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                 <FooterIcon icon={faRedditAlien} title="Reddit" url="https://www.reddit.com/user/Harvey-Coombs" />
                 <FooterIcon icon={faLinkedin} title="LinkedIn" url="https://www.linkedin.com/in/harveycoombs" />
