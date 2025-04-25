@@ -23,7 +23,7 @@ export async function GET(_: any, { params }: any) {
             const content = await fs.readFile(`./uploads/${id}/${files[0]}`);
             const stats = await fs.stat(`./uploads/${id}/${files[0]}`);
 
-            let contentType = mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream";
+            let contentType = mime.getType(`./uploads/${id}/${files[0]}`); // ?? "application/octet-stream"
 
             if (contentType == "text/html") {
                 contentType = "text/plain";
