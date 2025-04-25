@@ -29,12 +29,12 @@ export async function GET(_: any, { params }: any) {
                 contentType = "text/plain";
             }
 
-            return new NextResponse(content, {
-                headers: {
-                    "Content-Type": contentType,
-                    "Content-Length": stats.size.toString()
-                }
-            });
+            const headers = contentType?.length ? {
+                "Content-Type": contentType,
+                "Content-Length": stats.size.toString()
+            } : undefined;
+
+            return new NextResponse(content, { headers });
         default:
             const zip = new AdmZip();
 
