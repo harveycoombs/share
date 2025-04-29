@@ -7,7 +7,6 @@ import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import UploadHistory from "@/app/components/common/popups/UploadHistory";
 
-
 export default function Home() {
     const [file, setFile] = useState<File|null>(null);
     const [id, setID] = useState<number>(0);
@@ -21,6 +20,12 @@ export default function Home() {
 
     useEffect(() => {
         if (!file) return;
+
+        if (file.size > 2147483648) {
+            setError("Uploaded file is too large.");
+            setLoading(false);
+            return;
+        }
 
         setLoading(true);
 
@@ -41,8 +46,6 @@ export default function Home() {
             if (e.target.readyState != 4) return;
 
             setLoading(false);
-
-            console.log("status", e.target.status);
 
             switch (e.target.status) {
                 case 200:
