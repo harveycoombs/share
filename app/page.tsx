@@ -22,7 +22,7 @@ export default function Home() {
         if (!file) return;
 
         if (file.size > 2147483648) {
-            setError("Uploaded file is too large.");
+            setError("File is too large");
             setLoading(false);
             return;
         }
