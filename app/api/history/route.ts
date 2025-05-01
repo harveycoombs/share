@@ -10,7 +10,7 @@ export async function GET(): Promise<NextResponse> {
     const user = await authenticate(token ?? "");
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
-    
+
     const history = await Promise.all((await getUploadHistory(user.user_id)).map(async (upload) => {
         upload.available = await fs.access(`./uploads/${upload.upload_id}`).then(() => true).catch(() => false);
         return upload;

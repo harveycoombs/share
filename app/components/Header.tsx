@@ -38,7 +38,7 @@ export default function Header() {
     return (
         <>
             <header className="p-3.5 flex justify-between select-none">
-                <div className="cursor-pointer duration-150 hover:opacity-80 active:opacity-60 max-sm:hidden" onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
+                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
 
                 {user ? <nav className="relative">
                     <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt={`${user?.first_name} ${user?.last_name}`} width={32} height={32} className="inline-block align-middle rounded-full object-cover" title={`Signed in as ${user.first_name} ${user.last_name}`} draggable={false} />

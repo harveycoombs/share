@@ -43,8 +43,10 @@ export async function POST(request: Request): Promise<NextResponse> {
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
 
+    const password = data.get("password")?.toString() ?? "";
+
     const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host");
-    await insertUploadHistory(user?.user_id ?? 0, now.toString(), ip ?? "", files.length, files.map(file => file.size).reduce((a, b) => a + b, 0));
+    await insertUploadHistory(user?.user_id ?? 0, now.toString(), ip ?? "", files.length, files.map(file => file.size).reduce((a, b) => a + b, 0), password);
 
     return NextResponse.json({ id: now }, { status: 200 });
 }

@@ -5,6 +5,7 @@ import { faClockRotateLeft, faInfoCircle } from "@fortawesome/free-solid-svg-ico
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
+import Field from "@/app/components/common/Field";
 import UploadHistory from "@/app/components/common/popups/UploadHistory";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
     const [dragging, setDragging] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [progress, setProgress] = useState<number>(0);
+    const [password, setPassword] = useState<string>("");
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
 
     const uploader = useRef<HTMLInputElement>(null);
@@ -31,6 +33,7 @@ export default function Home() {
 
         const data = new FormData();
         data.append("files", file);
+        data.append("password", password);
 
         const request = new XMLHttpRequest();
 
@@ -69,6 +72,11 @@ export default function Home() {
         setProgress(0);
         setFile(null);
         setLoading(false);
+        setPassword("");
+
+        if (uploader.current) {
+            uploader.current.value = "";
+        }
     }
 
     async function copyUploadURL(e: any) {
@@ -154,9 +162,13 @@ export default function Home() {
                             <Button classes="inline-block align-middle ml-2 max-sm:block max-sm:w-full max-sm:ml-0 max-sm:mt-2" transparent={true} onClick={() => setHistoryVisibility(true)}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
                         </div>}
 
-                        {!loading && !id && <div className="w-fit mx-auto mt-5 text-blue-500 text-center">
-                            <FontAwesomeIcon icon={faInfoCircle} className="inline-block align-middle text-lg leading-none" />
-                            <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
+                        {!loading && !id && <div className="w-fit mx-auto mt-5 flex gap-4 items-center">
+                            <div className="w-fit mx-auto text-blue-500 text-center leading-none">
+                                <span className="inline-block align-middle text-lg"><FontAwesomeIcon icon={faInfoCircle} /></span>
+                                <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
+                            </div>
+
+                            <Field type="password" placeholder="Password" onChange={(e: any) => setPassword(e.target.value)} />
                         </div>}
                     </div>
                 </section>

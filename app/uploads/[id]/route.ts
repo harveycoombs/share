@@ -3,8 +3,21 @@ import fs from "fs/promises";
 import mime from "mime";
 import AdmZip from "adm-zip";
 
-export async function GET(_: any, { params }: any) {
+import { checkUploadProtection, getUploadPasswordHash } from "@/lib/users";
+import { verify } from "@/lib/passwords";
+
+export async function GET(request: Request, { params }: any) {
     const { id } = await params;
+
+    const isProtected = await checkUploadProtection(id);
+    const password = request.headers.get("Share-Upload-Password") ?? "";
+
+    if (isProtected && !password?.length) return NextResponse.redirect(`${request.headers.get("x-forwarded-proto")}://${request.headers.get("host")}/protected/${id}`);
+
+    const hash = await getUploadPasswordHash(id);
+    const verified = verify(password, hash);
+
+    if (isProtected && !verified) return NextResponse.json({ error: "Invalid password." }, { status: 401 });
 
     let files: string[] = [];
 
@@ -32,7 +45,7 @@ export async function GET(_: any, { params }: any) {
             return new NextResponse(content, {
                 headers: {
                     "Content-Type": contentType,
-                    "Content-Disposition": `inline; filename="${files[0]}"`,
+                    "Content-Disposition": `${isProtected ? "attachment" : "inline"}; filename="${files[0]}"`,
                     "Content-Length": stats.size.toString()
                 }
             });

@@ -8,7 +8,7 @@ export async function authenticate(token: string): Promise<any> {
 
 		jwt.verify(token, process.env.JWT_SECRET ?? "", async (ex: any, user: any) => {
 			if (ex || !user) {
-				reject(ex.message);
+				resolve(null);
                 return;
 			}
 
