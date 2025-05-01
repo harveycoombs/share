@@ -32,7 +32,7 @@ export async function GET(_: any, { params }: any) {
             return new NextResponse(content, {
                 headers: {
                     "Content-Type": contentType,
-                    "Content-Disposition": `attachment; filename="${files[0]}"`,
+                    "Content-Disposition": `inline; filename="${files[0]}"`,
                     "Content-Length": stats.size.toString()
                 }
             });
