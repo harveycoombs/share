@@ -54,7 +54,7 @@ export default function RootLayout({
                 <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7873492896986281" crossOrigin="anonymous"></Script>
             </head>
 
-            <body className={`${inter.className} h-screen bg-white text-slate-800`}>
+            <body className={`${inter.className} h-screen bg-white text-slate-800 dark:bg-zinc-900 dark:text-white`}>
                 <Header />
                 {children}
                 <Footer />

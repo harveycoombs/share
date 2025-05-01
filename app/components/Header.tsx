@@ -43,11 +43,11 @@ export default function Header() {
                 {user ? <nav className="relative">
                     <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt={`${user?.first_name} ${user?.last_name}`} width={32} height={32} className="inline-block align-middle rounded-full object-cover" title={`Signed in as ${user.first_name} ${user.last_name}`} draggable={false} />
 
-                    <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                    <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85 dark:text-zinc-400" onClick={() => setMenuVisibility(!menuIsVisible)}>
                         <FontAwesomeIcon icon={faEllipsis} />
                     </div>
 
-                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[105%] right-0 overflow-hidden bg-white rounded-lg shadow-lg w-38`}>
+                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[105%] right-0 overflow-hidden bg-white rounded-lg shadow-lg w-38 dark:bg-zinc-800`}>
                         <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-slate-700 hover:bg-slate-100/50 duration-150 cursor-pointer" onClick={() => setSettingsVisibility(true)}>Settings</div>
                         <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-red-500 border-t border-slate-200/50 hover:bg-red-50 duration-150 cursor-pointer" onClick={logout}>Log out</div>
                     </div>
