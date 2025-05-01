@@ -14,11 +14,12 @@ export async function GET(request: Request, { params }: any) {
 
     if (isProtected && !password?.length) return NextResponse.redirect(`${request.headers.get("x-forwarded-proto")}://${request.headers.get("host")}/protected/${id}`);
 
-    const hash = await getUploadPasswordHash(id);
-
-    const verified = await verify(password, hash);
-
-    if (isProtected && !verified) return NextResponse.json({ error: "Invalid password." }, { status: 401 });
+    if (isProtected && password?.length) {
+        const hash = await getUploadPasswordHash(id);
+        const verified = await verify(password, hash);
+    
+        if (!verified) return NextResponse.json({ error: "Invalid password." }, { status: 401 });
+    }
 
     let files: string[] = [];
 
