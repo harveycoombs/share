@@ -26,6 +26,12 @@ export default function Protected({ params }: any) {
     async function checkPassword() {
         setLoading(true);
 
+        if (!password.length) {
+            setError("Please enter a password.");
+            setLoading(false);
+            return;
+        }
+
         const response = await fetch(`/uploads/${id}`, {
             headers: {
                 "Share-Upload-Password": password
