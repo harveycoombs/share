@@ -132,26 +132,26 @@ export default function Home() {
 
     return (
         <>
-            <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <main className="min-h-[calc(100vh-117px)] grid place-items-center max-sm:min-h-[calc(100vh-135px)]" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
                 <section className="text-center w-fit select-none">
                     <div className="w-fit mx-auto">
                         <div className="w-fit mx-auto max-sm:scale-90"><Logo width={288} height={56} className="dark:fill-white" /></div>
-                        <strong className="block font-medium text-slate-400 mt-4 max-sm:text-sm dark:text-zinc-400">The no-frills file sharing service</strong>
+                        <h2 className="block font-medium text-slate-400 mt-4 max-sm:text-sm dark:text-zinc-400">The no-frills file sharing service</h2>
                     </div>
 
-                    <div className="w-fit mx-auto text-center mt-16">
+                    <div className="w-fit mx-auto text-center mt-16 max-sm:px-5 max-sm:mt-8">
                         {loading ? <>
                             <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
                             <progress className="appearance-none w-125 h-3 border-none rounded-full duration-150" max={100} value={Math.round(progress)}></progress>
-                        </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : dragging ? " text-slate-500" : ""} max-sm:text-2xl`} onClick={copyUploadURL}>{
+                        </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
                             error.length ? error : 
                             id ? `${document.location.href}uploads/${id}` :
                             `${dragging ? "Drop" : "Drag or paste"} files ${dragging ? "onto" : "over"} this page to upload`
                         }</h1>}
 
-                        {!loading && <div className="w-fit mx-auto mt-5">
-                            <Button classes="inline-block align-middle" onClick={() => id || error.length ? resetUploader() : uploader?.current?.click()}>{id || error.length ? "Upload More" : "Browse Files"}</Button>
-                            <Button classes="inline-block align-middle ml-2" transparent={true} onClick={() => setHistoryVisibility(true)}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
+                        {!loading && <div className="w-fit mx-auto mt-5 max-sm:w-full max-sm:mt-8">
+                            <Button classes="inline-block align-middle max-sm:block max-sm:w-full" onClick={() => id || error.length ? resetUploader() : uploader?.current?.click()}>{id || error.length ? "Upload More" : "Browse Files"}</Button>
+                            <Button classes="inline-block align-middle ml-2 max-sm:block max-sm:w-full max-sm:ml-0 max-sm:mt-2" transparent={true} onClick={() => setHistoryVisibility(true)}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
                         </div>}
 
                         {!loading && !id && <div className="w-fit mx-auto mt-5 text-blue-500 text-center">
