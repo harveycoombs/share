@@ -17,8 +17,16 @@ export default function Home() {
     const [progress, setProgress] = useState<number>(0);
     const [password, setPassword] = useState<string>("");
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
+    const [sessionExists, setSessionExistence] = useState<boolean>(false);
 
     const uploader = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch("/api/history");
+            setSessionExistence(response.ok);
+        })();
+    }, []);
 
     useEffect(() => {
         if (!file) return;
@@ -159,23 +167,36 @@ export default function Home() {
 
                         {!loading && <div className="w-fit mx-auto mt-5 max-sm:w-full max-sm:mt-8">
                             <Button classes="inline-block align-middle max-sm:block max-sm:w-full" onClick={() => id || error.length ? resetUploader() : uploader?.current?.click()}>{id || error.length ? "Upload More" : "Browse Files"}</Button>
-                            <Button classes="inline-block align-middle ml-2 max-sm:block max-sm:w-full max-sm:ml-0 max-sm:mt-2" transparent={true} onClick={() => setHistoryVisibility(true)}><FontAwesomeIcon icon={faClockRotateLeft} /> View Upload History</Button>
+
+                            <Button 
+                                classes={`inline-block align-middle ml-2 max-sm:block max-sm:w-full max-sm:ml-0 max-sm:mt-2${!sessionExists ? " cursor-not-allowed" : ""}`}
+                                transparent={true}
+                                onClick={() => setHistoryVisibility(true)}
+                            >
+                                    <FontAwesomeIcon icon={faClockRotateLeft} /> {sessionExists ? "View Upload History" : "Sign In To View Upload History"}
+                            </Button>
                         </div>}
 
-                        {!loading && !id && <div className="w-fit mx-auto mt-5 flex gap-4 items-center max-sm:flex-col-reverse">
+                        {!loading && !id && <div className="w-fit mx-auto mt-5 flex gap-4 items-center max-sm:flex-col-reverse max-sm:w-full">
                             <div className="w-fit mx-auto text-blue-500 text-center leading-none">
                                 <span className="inline-block align-middle text-lg"><FontAwesomeIcon icon={faInfoCircle} /></span>
                                 <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
                             </div>
 
-                            <Field type="password" placeholder="Password" onChange={(e: any) => setPassword(e.target.value)} />
+                            <Field 
+                                type="password"
+                                placeholder={sessionExists ? "Password" : "Password (Registered Users Only)"}
+                                classes={sessionExists ? "max-sm:w-full" : "cursor-not-allowed w-58 max-sm:w-full pointer-events-none"}
+                                readOnly={!sessionExists}
+                                onChange={(e: any) => setPassword(e.target.value)}
+                            />
                         </div>}
                     </div>
                 </section>
 
                 <input type="file" className="hidden" ref={uploader} onInput={(e: any) => setFile(e.target.files[0])} />
             </main>
-            {historyIsVisible && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
+            {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
         </>
     );
 }

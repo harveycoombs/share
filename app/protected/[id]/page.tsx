@@ -62,7 +62,7 @@ export default function Protected({ params }: any) {
                     <h2 className="block font-medium text-slate-400 mt-4 max-sm:text-sm dark:text-zinc-400">The no-frills file sharing service</h2>
                 </div>
 
-                {url.length ? <h1 className="text-3xl mt-16 font-medium max-sm:text-2xl max-sm:leading-relaxed"><FontAwesomeIcon icon={faUnlock} /></h1> : <h1 className={`text-3xl mt-16 font-medium${error.length ? " text-red-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`}>{error.length ? error : <><FontAwesomeIcon icon={faLock} className="text-amber-500" />This upload is Password-Protected.</>}</h1>}
+                {url.length ? <h1 className="text-3xl mt-16 font-medium max-md:px-5 max-sm:text-2xl max-sm:leading-relaxed"><FontAwesomeIcon icon={faUnlock} /></h1> : <h1 className={`text-3xl mt-16 font-medium${error.length ? " text-red-500" : ""} max-md:px-5 max-sm:text-2xl max-sm:leading-relaxed`}>{error.length ? error : <><FontAwesomeIcon icon={faLock} className="text-amber-500" /> This upload is Password-Protected.</>}</h1>}
 
                 {url.length ? <Button classes="block w-68 mx-auto mt-8" url={url} download={url.substring(url.lastIndexOf("/") + 1)}>Download</Button> : <div className="w-68 mx-auto mt-8">
                     <Label classes="block w-full text-left mb-1">Password</Label>
