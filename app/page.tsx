@@ -155,7 +155,7 @@ export default function Home() {
                         <h2 className="block font-medium text-slate-400 mt-4 max-sm:text-sm dark:text-zinc-400">The no-frills file sharing service</h2>
                     </div>
 
-                    <div className="w-fit mx-auto text-center mt-16 max-sm:px-5 max-sm:mt-8">
+                    <div className="w-fit mx-auto text-center mt-12 max-sm:px-5 max-sm:mt-8">
                         {loading ? <>
                             <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
                             <progress className="appearance-none w-125 h-3 border-none rounded-full duration-150 max-md:w-full" max={100} value={Math.round(progress)}></progress>
@@ -165,11 +165,11 @@ export default function Home() {
                             `${dragging ? "Drop" : "Drag or paste"} files ${dragging ? "onto" : "over"} this page to upload`
                         }</h1>}
 
-                        {!loading && <div className="w-fit mx-auto mt-5 max-sm:w-full max-sm:mt-8">
+                        {!loading && <div className="w-fit mx-auto mt-12 max-sm:w-full max-sm:mt-8">
                             <Button classes="inline-block align-middle max-sm:block max-sm:w-full" onClick={() => id || error.length ? resetUploader() : uploader?.current?.click()}>{id || error.length ? "Upload More" : "Browse Files"}</Button>
 
                             <Button 
-                                classes={`inline-block align-middle ml-2 max-sm:block max-sm:w-full max-sm:ml-0 max-sm:mt-2${!sessionExists ? " cursor-not-allowed" : ""}`}
+                                classes={`inline-block align-middle ml-2 max-sm:block max-sm:w-full max-sm:ml-0 max-sm:mt-2 ${!sessionExists ? "cursor-not-allowed" : ""}`}
                                 transparent={true}
                                 onClick={() => setHistoryVisibility(true)}
                             >
