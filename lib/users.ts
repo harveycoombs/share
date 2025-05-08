@@ -72,8 +72,11 @@ export async function deleteUser(userid: string): Promise<boolean> {
     return result.affectedRows > 0;
 }
 
-export async function getUploadHistory(userid: string): Promise<any[]> {
-    const [result]: any = await pool.query("SELECT *, 0 AS available FROM uploads WHERE user_id = ? ORDER BY upload_date DESC", [userid]);
+export async function getUploadHistory(userid: string, search: string): Promise<any[]> {
+    const filter = search.length ? " AND (name LIKE ? OR title LIKE ?)" : "";
+    const params = search.length ? [userid, `%${search}%`, `%${search}%`] : [userid];
+
+    const [result]: any = await pool.query(`SELECT *, 0 AS available FROM uploads WHERE user_id = ?${filter} ORDER BY upload_date DESC`, params);
     return result;
 }
 

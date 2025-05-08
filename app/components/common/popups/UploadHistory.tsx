@@ -21,12 +21,14 @@ export default function UploadHistory({ onClose }: Properties) {
     const [selectedUploads, setSelectedUploads] = useState<any[]>([]);
     const [feedback, setFeedback] = useState<string>("");
 
+    const [search, setSearch] = useState<string>("");
+
     useEffect(() => {
         setLoading(true);
         setError("");
 
         (async () => {
-            const response = await fetch("/api/history");
+            const response = await fetch(`/api/history?search=${search}`);
             const json = await response.json();
 
             setUploads(json.history ?? []);
@@ -36,7 +38,7 @@ export default function UploadHistory({ onClose }: Properties) {
 
             setError((response.status == 401) ? "Sign in to view your upload history" : json.error);
         })();
-    }, []);
+    }, [search]);
 
     function resetSelection() {
         setSelecting(false);
@@ -69,7 +71,7 @@ export default function UploadHistory({ onClose }: Properties) {
         <Popup title="Upload History" onClose={onClose} classes="w-125 max-[532px]:w-15/16">
             <div className="sticky top-0 z-10 bg-white dark:bg-zinc-800 pt-1 pb-2">
                 <div className="w-full flex items-center justify-between">
-                    <Field type="text" placeholder="Search" />
+                    <Field type="text" placeholder="Search" onInput={(e: any) => setSearch(e.target.value)} />
 
                     {
                         selecting ? <div className="flex items-center gap-1">
@@ -83,12 +85,12 @@ export default function UploadHistory({ onClose }: Properties) {
                 {(feedback.length > 0) && <div className="p-1.5 leading-none text-xs font-medium text-center bg-red-400 text-white rounded-md mt-2">{feedback}</div>}
             </div>
 
-            {
+            <div className="h-150">{
                 error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
                 : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
                 : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
                 : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
-            }
+            }</div>
         </Popup>
     );
 }

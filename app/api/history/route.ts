@@ -4,14 +4,16 @@ import { cookies } from "next/headers";
 import { authenticate } from "@/lib/jwt";
 import { getUploadHistory, renameUpload, deleteUpload } from "@/lib/users";
 
-export async function GET(): Promise<NextResponse> {
+export async function GET(request: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const history = await Promise.all((await getUploadHistory(user.user_id)).map(async (upload) => {
+    const search = new URL(request.url).searchParams.get("search") ?? "";
+
+    const history = await Promise.all((await getUploadHistory(user.user_id, search)).map(async (upload) => {
         upload.available = await fs.access(`./uploads/${upload.upload_id}`).then(() => true).catch(() => false);
         return upload;
     }));
