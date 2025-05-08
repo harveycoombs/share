@@ -48,7 +48,7 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
     const data = await request.formData();
     const id = parseInt(data.get("uploadid")?.toString() ?? "0");
-    const ids = JSON.parse(data.get("uploads")?.toString() ?? "[]");
+    const uploads = JSON.parse(data.get("uploads")?.toString() ?? "[]");
 
     let success = false;
 
@@ -58,10 +58,15 @@ export async function DELETE(request: Request): Promise<NextResponse> {
                 await fs.unlink(`./uploads/${id}`);
                 success = await deleteUpload(user.user_id, id);
                 break;
-            case (ids.length > 0):
-                for (let id of ids) {
-                    await fs.unlink(`./uploads/${id}`);
-                    success = await deleteUpload(user.user_id, id);
+            case (uploads.length > 0):
+                for (let upload of uploads) {
+                    try {
+                        await fs.unlink(`./uploads/${upload.name}`);
+                    } catch (ex: any) {
+                        console.error(`Unable to delete ${upload.name}: `, ex.message);
+                    } finally {
+                        success = await deleteUpload(user.user_id, upload.id);
+                    }
                 }
                 break;
             default:
