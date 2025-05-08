@@ -3,9 +3,10 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCircleNotch, faDownload, faPenToSquare, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCircleNotch, faDownload, faListCheck, faPenToSquare, faTrashAlt, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/Popup";
+import Field from "@/app/components/common/Field";
 import { formatBytes } from "@/lib/utils";
 
 interface Properties {
@@ -16,6 +17,9 @@ export default function UploadHistory({ onClose }: Properties) {
     const [uploads, setUploads] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [selecting, setSelecting] = useState(false);
+    const [selectedUploads, setSelectedUploads] = useState<any[]>([]);
+    const [feedback, setFeedback] = useState<string>("");
 
     useEffect(() => {
         setLoading(true);
@@ -34,17 +38,62 @@ export default function UploadHistory({ onClose }: Properties) {
         })();
     }, []);
 
+    function resetSelection() {
+        setSelecting(false);
+        setSelectedUploads([]);
+    }
+
+    function updateSelection(e: any, id: number) {
+        setSelectedUploads(e.target.checked ? [...selectedUploads, id] : selectedUploads.filter(existingid => existingid != id));
+    }
+
+    async function deleteUploads() {
+        setFeedback("");
+
+        const response = await fetch("/api/history", {
+            method: "DELETE",
+            body: new URLSearchParams({ uploads: JSON.stringify(selectedUploads) })
+        });
+
+        const json = await response.json();
+
+        if (!response.ok || !json.success) {
+            setFeedback("Something went wrong");
+            return;
+        }
+
+        setSelectedUploads([]);
+    }
+
     return (
-        <Popup title="Upload History" onClose={onClose} classes="w-125 max-[532px]:w-15/16">{
-            error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
-            : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
-            : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} />)}</div>
-            : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
-        }</Popup>
+        <Popup title="Upload History" onClose={onClose} classes="w-125 max-[532px]:w-15/16">
+            <div className="sticky top-0 z-10 bg-white dark:bg-zinc-800 pt-1 pb-2">
+                <div className="w-full flex items-center justify-between">
+                    <Field type="text" placeholder="Search" />
+
+                    {
+                        selecting ? <div className="flex items-center gap-1">
+                            <div className="text-xs font-medium text-slate-400/75 mr-1.5 select-none">{selectedUploads.length} Selected</div>
+                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
+                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
+                        </div> : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>
+                    }
+                </div>
+
+                {(feedback.length > 0) && <div className="p-1.5 leading-none text-xs font-medium text-center bg-red-400 text-white rounded-md mt-2">{feedback}</div>}
+            </div>
+
+            {
+                error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
+                : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
+                : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
+                : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
+            }
+        </Popup>
     );
 }
 
-function Upload({ data }: any) {
+function Upload({ data, bulkSelect, onSelect }: any) {
     const [feedback, setFeedback] = useState<string>("");
 
     const [uploadTitle, setUploadTitle] = useState<string>(data.title?.length ? data.title : data.name);
@@ -55,27 +104,25 @@ function Upload({ data }: any) {
 
     const uploadRef = useRef<HTMLDivElement>(null);
     
-    function deleteUpload() {
+    async function deleteUpload() {
         setFeedback("");
         setDeleteLoading(true);
 
-        (async () => {
-            const response = await fetch("/api/history", {
-                method: "DELETE",
-                body: new URLSearchParams({ uploadid: data.upload_id })
-            });
+        const response = await fetch("/api/history", {
+            method: "DELETE",
+            body: new URLSearchParams({ uploadid: data.upload_id })
+        });
 
-            const json = await response.json();
+        const json = await response.json();
 
-            setDeleteLoading(false);
+        setDeleteLoading(false);
 
-            if (!response.ok || !json.success) {
-                setFeedback("Something went wrong");
-                return;
-            }
+        if (!response.ok || !json.success) {
+            setFeedback("Something went wrong");
+            return;
+        }
 
-            uploadRef?.current?.remove();
-        })();
+        uploadRef?.current?.remove();
     }
 
     useEffect(() => {
@@ -127,9 +174,10 @@ function Upload({ data }: any) {
                     <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
                 </div>
 
-                <div>
+                <div className="flex items-center gap-1">
                     <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.name}`} download={true} target="_blank" />
                     <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} />
+                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-blue-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                 </div>
 
                 {data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
@@ -139,6 +187,6 @@ function Upload({ data }: any) {
 }
 
 function UploadOption({ icon, url, ...rest }: any) {
-    const classList = "inline-block align-middle leading-none ml-1 text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-200/60 active:bg-slate-200";
+    const classList = "leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-200/60 active:bg-slate-200";
     return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={icon} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }

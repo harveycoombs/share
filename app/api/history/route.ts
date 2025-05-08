@@ -38,20 +38,33 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 }
 
 export async function DELETE(request: Request): Promise<NextResponse> {
-    const data = await request.formData();
-    const id = parseInt(data.get("uploadid")?.toString() ?? "0");
-
-    if (!id) return NextResponse.json({ error: "Invalid upload ID." }, { status: 400 });
-
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
+    const data = await request.formData();
+    const id = parseInt(data.get("uploadid")?.toString() ?? "0");
+    const ids = JSON.parse(data.get("uploads")?.toString() ?? "[]");
+
+    let success = false;
+
     try {
-        await fs.unlink(`./uploads/${id}`);
-        const success = await deleteUpload(user.user_id, id);
+        switch (true) {
+            case (id > 0):
+                await fs.unlink(`./uploads/${id}`);
+                success = await deleteUpload(user.user_id, id);
+                break;
+            case (ids.length > 0):
+                for (let id of ids) {
+                    await fs.unlink(`./uploads/${id}`);
+                    success = await deleteUpload(user.user_id, id);
+                }
+                break;
+            default:
+                return NextResponse.json({ error: "Invalid upload ID(s)." }, { status: 400 });
+        }
 
         return NextResponse.json({ success }, { status: 200 });
     } catch (ex: any) {

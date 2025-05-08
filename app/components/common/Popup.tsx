@@ -19,7 +19,10 @@ export default function Popup({ title, onClose, children, classes, ...rest }: Pr
                     <strong className="text-sm font-medium text-slate-400/60 select-none dark:text-zinc-400/60">{title}</strong>
                     <div className="text-slate-400/60 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85 dark:text-zinc-400 dark:hover:text-zinc-400 dark:active:text-zinc-400" onClick={onClose}><FontAwesomeIcon icon={faXmark} /></div>
                 </div>
-                {children}
+
+                <div className="max-h-[75vh] overflow-y-auto">
+                    {children}
+                </div>
             </motion.div>
         </div>
     );
