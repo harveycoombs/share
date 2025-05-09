@@ -43,11 +43,11 @@ export async function emailExists(emailAddress: string, userid: string|null = nu
 	return result[0].total > 0;
 }
 
-export async function createUser(firstName: string, lastName: string, emailAddress: string, password: string): Promise<string> {
+export async function createUser(firstName: string, lastName: string, emailAddress: string, password: string): Promise<boolean> {
 	const passwordHash = await generateHash(password);
 	const [result]: any = await pool.query("INSERT INTO users (user_id, creation_date, first_name, last_name, email_address, password) VALUES ((SELECT UUID()), (SELECT NOW()), ?, ?, ?, ?)", [firstName, lastName, emailAddress, passwordHash]);
 
-	return result?.insertId;
+	return result.affectedRows > 0;
 }
 
 export async function updateUser(userid: string, firstName: string, lastName: string, emailAddress: string): Promise<boolean> {
@@ -62,8 +62,8 @@ export async function updateUserPassword(userid: string, password: string): Prom
     return result.affectedRows > 0;
 }
 
-export async function updateUserAuthCode(userid: string, code: number): Promise<boolean> {
-    const [result]: any = await pool.query("UPDATE users SET auth_code = ? WHERE user_id = ?", [code, userid]);
+export async function updateUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
+    const [result]: any = await pool.query("UPDATE users SET auth_code = ? WHERE email_address = ?", [code, emailAddress]);
     return result.affectedRows > 0;
 }
 

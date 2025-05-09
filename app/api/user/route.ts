@@ -26,19 +26,25 @@ export async function POST(request: Request): Promise<NextResponse> {
     const email = data.get("emailAddress")?.toString() ?? "";
     const password = data.get("password")?.toString() ?? "";
 
+    console.log("line 29");
+
     if (!firstName || !lastName || !email || !password) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
     const exists = await emailExists(email);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
-    const userid = await createUser(firstName, lastName, email, password);
+    const created = await createUser(firstName, lastName, email, password);
 
-    if (userid) {
+    if (created) {
         try {
             const code = generateCode();
-            const updated = await updateUserAuthCode(userid, code);
+            const updated = await updateUserAuthCode(email, code);
+
+            console.log("UPDATED", updated);
 
             if (updated) {
+                console.log("SENDING EMAIL");
+
                 const recipients = [new Recipient(email, `${firstName} ${lastName}`)];
         
                 const emailParams = new EmailParams()
@@ -53,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
     }
 
-    return NextResponse.json({ success: !!userid?.length });
+    return NextResponse.json({ success: created });
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {
