@@ -41,7 +41,7 @@ export default function Header() {
                 <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
 
                 {user ? <nav className="relative">
-                    <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt={`${user?.first_name} ${user?.last_name}`} width={32} height={32} className="inline-block align-middle rounded-full object-cover" title={`Signed in as ${user.first_name} ${user.last_name}`} draggable={false} />
+                    <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt={`${user?.first_name} ${user?.last_name}`} width={32} height={32} className="inline-block align-middle rounded-full object-cover aspect-square" title={`Signed in as ${user.first_name} ${user.last_name}`} draggable={false} />
 
                     <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85 dark:text-zinc-400" onClick={() => setMenuVisibility(!menuIsVisible)}>
                         <FontAwesomeIcon icon={faEllipsis} />
