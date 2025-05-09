@@ -26,8 +26,6 @@ export async function POST(request: Request): Promise<NextResponse> {
     const email = data.get("emailAddress")?.toString() ?? "";
     const password = data.get("password")?.toString() ?? "";
 
-    console.log("line 29");
-
     if (!firstName || !lastName || !email || !password) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
     const exists = await emailExists(email);
@@ -40,11 +38,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             const code = generateCode();
             const updated = await updateUserAuthCode(email, code);
 
-            console.log("UPDATED", updated);
-
             if (updated) {
-                console.log("SENDING EMAIL");
-
                 const recipients = [new Recipient(email, `${firstName} ${lastName}`)];
         
                 const emailParams = new EmailParams()

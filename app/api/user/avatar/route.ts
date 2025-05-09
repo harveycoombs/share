@@ -24,11 +24,11 @@ export async function GET(_: any) {
             content = await fs.readFile(`./uploads/avatars/${user.user_id}/${files[0]}`);
             contentType = mime.getType(`./uploads/avatars/${user.user_id}/${files[0]}`) ?? "application/octet-stream";
         } else {
-            content = await fs.readFile("./uploads/avatars/default.jpg");
+            content = await fs.readFile("./public/images/default.jpg");
             contentType = "image/jpeg";
         }
     } catch {
-        content = await fs.readFile("./uploads/avatars/default.jpg");
+        content = await fs.readFile("./public/images/default.jpg");
         contentType = "image/jpeg";
     }
 
