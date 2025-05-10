@@ -13,7 +13,7 @@ interface Properties {
     onClose: () => void;
 }
 
-export default function Settings({ onClose }: Properties) {
+export default function AccountSettings({ onClose }: Properties) {
     const [user, setUser] = useState<any>(null);
 
     const [firstName, setFirstName] = useState<string>("");
