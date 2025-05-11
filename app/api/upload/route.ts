@@ -5,6 +5,14 @@ import { cookies } from "next/headers";
 import { authenticate } from "@/lib/jwt";
 import { insertUploadHistory } from "@/lib/users";
 
+export const config = {
+    api: {
+        bodyParser: {
+            sizeLimit: "4gb"
+        }
+    }
+};
+
 export async function POST(request: Request): Promise<NextResponse> {
     const now = new Date().getTime();
 
