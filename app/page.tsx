@@ -31,8 +31,6 @@ export default function Home() {
     useEffect(() => {
         if (!file) return;
 
-        alert(`File name: ${file.name}\nFile size: ${file.size}\nFile type: ${file.type}`);
-
         if (file.size > 2147483648) {
             setError("File is too large");
             setLoading(false);
