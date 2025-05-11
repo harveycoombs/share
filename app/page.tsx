@@ -65,6 +65,9 @@ export default function Home() {
                 case 413:
                     setError("File is too large");
                     break;
+                case 408:
+                    setError("Server timed out");
+                    break;
                 default:
                     setError("Something went wrong");
                     break;
