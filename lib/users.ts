@@ -115,6 +115,16 @@ export async function getUploadPasswordHash(id: number): Promise<string> {
     return result[0]?.password;
 }
 
+export async function getUserLanguage(userid: string): Promise<string> {
+    const [result]: any = await pool.query("SELECT language FROM users WHERE user_id = ?", [userid]);
+    return result[0]?.language;
+}
+
+export async function updateLanguage(userid: string, language: string): Promise<boolean> {
+    const [result]: any = await pool.query("UPDATE users SET language = ? WHERE user_id = ?", [language, userid]);
+    return result.affectedRows > 0;
+}
+
 export async function getTotalUsers(): Promise<any> {
     const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users");
     return result[0].total;
