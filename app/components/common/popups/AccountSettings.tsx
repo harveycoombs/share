@@ -113,7 +113,7 @@ export default function AccountSettings({ onClose }: Properties) {
                 <div>
                     <div className="flex gap-3 items-center w-fit mx-auto my-4 select-none">
                         <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
-                            <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt="Share" width={56} height={56} className="object-cover" draggable={false} />
+                            <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt="Share" width={56} height={56} className="object-cover aspect-square" draggable={false} />
                             <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
                                 <FontAwesomeIcon icon={faCamera} className="text-white" />
                             </div>
