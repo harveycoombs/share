@@ -154,7 +154,11 @@ export default function Home() {
             <main className="min-h-[calc(100vh-117px)] grid place-items-center max-sm:min-h-[calc(100vh-135px)]" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
                 <section className="text-center w-fit select-none">
                     <div className="w-fit mx-auto">
-                        <div className="w-fit mx-auto max-sm:scale-90"><Logo width={288} height={56} className="dark:fill-white" /></div>
+                        <div className="w-fit mx-auto max-sm:scale-90">
+                            <Logo size={62} className="inline-block align-middle mr-4" />
+                            <h1 className="inline-block align-middle text-4xl font-semibold leading-none">Share.surf</h1>
+                        </div>
+
                         <h2 className="block font-medium text-slate-400 mt-4 max-sm:text-sm dark:text-zinc-400">The no-frills file sharing service</h2>
                     </div>
 
@@ -162,11 +166,11 @@ export default function Home() {
                         {loading ? <>
                             <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
                             <progress className="appearance-none w-125 h-3 border-none rounded-full duration-150 max-md:w-full" max={100} value={Math.round(progress)}></progress>
-                        </> : <h1 className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
+                        </> : <strong className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
                             error.length ? error : 
                             id ? `${document.location.href}uploads/${id}` :
                             `${dragging ? "Drop" : "Drag or paste"} files ${dragging ? "onto" : "over"} this page to upload`
-                        }</h1>}
+                        }</strong>}
 
                         {!loading && <div className="w-fit mx-auto mt-12 max-sm:w-full max-sm:mt-8">
                             <Button classes="inline-block align-middle max-sm:block max-sm:w-full" onClick={() => id || error.length ? resetUploader() : uploader?.current?.click()}>{id || error.length ? "Upload More" : "Browse Files"}</Button>
@@ -181,7 +185,7 @@ export default function Home() {
                         </div>}
 
                         {!loading && !id && <div className="w-fit mx-auto mt-5 flex gap-4 items-center max-sm:flex-col-reverse max-sm:w-full">
-                            <div className="w-fit mx-auto text-blue-500 text-center leading-none">
+                            <div className="w-fit mx-auto text-sky-500 text-center leading-none">
                                 <span className="inline-block align-middle text-lg"><FontAwesomeIcon icon={faInfoCircle} /></span>
                                 <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
                             </div>

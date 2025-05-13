@@ -45,12 +45,6 @@ export default function Footer() {
                 <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" className="hover:underline">Donate</Link>
                 <Link href="/documents/privacy-policy.pdf" className="hover:underline">Privacy Policy</Link>
                 <Link href="/documents/terms-of-service.pdf" className="hover:underline">Terms of Service</Link>
-
-                <Menu small={true} defaultValue={language} onChange={updateLanguage}>
-                    <option value="en">English (EN)</option>
-                    <option value="de">German (DE)</option>
-                </Menu>
-
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                 <FooterIcon icon={faRedditAlien} title="Reddit" url="https://www.reddit.com/user/Harvey-Coombs" classes="max-sm:hidden" />
                 <FooterIcon icon={faLinkedin} title="LinkedIn" url="https://www.linkedin.com/in/harveycoombs" classes="max-sm:hidden" />

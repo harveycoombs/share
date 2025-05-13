@@ -179,7 +179,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                 <div className="flex items-center gap-1">
                     <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.name}`} download={true} target="_blank" />
                     <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} />
-                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-blue-500" onInput={(e: any) => onSelect(e, { id: data.upload_id, name: data.name })} />}
+                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-sky-500" onInput={(e: any) => onSelect(e, { id: data.upload_id, name: data.name })} />}
                 </div>
 
                 {data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}

@@ -8,6 +8,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 import Button from "@/app/components/common/Button";
 import AccountSettings from "@/app/components/common/popups/AccountSettings";
+import Logo from "./common/Logo";
 
 export default function Header() {
     const path = usePathname();
@@ -39,7 +40,7 @@ export default function Header() {
     return (
         <>
             <header className="p-3.5 flex justify-between select-none">
-                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Image src="/images/icon.png" alt="Share" width={28} height={28} /></div>
+                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Logo size={28} className="block" /></div>
 
                 {user ? <nav className="relative">
                     <Image 
@@ -57,8 +58,8 @@ export default function Header() {
                     </div>
 
                     <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white rounded-lg shadow-lg w-38 dark:bg-zinc-800`}>
-                        <Link href="https://github.com/harveycoombs/share/issues/new" target="_blank" rel="noopener noreferrer" className="block px-2.5 py-1.75 text-[0.8rem] font-medium border-t border-slate-200/50 text-slate-700 hover:bg-slate-100/50 duration-150 cursor-pointer">Report Issue</Link>
-                        <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-red-500 border-t border-slate-200/50 hover:bg-red-50 duration-150 cursor-pointer" onClick={logout}>Log out</div>
+                        <HeaderSubMenuItem url="https://github.com/harveycoombs/share/issues/new">Report Issue</HeaderSubMenuItem>
+                        <HeaderSubMenuItem onClick={logout}>Log out</HeaderSubMenuItem>
                     </div>
                 </nav> : <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
                     <Button url="/login" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
@@ -69,4 +70,9 @@ export default function Header() {
             {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
         </>
     );
+}
+
+function HeaderSubMenuItem({ url, children, classes }: any) {
+    const classList = `block px-2.5 py-1.75 text-[0.8rem] font-medium border-t border-slate-200/50 text-slate-700 hover:bg-slate-100/50 duration-150 cursor-pointer${classes?.length ? " " + classes : ""}`;
+    return url?.length ? <Link href={url} target="_blank" rel="noopener noreferrer" className={classList}>{children}</Link> : <div className={classList}>{children}</div>;
 }
