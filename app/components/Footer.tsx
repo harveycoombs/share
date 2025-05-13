@@ -46,9 +46,9 @@ export default function Footer() {
                 <Link href="/documents/privacy-policy.pdf" className="hover:underline">Privacy Policy</Link>
                 <Link href="/documents/terms-of-service.pdf" className="hover:underline">Terms of Service</Link>
 
-                <Menu small={true} onChange={updateLanguage}>
-                    <option value="en" selected={language == "en" || !language.length}>English (EN)</option>
-                    <option value="de" selected={language == "de"}>German (DE)</option>
+                <Menu small={true} defaultValue={language} onChange={updateLanguage}>
+                    <option value="en">English (EN)</option>
+                    <option value="de">German (DE)</option>
                 </Menu>
 
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
