@@ -40,7 +40,7 @@ export default function Header() {
     return (
         <>
             <header className="p-3.5 flex justify-between select-none">
-                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Logo size={30} className="block" /></div>
+                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Logo width={33} height={30} className="block" /></div>
 
                 {user ? <nav className="relative">
                     <Image 

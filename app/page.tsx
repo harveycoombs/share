@@ -155,7 +155,7 @@ export default function Home() {
                 <section className="text-center w-fit select-none">
                     <div className="w-fit mx-auto">
                         <div className="w-fit mx-auto max-sm:scale-90">
-                            <Logo size={60} className="inline-block align-middle mr-4" />
+                            <Logo width={65} height={60} className="inline-block align-middle mr-4" />
                             <h1 className="inline-block align-middle text-4xl font-semibold leading-none">Share.surf</h1>
                         </div>
 
