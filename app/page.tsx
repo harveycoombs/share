@@ -155,7 +155,7 @@ export default function Home() {
                 <section className="text-center w-fit select-none">
                     <div className="w-fit mx-auto">
                         <div className="w-fit mx-auto max-sm:scale-90">
-                            <Logo size={62} className="inline-block align-middle mr-4" />
+                            <Logo size={60} className="inline-block align-middle mr-4" />
                             <h1 className="inline-block align-middle text-4xl font-semibold leading-none">Share.surf</h1>
                         </div>
 
@@ -165,7 +165,7 @@ export default function Home() {
                     <div className="w-fit mx-auto text-center mt-12 max-sm:px-5 max-sm:mt-8">
                         {loading ? <>
                             <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
-                            <progress className="appearance-none w-125 h-3 border-none rounded-full duration-150 max-md:w-full" max={100} value={Math.round(progress)}></progress>
+                            <progress className="appearance-none w-125 h-3 border-none rounded-md duration-150 max-md:w-full" max={100} value={Math.round(progress)}></progress>
                         </> : <strong className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
                             error.length ? error : 
                             id ? `${document.location.href}uploads/${id}` :

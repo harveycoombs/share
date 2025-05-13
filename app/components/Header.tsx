@@ -40,7 +40,7 @@ export default function Header() {
     return (
         <>
             <header className="p-3.5 flex justify-between select-none">
-                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Logo size={28} className="block" /></div>
+                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${(path == "/" && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Logo size={30} className="block" /></div>
 
                 {user ? <nav className="relative">
                     <Image 
@@ -48,7 +48,7 @@ export default function Header() {
                         alt={`${user?.first_name} ${user?.last_name} (You)`} 
                         width={32} 
                         height={32}
-                        className="inline-block align-middle rounded-full object-cover aspect-square cursor-pointer duration-150 hover:opacity-80 active:opacity-70"
+                        className="inline-block align-middle rounded object-cover aspect-square cursor-pointer duration-150 hover:opacity-80 active:opacity-70"
                         title="View Account Settings"
                         draggable={false} onClick={() => setAccountSettingsVisibility(true)}
                     />
