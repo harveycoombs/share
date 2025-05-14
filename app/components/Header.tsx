@@ -6,10 +6,9 @@ import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
+import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import AccountSettings from "@/app/components/common/popups/AccountSettings";
-import PlatformSettings from "@/app/components/common/popups/PlatformSettings";
-import Logo from "./common/Logo";
 
 export default function Header() {
     const path = usePathname();
@@ -18,7 +17,6 @@ export default function Header() {
     const [user, setUser] = useState<any>(null);
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
-    const [platformSettingsAreVisible, setPlatformSettingsVisibility] = useState<boolean>(false);
 
     useEffect(() => {
         (async () => {
@@ -60,7 +58,6 @@ export default function Header() {
                     </div>
 
                     <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white rounded-lg shadow-lg w-38 dark:bg-zinc-800`}>
-                        <HeaderSubMenuItem onClick={() => setPlatformSettingsVisibility(true)}>Platform Settings</HeaderSubMenuItem>
                         <HeaderSubMenuItem url="https://github.com/harveycoombs/share/issues/new">Report Issue</HeaderSubMenuItem>
                         <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-red-500 border-t border-slate-200/50 hover:bg-red-50 duration-150 cursor-pointer" onClick={logout}>Log out</div>
                     </div>
@@ -71,7 +68,6 @@ export default function Header() {
             </header>
 
             {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
-            {platformSettingsAreVisible && user && <PlatformSettings onClose={() => setPlatformSettingsVisibility(false)} />}
         </>
     );
 }
