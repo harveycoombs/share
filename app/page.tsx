@@ -154,7 +154,7 @@ export default function Home() {
             <main className="min-h-[calc(100vh-117px)] grid place-items-center max-sm:min-h-[calc(100vh-135px)]" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
                 <section className="text-center w-fit select-none">
                     <div className="w-fit mx-auto">
-                        <div className="w-fit mx-auto max-sm:scale-90">
+                        <div className="w-fit mx-auto">
                             <Logo width={65} height={60} className="inline-block align-middle mr-4" />
                             <h1 className="inline-block align-middle text-4xl font-semibold leading-none">Share.surf</h1>
                         </div>
@@ -165,7 +165,7 @@ export default function Home() {
                     <div className="w-fit mx-auto text-center mt-12 max-sm:px-5 max-sm:mt-8">
                         {loading ? <>
                             <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
-                            <progress className="appearance-none w-125 h-3 border-none rounded-md duration-150 max-md:w-full" max={100} value={Math.round(progress)}></progress>
+                            <progress className="block appearance-none w-125 h-3 border-none rounded-md duration-150 max-md:w-full" max={100} value={Math.round(progress)}></progress>
                         </> : <strong className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
                             error.length ? error : 
                             id ? `${document.location.href}uploads/${id}` :
@@ -180,10 +180,17 @@ export default function Home() {
                                 transparent={true}
                                 onClick={() => setHistoryVisibility(true)}
                             >
-                                    <FontAwesomeIcon icon={faClockRotateLeft} /> {sessionExists ? "View Upload History" : "Sign In To View Upload History"}
+                                <FontAwesomeIcon icon={faClockRotateLeft} /> {sessionExists ? "View Upload History" : "Sign In To View Upload History"}
                             </Button>
                         </div>}
 
+                        {!loading && !id && <Field 
+                            type="password"
+                            placeholder={sessionExists ? "Password" : "Password (Registered Users Only)"}
+                            classes={sessionExists ? "w-77 mt-5 max-sm:w-full" : "w-93 mt-5 cursor-not-allowed pointer-events-none max-sm:w-full"}
+                            readOnly={!sessionExists}
+                            onChange={(e: any) => setPassword(e.target.value)}
+                        />}
 
                         {!loading && !id && <div className="w-fit mx-auto mt-5 text-xs text-sky-500 font-semibold">
                             <FontAwesomeIcon icon={faInfoCircle} className="mr-1.5" />2GB Upload Limit
