@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faInfoCircle, faClock } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -184,19 +184,11 @@ export default function Home() {
                             </Button>
                         </div>}
 
-                        {!loading && !id && <div className="w-fit mx-auto mt-5 flex gap-4 items-center max-sm:flex-col-reverse max-sm:w-full">
-                            <div className="w-fit mx-auto text-sky-500 text-center leading-none">
-                                <span className="inline-block align-middle text-lg"><FontAwesomeIcon icon={faInfoCircle} /></span>
-                                <span className="inline-block align-middle text-xs leading-none font-semibold ml-2">2GB Upload Limit</span>
-                            </div>
 
-                            <Field 
-                                type="password"
-                                placeholder={sessionExists ? "Password" : "Password (Registered Users Only)"}
-                                classes={sessionExists ? "max-sm:w-full" : "cursor-not-allowed w-58 max-sm:w-full pointer-events-none"}
-                                readOnly={!sessionExists}
-                                onChange={(e: any) => setPassword(e.target.value)}
-                            />
+                        {!loading && !id && <div className="w-fit mx-auto mt-5 text-xs text-sky-500 font-semibold">
+                            <FontAwesomeIcon icon={faInfoCircle} className="mr-1.5" />2GB Upload Limit
+                            <span className="mx-2">&middot;</span>
+                            <FontAwesomeIcon icon={faClock} className="mr-1.5" />24h Expiry
                         </div>}
                     </div>
                 </section>
