@@ -154,7 +154,7 @@ export default function AccountSettings({ onClose }: Properties) {
 
                 <div className="mt-3 w-full flex gap-6">
                     <Button classes="w-60" onClick={updateDetails} loading={updating}>Save Changes</Button>
-                    <Button classes="w-60 bg-red-500 hover:bg-red-600" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
+                    <Button classes="w-60" color="bg-red-500 hover:bg-red-600 active:bg-red-700" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
                 </div>
             </div>
         </Popup>
