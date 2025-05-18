@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
+import mime from "mime";
+
 import { authenticate } from "@/lib/jwt";
 import { getUploadHistory, renameUpload, deleteUpload } from "@/lib/uploads";
 
@@ -15,6 +17,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 
     const history = await Promise.all((await getUploadHistory(user.user_id, search)).map(async (upload) => {
         upload.available = await fs.access(`./uploads/${upload.upload_id}`).then(() => true).catch(() => false);
+        upload.types = (await fs.readdir(`./uploads/${upload.upload_id}`)).map((file) => mime.getType(file));
         return upload;
     }));
 

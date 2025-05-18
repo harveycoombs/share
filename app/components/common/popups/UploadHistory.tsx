@@ -1,10 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChain, faCheck, faCircleNotch, faCopy, faDownload, faListCheck, faPenToSquare, faTrashAlt, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faChain, faCheck, faCircleNotch, faCode, faDownload, faFile, faFileZipper, faImage, faListCheck, faMusic, faPenToSquare, faTrashAlt, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
@@ -163,12 +162,46 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         })();
     }, [editing]);
 
+    function getTypeIcon(type: string) {
+        switch (type.split("/")[0]) {
+            case "image":
+                return faImage;
+            case "video":
+                return faVideo;
+            case "audio":
+                return faMusic;
+            case "text":
+                return faCode;
+            case "application":
+                return faFileZipper;
+            default:
+                return faFile;
+        }
+    }
+
+    function getTypeColor(type: string) {
+        switch (type.split("/")[0]) {
+            case "image":
+                return "bg-emerald-100 text-emerald-400";
+            case "video":
+                return "bg-rose-100 text-rose-400";
+            case "audio":
+                return "bg-purple-100 text-purple-400";
+            case "text":
+                return "bg-orange-100 text-orange-400";
+            case "application":
+                return "bg-amber-100 text-amber-400";
+            default:
+                return "bg-sky-100 text-sky-400";
+        }
+    }
+
     return (
         <AnimatePresence>
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5" ref={uploadRef}>
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
-                    {data.files == 1 && <Image src={`/uploads/${data.upload_id}`} alt={data.upload_id} width={38} height={38} className="inline-block align-middle mr-2.5 rounded aspect-square object-cover" onError={(e: any) => e.target.remove()} />}
+                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded ${data.types.length == 1 ? getTypeColor(data.types[0]) : "bg-pink-100 text-pink-400"}`}><FontAwesomeIcon icon={data.types.length == 1 ? getTypeIcon(data.types[0]) : faFileZipper} /></div>
 
                     <div className="inline-block align-middle">
                         <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
