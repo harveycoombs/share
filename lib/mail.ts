@@ -5,8 +5,6 @@ export const mailersend = new MailerSend({
 });
 
 export default async function sendEmail(parameters: EmailParams, recipients: Recipient[]) {
-    console.log("sendEmail()", parameters, recipients);
-
     const emailParams = new EmailParams()
         .setFrom(parameters.from)
         .setTo(recipients)
@@ -14,6 +12,5 @@ export default async function sendEmail(parameters: EmailParams, recipients: Rec
         .setHtml(parameters.html);
 
     const result = await mailersend.email.send(emailParams);
-
-    console.log("result", result);
+    return result;
 }

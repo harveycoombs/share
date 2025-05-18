@@ -13,7 +13,8 @@ if (!globalThis._mysqlPool) {
         database: process.env.DATABASE_SCHEMA,
         connectionLimit: 100,
         queueLimit: 0,
-        waitForConnections: true
+        waitForConnections: true,
+        multipleStatements: true
     });
 }
 

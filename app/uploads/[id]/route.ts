@@ -3,7 +3,7 @@ import fs from "fs/promises";
 import mime from "mime";
 import AdmZip from "adm-zip";
 
-import { checkUploadProtection, getUploadPasswordHash } from "@/lib/users";
+import { checkUploadProtection, getUploadPasswordHash } from "@/lib/uploads";
 import { verify } from "@/lib/passwords";
 
 export async function GET(request: Request, { params }: any) {
@@ -44,7 +44,7 @@ export async function GET(request: Request, { params }: any) {
                 contentType = "text/plain";
             }
 
-            return new NextResponse(content, {
+            return new NextResponse(new Uint8Array(content), {
                 headers: {
                     "Content-Type": contentType,
                     "Content-Disposition": `${isProtected ? "attachment" : "inline"}; filename="${files[0]}"`,
@@ -61,7 +61,7 @@ export async function GET(request: Request, { params }: any) {
                 
                 const buffer = await zip.toBufferPromise();
 
-                return new NextResponse(buffer, {
+                return new NextResponse(new Uint8Array(buffer), {
                     headers: {
                         "Content-Type": "application/zip"
                     }

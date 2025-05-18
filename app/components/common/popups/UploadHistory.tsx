@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCircleNotch, faDownload, faListCheck, faPenToSquare, faTrashAlt, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faChain, faCheck, faCircleNotch, faCopy, faDownload, faListCheck, faPenToSquare, faTrashAlt, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
@@ -19,7 +19,7 @@ export default function UploadHistory({ onClose }: Properties) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [selecting, setSelecting] = useState(false);
-    const [selectedUploads, setSelectedUploads] = useState<any[]>([]);
+    const [selectedUploads, setSelectedUploads] = useState<string[]>([]);
     const [feedback, setFeedback] = useState<string>("");
 
     const [search, setSearch] = useState<string>("");
@@ -46,8 +46,8 @@ export default function UploadHistory({ onClose }: Properties) {
         setSelectedUploads([]);
     }
 
-    function updateSelection(e: any, data: any) {
-        setSelectedUploads(e.target.checked ? [...selectedUploads, data] : selectedUploads.filter(existing => existing.id != data.id));
+    function updateSelection(e: any, id: string) {
+        setSelectedUploads(e.target.checked ? [...selectedUploads, id] : selectedUploads.filter(existing => existing != id));
     }
 
     async function deleteUploads() {
@@ -99,7 +99,7 @@ export default function UploadHistory({ onClose }: Properties) {
 function Upload({ data, bulkSelect, onSelect }: any) {
     const [feedback, setFeedback] = useState<string>("");
 
-    const [uploadTitle, setUploadTitle] = useState<string>(data.title?.length ? data.title : data.name);
+    const [uploadTitle, setUploadTitle] = useState<string>(data.title);
     const [editing, setEditing] = useState<boolean|null>(null);
 
     const [editLoading, setEditLoading] = useState<boolean>(false);
@@ -165,14 +165,14 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 
     return (
         <AnimatePresence>
-            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className={`flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5 ${data.available ? "pointer-events-none select-none" : ""}`} ref={uploadRef}>
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5" ref={uploadRef}>
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
-                    {data.files == 1 && <Image src={`/uploads/${data.name}`} alt={data.name} width={38} height={38} className="inline-block align-middle mr-2.5 rounded aspect-square object-cover" onError={(e: any) => e.target.remove()} />}
+                    {data.files == 1 && <Image src={`/uploads/${data.upload_id}`} alt={data.upload_id} width={38} height={38} className="inline-block align-middle mr-2.5 rounded aspect-square object-cover" onError={(e: any) => e.target.remove()} />}
 
                     <div className="inline-block align-middle">
-                        <strong className="flex items-center gap-1 text-sm">
-                            {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500">{uploadTitle}</div>}
+                        <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
+                            {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
                             <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
                                 {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
                             </div>
@@ -182,18 +182,19 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                 </div>
 
                 <div className="flex items-center gap-1">
-                    <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.name}`} download={true} target="_blank" />
+                    <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
+                    <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.upload_id}`} download={true} target="_blank" />
                     <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} />
-                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-sky-500" onInput={(e: any) => onSelect(e, { id: data.upload_id, name: data.name })} />}
+                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-sky-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                 </div>
 
-                {data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
+                {!data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
             </motion.div>
         </AnimatePresence>
     ); 
 }
 
 function UploadOption({ icon, url, ...rest }: any) {
-    const classList = "leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-200/60 active:bg-slate-200";
+    const classList = "leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/60 active:bg-slate-200";
     return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={icon} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }

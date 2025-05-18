@@ -2,7 +2,8 @@ import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import mime from "mime";
 
-import { getTotalUsers, getTotalVerifiedUsers, getTotalUnverifiedUsers, getTotalDeletedUsers, getTotalUploads, getTotalUploadsFromGuests, getTotalUploadsFromRegisteredUsers, getTotalUploadsStorageUsed } from "@/lib/users";
+import { getTotalUsers, getTotalVerifiedUsers, getTotalUnverifiedUsers, getTotalDeletedUsers } from "@/lib/users";
+import { getTotalUploads, getTotalUploadsFromGuests, getTotalUploadsFromRegisteredUsers, getTotalUploadsStorageUsed } from "@/lib/uploads";
 
 export async function GET(): Promise<NextResponse> {
     const totalUsers = await getTotalUsers();

@@ -72,57 +72,9 @@ export async function deleteUser(userid: string): Promise<boolean> {
     return result.affectedRows > 0;
 }
 
-export async function getUploadHistory(userid: string, search: string): Promise<any[]> {
-    const filter = search.length ? " AND (name LIKE ? OR title LIKE ?)" : "";
-    const params = search.length ? [userid, `%${search}%`, `%${search}%`] : [userid];
-
-    const [result]: any = await pool.query(`SELECT *, 0 AS available FROM uploads WHERE user_id = ?${filter} ORDER BY upload_date DESC`, params);
-    return result;
-}
-
-export async function insertUploadHistory(userid: string, name: string, ip: string, files: number, size: number, password: string): Promise<boolean> {
-    const passwordHash = password?.length ? await generateHash(password) : "";
-    const [result]: any = await pool.query("INSERT INTO uploads (user_id, name, ip_address, files, size, upload_date, password) VALUES (?, ?, ?, ?, ?, NOW(), ?)", [userid, name, ip, files, size, passwordHash]);
-
-    return result.affectedRows > 0;
-}
-
-export async function deleteUpload(userid: string, id: number): Promise<boolean> {
-    const [result]: any = await pool.query("DELETE FROM uploads WHERE user_id = ? AND upload_id = ?", [userid, id]);
-    return result.affectedRows > 0;
-}
-
-export async function renameUpload(userid: string, id: number, name: string): Promise<boolean> {
-    const [result]: any = await pool.query("UPDATE uploads SET title = ? WHERE user_id = ? AND upload_id = ?", [name, userid, id]);
-    return result.affectedRows > 0;
-}
-
 export async function verifyUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
     const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND auth_code = ?", [emailAddress, code]);
     return result[0].total > 0;
-}
-
-export async function checkUploadProtection(id: number): Promise<boolean> {
-    const [result]: any = await pool.query("SELECT password FROM uploads WHERE name = ?", [id]);
-
-    console.log("id", id);
-
-    return result[0]?.password?.length;
-}
-
-export async function getUploadPasswordHash(id: number): Promise<string> {
-    const [result]: any = await pool.query("SELECT password FROM uploads WHERE name = ?", [id]);
-    return result[0]?.password;
-}
-
-export async function getUserLanguage(userid: string): Promise<string> {
-    const [result]: any = await pool.query("SELECT language FROM users WHERE user_id = ?", [userid]);
-    return result[0]?.language;
-}
-
-export async function updateLanguage(userid: string, language: string): Promise<boolean> {
-    const [result]: any = await pool.query("UPDATE users SET language = ? WHERE user_id = ?", [language, userid]);
-    return result.affectedRows > 0;
 }
 
 export async function getTotalUsers(): Promise<any> {
@@ -153,24 +105,4 @@ export async function getOldestUser(): Promise<any> {
 export async function getNewestUser(): Promise<any> {
     const [result]: any = await pool.query("SELECT * FROM users ORDER BY creation_date DESC LIMIT 1");
     return result[0];
-}
-
-export async function getTotalUploads(): Promise<number> {
-    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads");
-    return result[0].total;
-}
-
-export async function getTotalUploadsFromGuests(): Promise<number> {
-    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id = 0");
-    return result[0].total;
-}
-
-export async function getTotalUploadsFromRegisteredUsers(): Promise<number> {
-    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id <> 0");
-    return result[0].total;
-}
-
-export async function getTotalUploadsStorageUsed(): Promise<number> {
-    const [result]: any = await pool.query("SELECT SUM(size) AS total FROM uploads");
-    return result[0].total;
 }

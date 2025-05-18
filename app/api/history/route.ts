@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
 import { authenticate } from "@/lib/jwt";
-import { getUploadHistory, renameUpload, deleteUpload } from "@/lib/users";
+import { getUploadHistory, renameUpload, deleteUpload } from "@/lib/uploads";
 
 export async function GET(request: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -23,11 +23,11 @@ export async function GET(request: Request): Promise<NextResponse> {
 
 export async function PATCH(request: Request): Promise<NextResponse> {
     const data = await request.formData();
-    const id = parseInt(data.get("uploadid")?.toString() ?? "0");
-    const name = data.get("name")?.toString() ?? "";
+    const id =data.get("uploadid")?.toString() ?? "0";
+    const title = data.get("name")?.toString() ?? "";
 
-    if (!id) return NextResponse.json({ error: "Invalid upload ID." }, { status: 400 });
-    if (!name) return NextResponse.json({ error: "Invalid upload name." }, { status: 400 });
+    if (!id.length) return NextResponse.json({ error: "Invalid upload ID." }, { status: 400 });
+    if (!title) return NextResponse.json({ error: "Invalid upload name." }, { status: 400 });
 
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
@@ -35,7 +35,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const success = await renameUpload(user.user_id, id, name);
+    const success = await renameUpload(user.user_id, id, title);
     return NextResponse.json({ success }, { status: 200 });
 }
 
@@ -47,25 +47,25 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const data = await request.formData();
-    const id = parseInt(data.get("uploadid")?.toString() ?? "0");
-    const uploads = JSON.parse(data.get("uploads")?.toString() ?? "[]");
+    const id = data.get("uploadid")?.toString() ?? "0";
+    const uploadids = JSON.parse(data.get("uploads")?.toString() ?? "[]");
 
     let success = false;
 
     try {
         switch (true) {
-            case (id > 0):
+            case (id.length > 0):
                 await fs.unlink(`./uploads/${id}`);
                 success = await deleteUpload(user.user_id, id);
                 break;
-            case (uploads.length > 0):
-                for (let upload of uploads) {
+            case (uploadids.length > 0):
+                for (let uploadid of uploadids) {
                     try {
-                        await fs.unlink(`./uploads/${upload.name}`);
+                        await fs.unlink(`./uploads/${uploadid}`);
                     } catch (ex: any) {
-                        console.error(`Unable to delete ${upload.name}: `, ex.message);
+                        console.error(`Unable to delete ${uploadid}: `, ex.message);
                     } finally {
-                        success = await deleteUpload(user.user_id, upload.id);
+                        success = await deleteUpload(user.user_id, uploadid);
                     }
                 }
                 break;
