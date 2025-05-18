@@ -3,10 +3,12 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 
+import packageJson from "@/package.json";
+
 export default function Footer() {
     return (
         <footer className="p-4 flex justify-between items-center select-none text-slate-400/60 dark:text-zinc-400 text-sm font-medium max-md:text-xs max-sm:flex-col max-sm:items-center max-sm:gap-2">
-            <div>2021 &ndash; {new Date().getFullYear()} &middot; Share {process.env.NEXT_PUBLIC_APP_VERSION} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
+            <div>2021 &ndash; {new Date().getFullYear()} &middot; Share {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
 
             <div className="flex items-center gap-4 max-sm:gap-3">
                 <Link href="/stats" className="hover:underline max-sm:hidden">Stats</Link>

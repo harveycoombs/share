@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 
+import packageJson from "@/package.json";
+
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "./globals.css";
 
@@ -17,9 +19,10 @@ const inter = Inter({
 const description = "An easy-to-use file sharing platform.";
 
 export const metadata: Metadata = {
-    title: `Share · ${process.env.NEXT_PUBLIC_APP_VERSION}`,
+    title: `Share · ${packageJson.version}`,
     description: description,
     icons: { icon: "/images/icon.png" },
+    themeColor: "#37BFF9",
     openGraph: {
         title: "Share",
         description: description,
@@ -30,13 +33,13 @@ export const metadata: Metadata = {
             height: 630,
             alt: "Share splash image"
         }],
-        type: "website"
+        type: "website",
     },
     twitter: {
         card: "summary_large_image",
         title: "Share",
         description: description,
-        creator: "@harveycoombs23"
+        creator: "@harveycoombs23",
     }
 };
 
