@@ -32,7 +32,7 @@ export async function GET(_: any) {
         contentType = "image/jpeg";
     }
 
-    return new NextResponse(content, {
+    return new NextResponse(new Uint8Array(content), {
         headers: {
             "Content-Type": contentType
         }
