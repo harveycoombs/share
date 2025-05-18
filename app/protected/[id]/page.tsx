@@ -9,7 +9,7 @@ import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
 
 export default function Protected({ params }: any) {
-    const [id, setID] = useState<number>(0);
+    const [id, setID] = useState<string>("");
     const [url, setURL] = useState<string>("");
 
     useEffect(() => {
