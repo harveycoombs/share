@@ -22,7 +22,6 @@ export const metadata: Metadata = {
     title: `Share · ${packageJson.version}`,
     description: description,
     icons: { icon: "/images/icon.png" },
-    themeColor: "#37BFF9",
     openGraph: {
         title: "Share",
         description: description,
@@ -51,6 +50,8 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
+                <meta name="theme-color" content="#37BFF9" />
+
                 <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
                 <link rel="canonical" href="https://share.surf" />
 
