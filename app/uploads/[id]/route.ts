@@ -10,8 +10,13 @@ import { verify } from "@/lib/passwords";
 export async function GET(request: Request, { params }: any) {
     const { id } = await params;
 
+    console.log(`[${new Date()}]`, "id", id);
+
     const isProtected = await checkUploadProtection(id);
     const password = request.headers.get("Share-Upload-Password") ?? "";
+
+    console.log(`[${new Date()}]`, "isProtected", isProtected);
+    console.log(`[${new Date()}]`, "password", password);
 
     if (isProtected && !password?.length) return NextResponse.redirect(`${request.headers.get("x-forwarded-proto")}://${request.headers.get("host")}/protected/${id}`);
 
@@ -21,6 +26,8 @@ export async function GET(request: Request, { params }: any) {
     
         if (!verified) return NextResponse.json({ error: "Invalid password." }, { status: 401 });
     }
+
+    console.log(`[${new Date()}]`, "beginning directory traversal");
 
     let files: string[] = [];
 
@@ -32,6 +39,8 @@ export async function GET(request: Request, { params }: any) {
 
     files = files.filter(file => file != "." && file != "..");
 
+    console.log(`[${new Date()}]`, "files", files);
+
     switch (files.length) {
         case 0:
             return NextResponse.json({ error: "The specified upload does not exist." }, { status: 404 });
@@ -40,18 +49,27 @@ export async function GET(request: Request, { params }: any) {
 
             let contentType = mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream";
 
+            console.log(`[${new Date()}]`, "contentType", contentType);
+
             if (contentType.startsWith("video/")) {
+                console.log(`[${new Date()}]`, "beginning chunk streaming");
+
                 const fileStream = createReadStream(`./uploads/${id}/${files[0]}`);
+
+                console.log(`[${new Date()}]`, "created read stream");
 
                 const stream = new ReadableStream({
                     async start(controller) {
                         for await (const chunk of fileStream) {
                             controller.enqueue(chunk);
+                            console.log(`[${new Date()}]`, "enqueued chunk");
                         }
 
                         controller.close();
                     }
                 });
+
+                console.log(`[${new Date()}]`, "created readable stream");
 
                 return new NextResponse(stream, {
                     headers: {
@@ -62,7 +80,11 @@ export async function GET(request: Request, { params }: any) {
                     }
                 });
             } else {
+                console.log(`[${new Date()}]`, "beginning content read");
+
                 const content = await fs.readFile(`./uploads/${id}/${files[0]}`);
+
+                console.log(`[${new Date()}]`, "content", content);
 
                 if (contentType == "text/html") {
                     contentType = "text/plain";
