@@ -40,7 +40,7 @@ export async function GET(request: Request, { params }: any) {
 
             let contentType = mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream";
 
-            if (contentType.startsWith("video/")) {
+            /*if (contentType.startsWith("video/")) {
                 const fileStream = createReadStream(`./uploads/${id}/${files[0]}`);
 
                 const stream = new ReadableStream({
@@ -61,7 +61,7 @@ export async function GET(request: Request, { params }: any) {
                         "Cache-Control": "no-cache"
                     }
                 });
-            } else {
+            } else {*/
                 const content = await fs.readFile(`./uploads/${id}/${files[0]}`);
 
                 if (contentType == "text/html") {
@@ -75,7 +75,7 @@ export async function GET(request: Request, { params }: any) {
                         "Content-Length": stats.size.toString()
                     }
                 });
-            }
+            //}
         default:
             const zip = new AdmZip();
 
