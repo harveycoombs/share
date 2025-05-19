@@ -5,7 +5,6 @@ import { faClockRotateLeft, faInfoCircle, faGear, faStopwatch } from "@fortaweso
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
-import Field from "@/app/components/common/Field";
 import UploadHistory from "@/app/components/common/popups/UploadHistory";
 
 export default function Home() {
