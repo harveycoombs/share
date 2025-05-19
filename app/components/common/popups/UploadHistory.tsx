@@ -192,7 +192,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
             case "application":
                 return "bg-amber-100 text-amber-400";
             default:
-                return "bg-sky-100 text-sky-400";
+                return "bg-indigo-100 text-indigo-400";
         }
     }
 
@@ -218,7 +218,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                     <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
                     <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.upload_id}`} download={true} target="_blank" />
                     <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} />
-                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-sky-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
+                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                 </div>
 
                 {!data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}

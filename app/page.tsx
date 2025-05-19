@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faInfoCircle, faGear, faStopwatch } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -10,12 +10,13 @@ import UploadHistory from "@/app/components/common/popups/UploadHistory";
 
 export default function Home() {
     const [file, setFile] = useState<File|null>(null);
-    const [id, setID] = useState<number>(0);
+    const [id, setID] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [dragging, setDragging] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [progress, setProgress] = useState<number>(0);
     const [password, setPassword] = useState<string>("");
+    const [uploadTime, setUploadTime] = useState<number>(0);
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
 
@@ -61,6 +62,7 @@ export default function Home() {
             switch (e.target.status) {
                 case 200:
                     setID(e.target.response.id);
+                    setUploadTime(e.target.response.duration);
                     break;
                 case 413:
                     setError("File is too large");
@@ -78,10 +80,11 @@ export default function Home() {
     }, [file]);
 
     function resetUploader() {
-        setID(0);
+        setID("");
         setError("");
         setProgress(0);
         setFile(null);
+        setUploadTime(0);
         setLoading(false);
         setPassword("");
 
@@ -151,58 +154,70 @@ export default function Home() {
 
     return (
         <>
-            <main className="min-h-[calc(100vh-117px)] grid place-items-center max-sm:min-h-[calc(100vh-135px)]" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-                <section className="text-center w-fit select-none">
-                    <div className="w-fit mx-auto">
-                        <div className="w-fit mx-auto">
-                            <Logo width={65} height={60} className="inline-block align-middle mr-4" />
-                            <h1 className="inline-block align-middle text-4xl font-semibold leading-none">Share.surf</h1>
+            <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+                <section className="w-fit select-none">
+                    <div className="w-115 mx-auto mb-16">
+                        <div className="w-fit mx-auto flex items-center gap-4">
+                            <Logo width={56} height={56} className="" />
+                            <h1 className="text-5xl font-semibold leading-none">share.surf</h1>
                         </div>
 
-                        <h2 className="block font-medium text-slate-400 mt-4 max-sm:text-sm dark:text-zinc-400">The no-frills file sharing service</h2>
+                        <h2 className="block font-semibold text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
                     </div>
+                    
+                    {(id.length > 0 || error.length > 0) && (
+                        <div>
+                            <strong className={`block w-fit mx-auto text-2xl font-semibold${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
+                                error.length ? error : 
+                                id ? `${document.location.href}uploads/${id}` : ""
+                            }</strong>
 
-                    <div className="w-fit mx-auto text-center mt-12 max-sm:px-5 max-sm:mt-8">
-                        {loading ? <>
-                            <strong className="block text-center text-xl font-semibold mb-3">{Math.round(progress)}&#37;</strong>
-                            <progress className="block appearance-none w-125 h-3 border-none rounded-md duration-150 max-md:w-full" max={100} value={Math.round(progress)}></progress>
-                        </> : <strong className={`text-3xl font-medium${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
-                            error.length ? error : 
-                            id ? `${document.location.href}uploads/${id}` :
-                            `${dragging ? "Drop" : "Drag or paste"} files ${dragging ? "onto" : "over"} this page to upload`
-                        }</strong>}
+                            <div className="flex items-center gap-5 w-fit mx-auto mt-4">
+                                <Button onClick={resetUploader}>Upload More</Button>
+                                <div className="text-sm font-semibold text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}ms</div>
+                            </div>
+                        </div>
+                    )}
 
-                        {!loading && <div className="w-fit mx-auto mt-12 max-sm:w-full max-sm:mt-8">
-                            <Button classes="inline-block align-middle max-sm:block max-sm:w-full" onClick={() => id || error.length ? resetUploader() : uploader?.current?.click()}>{id || error.length ? "Upload More" : "Browse Files"}</Button>
+                    {loading && (
+                        <div>
+                            <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
+                            <progress className="block appearance-none w-full h-3 border-none duration-150" max={100} value={Math.round(progress)}></progress>
+                        </div>
+                    )}
 
-                            <Button 
-                                classes={`inline-block align-middle ml-2 max-sm:block max-sm:w-full max-sm:ml-0 max-sm:mt-2 ${!sessionExists ? "cursor-not-allowed" : ""}`}
-                                transparent={true}
-                                onClick={() => setHistoryVisibility(true)}
-                            >
-                                <FontAwesomeIcon icon={faClockRotateLeft} /> {sessionExists ? "View Upload History" : "Sign In To View Upload History"}
-                            </Button>
-                        </div>}
+                    {!loading && !id.length && (
+                        <div className="w-115">
+                            <div className="w-full px-2.5 py-2 text-sm font-bold text-indigo-500 bg-indigo-100 rounded-lg">
+                                <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
+                                Drag or paste files onto this page to upload
+                            </div>
 
-                        {!loading && !id && <Field 
-                            type="password"
-                            placeholder={sessionExists ? "Password" : "Password (Registered Users Only)"}
-                            classes={sessionExists ? "w-77 mt-5 max-sm:w-full" : "w-93 mt-5 cursor-not-allowed pointer-events-none max-sm:w-full"}
-                            readOnly={!sessionExists}
-                            onChange={(e: any) => setPassword(e.target.value)}
-                        />}
+                            <div className="flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300">
+                                <Button onClick={() => uploader.current?.click()}>Browse Files</Button>
 
-                        {!loading && !id && <div className="w-fit mx-auto mt-5 text-xs text-sky-500 font-semibold">
-                            <FontAwesomeIcon icon={faInfoCircle} className="mr-1.5" />2GB Upload Limit
-                            <span className="mx-2">&middot;</span>
-                            <FontAwesomeIcon icon={faClock} className="mr-1.5" />24h Expiry
-                        </div>}
-                    </div>
+                                <div className="flex items-center gap-3.5">
+                                    <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)} />
+                                    <UploadOption icon={faGear} title="View Upload Settings" />
+                                </div>
+                            </div>
+
+                            <div className="text-sm font-semibold leading-none text-slate-400 flex justify-between">
+                                <div>Uploads expire after 24 hours</div>
+                                <div>Uploads must be &lt;= 1GB</div>
+                            </div>
+                        </div>
+                    )}
                 </section>
 
                 <input type="file" className="hidden" ref={uploader} onInput={(e: any) => setFile(e.target.files[0])} />
             </main>
+
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
         </>
     );
+}
+
+function UploadOption({ icon, ...rest }: any) {
+    return <div className="text-lg leading-none text-slate-300 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Nunito } from "next/font/google";
 import Script from "next/script";
 
 import packageJson from "@/package.json";
@@ -11,8 +11,8 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 
-const inter = Inter({
-    weight: ["400", "500", "600", "700", "900"],
+const nunito = Nunito({
+    weight: ["400", "500", "600", "700", "800", "900"],
     subsets: ["latin"]
 });
 
@@ -58,7 +58,7 @@ export default function RootLayout({
                 <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7873492896986281" crossOrigin="anonymous"></Script>
             </head>
 
-            <body className={`${inter.className} h-screen bg-white text-slate-800 dark:bg-zinc-900 dark:text-white`}>
+            <body className={`${nunito.className} h-screen bg-white text-slate-800 dark:bg-zinc-900 dark:text-white`}>
                 <Header />
                 {children}
                 <Footer />
