@@ -23,7 +23,7 @@ export default function Home() {
 
     useEffect(() => {
         (async () => {
-            const response = await fetch("/api/history");
+            const response = await fetch("/api/user/session");
             setSessionExistence(response.ok);
         })();
     }, []);
