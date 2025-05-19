@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
+import { createReadStream } from "fs";
 import mime from "mime";
 import AdmZip from "adm-zip";
 
@@ -40,7 +41,7 @@ export async function GET(request: Request, { params }: any) {
             let contentType = mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream";
 
             if (contentType.startsWith("video/")) {
-                const fileStream = require("fs").createReadStream(`./uploads/${id}/${files[0]}`);
+                const fileStream = createReadStream(`./uploads/${id}/${files[0]}`);
 
                 const stream = new ReadableStream({
                     async start(controller) {
