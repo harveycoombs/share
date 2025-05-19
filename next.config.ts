@@ -4,8 +4,7 @@ const nextConfig: NextConfig = {
     images: {
         unoptimized: false
     },
-    productionBrowserSourceMaps: false,
-    swcMinify: true
+    productionBrowserSourceMaps: false
 };
 
 export default nextConfig;
