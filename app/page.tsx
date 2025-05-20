@@ -217,7 +217,7 @@ export default function Home() {
                                 </div>
                             </div>
 
-                            <div className="text-sm font-semibold leading-none text-slate-400 flex justify-between">
+                            <div className="text-sm font-semibold leading-none text-slate-400 flex justify-between max-sm:flex-col max-sm:gap-2 max-sm:items-center">
                                 <div>Uploads expire after 24 hours</div>
                                 <div>Uploads must be &lt;= 2GB</div>
                             </div>
