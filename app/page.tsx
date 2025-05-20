@@ -199,7 +199,7 @@ export default function Home() {
                             <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
                                 <Button onClick={() => uploader.current?.click()} classes={passwordFieldIsVisible ? "max-sm:w-full" : ""}>Browse Files</Button>
 
-                                <div className={`flex items-center gap-3.5${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
+                                <div className={`flex items-center gap-3.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
                                     <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)} />
                                     {passwordFieldIsVisible ? (
                                         <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow-1" : ""}`}>
