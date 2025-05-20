@@ -219,7 +219,7 @@ export default function Home() {
 
                             <div className="text-sm font-semibold leading-none text-slate-400 flex justify-between">
                                 <div>Uploads expire after 24 hours</div>
-                                <div>Uploads must be &lt;= 1GB</div>
+                                <div>Uploads must be &lt;= 2GB</div>
                             </div>
                         </div>
                     )}
