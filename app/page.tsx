@@ -1,11 +1,12 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle, faGear, faStopwatch } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import UploadHistory from "@/app/components/common/popups/UploadHistory";
+import Field from "@/app/components/common/Field";
 
 export default function Home() {
     const [file, setFile] = useState<File|null>(null);
@@ -15,6 +16,7 @@ export default function Home() {
     const [error, setError] = useState<string>("");
     const [progress, setProgress] = useState<number>(0);
     const [password, setPassword] = useState<string>("");
+    const [passwordFieldIsVisible, setPasswordFieldVisibility] = useState<boolean>(false);
     const [uploadTime, setUploadTime] = useState<number>(0);
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
@@ -151,6 +153,8 @@ export default function Home() {
         return () => window.removeEventListener("paste", handlePaste);
     }, []);
 
+    useEffect(() => setPassword(""), [passwordFieldIsVisible]);
+
     return (
         <>
             <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
@@ -197,7 +201,19 @@ export default function Home() {
 
                                 <div className="flex items-center gap-3.5">
                                     <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)} />
-                                    <UploadOption icon={faGear} title="View Upload Settings" />
+                                    {passwordFieldIsVisible ? (
+                                        <div className="relative">
+                                            <Field 
+                                                type="password"
+                                                placeholder={sessionExists ? "Password" : "Password (Registered Users Only)"}
+                                                classes=""
+                                                readOnly={!sessionExists}
+                                                onChange={(e: any) => setPassword(e.target.value)}
+                                            />
+
+                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
+                                        </div>
+                                    ) : <UploadOption icon={faKey} title="Set Upload Password" onClick={() => setPasswordFieldVisibility(true)} />}
                                 </div>
                             </div>
 
