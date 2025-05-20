@@ -63,13 +63,13 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     try {
         switch (true) {
             case (id.length > 0):
-                await fs.unlink(`./uploads/${id}`);
+                await fs.rmdir(`./uploads/${id}`, { recursive: true });
                 success = await deleteUpload(user.user_id, id);
                 break;
             case (uploadids.length > 0):
                 for (let uploadid of uploadids) {
                     try {
-                        await fs.unlink(`./uploads/${uploadid}`);
+                        await fs.rmdir(`./uploads/${uploadid}`, { recursive: true });
                     } catch (ex: any) {
                         console.error(`Unable to delete ${uploadid}: `, ex.message);
                     } finally {
