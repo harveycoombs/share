@@ -205,7 +205,7 @@ export default function Home() {
                                         <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow-1" : ""}`}>
                                             <Field 
                                                 type="password"
-                                                placeholder={sessionExists ? "Password" : "Password (Registered Users Only)"}
+                                                placeholder="Password"
                                                 classes={passwordFieldIsVisible ? "max-sm:w-full max-sm:grow-1" : ""}
                                                 readOnly={!sessionExists}
                                                 onChange={(e: any) => setPassword(e.target.value)}
