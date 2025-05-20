@@ -158,11 +158,11 @@ export default function Home() {
     return (
         <>
             <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-                <section className="w-fit select-none">
-                    <div className="w-115 mx-auto mb-16">
+                <section className="w-fit select-none max-sm:w-full max-sm:px-4">
+                    <div className="w-115 mx-auto mb-16 max-sm:w-full">
                         <div className="w-fit mx-auto flex items-center gap-4">
                             <Logo width={56} height={56} className="" />
-                            <h1 className="text-5xl font-semibold leading-none">share.surf</h1>
+                            <h1 className="text-5xl font-bold leading-none">share.surf</h1>
                         </div>
 
                         <h2 className="block font-semibold text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
@@ -190,23 +190,23 @@ export default function Home() {
                     )}
 
                     {!loading && !id.length && (
-                        <div className="w-115">
+                        <div className="w-115 max-sm:w-full">
                             <div className="w-full px-2.5 py-2 text-sm font-bold text-indigo-500 bg-indigo-100 rounded-lg">
                                 <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
                                 Drag or paste files onto this page to upload
                             </div>
 
-                            <div className="flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300">
-                                <Button onClick={() => uploader.current?.click()}>Browse Files</Button>
+                            <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
+                                <Button onClick={() => uploader.current?.click()} classes={passwordFieldIsVisible ? "max-sm:w-full" : ""}>Browse Files</Button>
 
-                                <div className="flex items-center gap-3.5">
+                                <div className={`flex items-center gap-3.5${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
                                     <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)} />
                                     {passwordFieldIsVisible ? (
-                                        <div className="relative">
+                                        <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow-1" : ""}`}>
                                             <Field 
                                                 type="password"
                                                 placeholder={sessionExists ? "Password" : "Password (Registered Users Only)"}
-                                                classes=""
+                                                classes={passwordFieldIsVisible ? "max-sm:w-full max-sm:grow-1" : ""}
                                                 readOnly={!sessionExists}
                                                 onChange={(e: any) => setPassword(e.target.value)}
                                             />
