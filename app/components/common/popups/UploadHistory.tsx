@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChain, faCheck, faCircleNotch, faCode, faDownload, faFile, faFileZipper, faImage, faListCheck, faMusic, faPenToSquare, faTrashAlt, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faChain, faCheck, faCircleNotch, faCode, faDownload, faFile, faFilePdf, faFileZipper, faImage, faListCheck, faMusic, faPenToSquare, faTrashAlt, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
@@ -163,17 +163,19 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     }, [editing]);
 
     function getTypeIcon(type: string) {
-        switch (type.split("/")[0]) {
-            case "image":
+        switch (true) {
+            case type.includes("image"):
                 return faImage;
-            case "video":
+            case type.includes("video"):
                 return faVideo;
-            case "audio":
+            case type.includes("audio"):
                 return faMusic;
-            case "text":
+            case type.includes("text"):
                 return faCode;
-            case "application":
+            case type == "application/zip":
                 return faFileZipper;
+            case type == "application/pdf":
+                return faFilePdf;
             default:
                 return faFile;
         }

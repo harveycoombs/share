@@ -225,7 +225,7 @@ export default function Home() {
                     )}
                 </section>
 
-                <input type="file" className="hidden" ref={uploader} onInput={(e: any) => setFile(e.target.files[0])} />
+                <input type="file" className="hidden" multiple={true} ref={uploader} onInput={(e: any) => setFile(e.target.files[0])} />
             </main>
 
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
