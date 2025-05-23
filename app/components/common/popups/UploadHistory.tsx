@@ -203,7 +203,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
             <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5" ref={uploadRef}>
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
-                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded ${data.types.length == 1 ? getTypeColor(data.types[0]) : "bg-pink-100 text-pink-400"}`}><FontAwesomeIcon icon={data.types.length == 1 ? getTypeIcon(data.types[0]) : faFileZipper} /></div>
+                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded ${data.types.length == 1 ? getTypeColor(data.types[0]) : "bg-pink-100 text-pink-400"} max-sm:hidden`}><FontAwesomeIcon icon={data.types.length == 1 ? getTypeIcon(data.types[0]) : faFileZipper} /></div>
 
                     <div className="inline-block align-middle">
                         <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>

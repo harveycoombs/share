@@ -107,7 +107,7 @@ export default function AccountSettings({ onClose }: Properties) {
     }
 
     return (
-        <Popup title="Settings" onClose={onClose}>
+        <Popup title="Settings" onClose={onClose} classes="max-sm:w-15/16">
             {feedback && <div className="w-full mb-2 text-sm text-white font-medium">{feedback}</div>}
             <div className="w-full">
                 <div>
@@ -127,8 +127,8 @@ export default function AccountSettings({ onClose }: Properties) {
                         </div>
                     </div>
 
-                    <div className="mt-2 w-full flex gap-6">
-                        <div className="w-60">
+                    <div className="mt-2 w-full flex gap-6 max-sm:flex-col max-sm:gap-0">
+                        <div className="w-60 max-sm:w-full">
                             <Label classes="block w-full mt-2.75 mb-0.5">First Name</Label>
                             <Field classes="block w-full" defaultValue={user?.first_name ?? ""} onInput={(e: any) => setFirstName(e.target.value)} />
 
@@ -139,7 +139,7 @@ export default function AccountSettings({ onClose }: Properties) {
                             <Field type="email" classes="block w-full" defaultValue={user?.email_address ?? ""} onInput={(e: any) => setEmailAddress(e.target.value)} />
                         </div>
 
-                        <div className="w-60">
+                        <div className="w-60 max-sm:w-full">
                             <Label classes="block w-full mt-2.75 mb-0.5">Old Password</Label>
                             <Field type="password" classes="block w-full" />
 
@@ -152,9 +152,9 @@ export default function AccountSettings({ onClose }: Properties) {
                     </div>
                 </div>
 
-                <div className="mt-3 w-full flex gap-6">
-                    <Button classes="w-60" onClick={updateDetails} loading={updating}>Save Changes</Button>
-                    <Button classes="w-60" color="bg-red-500 hover:bg-red-600 active:bg-red-700" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
+                <div className="mt-3 w-full flex gap-6 max-sm:flex-col max-sm:gap-2.75">
+                    <Button classes="w-60 max-sm:w-full" onClick={updateDetails} loading={updating}>Save Changes</Button>
+                    <Button classes="w-60 max-sm:w-full" color="bg-red-500 hover:bg-red-600 active:bg-red-700" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
                 </div>
             </div>
         </Popup>
