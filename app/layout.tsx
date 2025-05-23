@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Nunito } from "next/font/google";
+import { Mona_Sans } from "next/font/google";
 import Script from "next/script";
 
 import packageJson from "@/package.json";
@@ -11,7 +11,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
 
-const nunito = Nunito({
+const monaSans = Mona_Sans({
     weight: ["400", "500", "600", "700", "800", "900"],
     subsets: ["latin"]
 });
@@ -58,7 +58,7 @@ export default function RootLayout({
                 <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7873492896986281" crossOrigin="anonymous"></Script>
             </head>
 
-            <body className={`${nunito.className} h-screen bg-white text-slate-800 dark:bg-zinc-900 dark:text-white`}>
+            <body className={`${monaSans.className} h-screen bg-white text-slate-800 dark:bg-zinc-900 dark:text-white`}>
                 <Header />
                 {children}
                 <Footer />
