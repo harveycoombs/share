@@ -165,7 +165,7 @@ export default function Home() {
                             <h1 className="text-5xl font-bold leading-none">share.surf</h1>
                         </div>
 
-                        <h2 className="block font-semibold text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
+                        <h2 className="block font-medium text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
                     </div>
                     
                     {(id.length > 0 || error.length > 0) && (
