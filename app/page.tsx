@@ -9,7 +9,7 @@ import UploadHistory from "@/app/components/common/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 
 export default function Home() {
-    const [file, setFile] = useState<File|null>(null);
+    const [files, setFiles] = useState<FileList|null>(null);
     const [id, setID] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [dragging, setDragging] = useState<boolean>(false);
@@ -31,9 +31,9 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        if (!file) return;
+        if (!files?.length) return;
 
-        if (file.size > 2147483648) {
+        if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > 2147483648) {
             setError("File is too large");
             setLoading(false);
             return;
@@ -42,8 +42,9 @@ export default function Home() {
         setLoading(true);
 
         const data = new FormData();
-        data.append("files", file);
+
         data.append("password", password);
+        for (let file of files) data.append("files", file);
 
         const request = new XMLHttpRequest();
 
@@ -78,13 +79,13 @@ export default function Home() {
         });
 
         request.send(data);
-    }, [file]);
+    }, [files]);
 
     function resetUploader() {
         setID("");
         setError("");
         setProgress(0);
-        setFile(null);
+        setFiles(null);
         setUploadTime(0);
         setLoading(false);
         setPassword("");
@@ -108,24 +109,24 @@ export default function Home() {
     function handleDragOverEvent(e: any) {
         e.preventDefault();
 
-        if (!dragging && !file) handleDragEnterEvent();
+        if (!dragging && !files?.length) handleDragEnterEvent();
     }
     
     function handleDragEnterEvent() {
-        if (file) return;
+        if (files?.length) return;
 
         setDragging(true);
     }
     
     function handleDragLeaveEvent() {
-        if (file) return;
+        if (files?.length) return;
         setDragging(false);
     }
 
     function handleDropEvent(e: any) {
         e.preventDefault();
 
-        if (file) return;
+        if (files?.length) return;
 
         if (uploader?.current) {
             uploader.current.files = e.dataTransfer.files;
@@ -144,7 +145,7 @@ export default function Home() {
             transfer.items.add(pastedFile);
         }
 
-        setFile(transfer.files[0]);
+        setFiles(transfer.files);
         uploader.current?.dispatchEvent(new Event("change"));
     }
 
@@ -225,7 +226,7 @@ export default function Home() {
                     )}
                 </section>
 
-                <input type="file" className="hidden" multiple={true} ref={uploader} onInput={(e: any) => setFile(e.target.files[0])} />
+                <input type="file" className="hidden" multiple={true} ref={uploader} onInput={(e: any) => setFiles(e.target.files)} />
             </main>
 
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
