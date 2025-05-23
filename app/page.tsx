@@ -191,7 +191,7 @@ export default function Home() {
 
                     {!loading && !id.length && (
                         <div className="w-115 max-sm:w-full">
-                            <div className="w-full px-2.5 py-2 text-sm font-bold text-indigo-500 bg-indigo-100 rounded-lg">
+                            <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg">
                                 <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
                                 Drag or paste files onto this page to upload
                             </div>
@@ -217,7 +217,7 @@ export default function Home() {
                                 </div>
                             </div>
 
-                            <div className="text-sm font-semibold leading-none text-slate-400 flex justify-between max-sm:flex-col max-sm:gap-2 max-sm:items-center">
+                            <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:flex-col max-sm:gap-2 max-sm:items-center">
                                 <div>Uploads expire after 24 hours</div>
                                 <div>Uploads must be &lt;= 2GB</div>
                             </div>
