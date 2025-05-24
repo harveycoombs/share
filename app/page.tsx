@@ -157,80 +157,78 @@ export default function Home() {
     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
 
     return (
-        <>
-            <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-                <section className="w-fit select-none max-sm:w-full max-sm:px-4">
-                    <div className="w-115 mx-auto mb-16 max-sm:w-full">
-                        <div className="w-fit mx-auto flex items-center gap-4">
-                            <Logo width={56} height={56} className="" />
-                            <h1 className="text-5xl font-bold leading-none">share.surf</h1>
-                        </div>
-
-                        <h2 className="block font-medium text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
+        <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <section className="w-fit select-none max-sm:w-full max-sm:px-4">
+                <div className="w-115 mx-auto mb-16 max-sm:w-full">
+                    <div className="w-fit mx-auto flex items-center gap-4">
+                        <Logo width={56} height={56} className="" />
+                        <h1 className="text-5xl font-bold leading-none">share.surf</h1>
                     </div>
-                    
-                    {(id.length > 0 || error.length > 0) && (
-                        <div>
-                            <strong className={`block w-fit mx-auto text-2xl font-semibold${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
-                                error.length ? error : 
-                                id ? `${document.location.href}uploads/${id}` : ""
-                            }</strong>
 
-                            <div className="flex items-center gap-5 w-fit mx-auto mt-4">
-                                <Button onClick={resetUploader}>Upload More</Button>
-                                <div className="text-sm font-semibold text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}ms</div>
+                    <h2 className="block font-medium text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
+                </div>
+                
+                {(id.length > 0 || error.length > 0) && (
+                    <div>
+                        <strong className={`block w-fit mx-auto text-2xl font-semibold${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
+                            error.length ? error : 
+                            id ? `${document.location.href}uploads/${id}` : ""
+                        }</strong>
+
+                        <div className="flex items-center gap-5 w-fit mx-auto mt-4">
+                            <Button onClick={resetUploader}>Upload More</Button>
+                            <div className="text-sm font-semibold text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}ms</div>
+                        </div>
+                    </div>
+                )}
+
+                {loading && (
+                    <div>
+                        <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
+                        <progress className="block appearance-none w-full h-3 border-none duration-150" max={100} value={Math.round(progress)}></progress>
+                    </div>
+                )}
+
+                {!loading && !id.length && (
+                    <div className="w-115 max-sm:w-full">
+                        <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg">
+                            <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
+                            Drag or paste files onto this page to upload
+                        </div>
+
+                        <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
+                            <Button onClick={() => uploader.current?.click()} classes={passwordFieldIsVisible ? "max-sm:w-full" : ""}>Browse Files</Button>
+
+                            <div className={`flex items-center gap-3.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
+                                <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)} />
+                                {passwordFieldIsVisible ? (
+                                    <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow-1" : ""}`}>
+                                        <Field 
+                                            type="password"
+                                            placeholder="Password"
+                                            classes={passwordFieldIsVisible ? "max-sm:w-full max-sm:grow-1" : ""}
+                                            readOnly={!sessionExists}
+                                            onChange={(e: any) => setPassword(e.target.value)}
+                                        />
+
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
+                                    </div>
+                                ) : <UploadOption icon={faKey} title="Set Upload Password" onClick={() => setPasswordFieldVisibility(true)} />}
                             </div>
                         </div>
-                    )}
 
-                    {loading && (
-                        <div>
-                            <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
-                            <progress className="block appearance-none w-full h-3 border-none duration-150" max={100} value={Math.round(progress)}></progress>
+                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:flex-col max-sm:gap-2 max-sm:items-center">
+                            <div>Uploads expire after 24 hours</div>
+                            <div>Uploads must be &lt;= 2GB</div>
                         </div>
-                    )}
+                    </div>
+                )}
+            </section>
 
-                    {!loading && !id.length && (
-                        <div className="w-115 max-sm:w-full">
-                            <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg">
-                                <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
-                                Drag or paste files onto this page to upload
-                            </div>
-
-                            <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
-                                <Button onClick={() => uploader.current?.click()} classes={passwordFieldIsVisible ? "max-sm:w-full" : ""}>Browse Files</Button>
-
-                                <div className={`flex items-center gap-3.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
-                                    <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)} />
-                                    {passwordFieldIsVisible ? (
-                                        <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow-1" : ""}`}>
-                                            <Field 
-                                                type="password"
-                                                placeholder="Password"
-                                                classes={passwordFieldIsVisible ? "max-sm:w-full max-sm:grow-1" : ""}
-                                                readOnly={!sessionExists}
-                                                onChange={(e: any) => setPassword(e.target.value)}
-                                            />
-
-                                            <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
-                                        </div>
-                                    ) : <UploadOption icon={faKey} title="Set Upload Password" onClick={() => setPasswordFieldVisibility(true)} />}
-                                </div>
-                            </div>
-
-                            <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:flex-col max-sm:gap-2 max-sm:items-center">
-                                <div>Uploads expire after 24 hours</div>
-                                <div>Uploads must be &lt;= 2GB</div>
-                            </div>
-                        </div>
-                    )}
-                </section>
-
-                <input type="file" className="hidden" multiple={true} ref={uploader} onInput={(e: any) => setFiles(e.target.files)} />
-            </main>
+            <input type="file" className="hidden" multiple={true} ref={uploader} onInput={(e: any) => setFiles(e.target.files)} />
 
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
-        </>
+        </main>
     );
 }
 

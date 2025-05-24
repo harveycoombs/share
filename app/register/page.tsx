@@ -1,9 +1,14 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 
 import Logo from "@/app/components/common/Logo";
 import RegistrationForm from "@/app/register/form";
+import IssueForm from "@/app/components/common/popups/IssueForm";
 
 export default function Register() {
+    const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
+
     return (
         <main className="h-[calc(100vh-52px)] grid place-items-center">
             <section className="w-68">
@@ -14,8 +19,10 @@ export default function Register() {
 
                 <RegistrationForm />
 
-                <Link href="https://github.com/harveycoombs/share/issues/new" className="block text-sm text-slate-400/60 text-center select-none mt-2.5 hover:underline dark:text-zinc-400/60">Report Issue</Link>
-            </section>            
+                <div className="block text-sm text-slate-400/60 text-center select-none mt-2.5 hover:underline dark:text-zinc-400/60" onClick={() => setIssueFormVisibility(true)}>Report Issue</div>
+            </section>
+
+            {issueFormVisibility && <IssueForm onClose={() => setIssueFormVisibility(false)} />}
         </main>
     );
 }
