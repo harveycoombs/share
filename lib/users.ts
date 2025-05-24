@@ -62,7 +62,7 @@ export async function updateUserPassword(userid: string, password: string): Prom
     return result.affectedRows > 0;
 }
 
-export async function updateUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
+export async function updateUserAuthCode(emailAddress: string, code: number|null): Promise<boolean> {
     const [result]: any = await pool.query("UPDATE users SET auth_code = ? WHERE email_address = ?", [code, emailAddress]);
     return result.affectedRows > 0;
 }
@@ -79,7 +79,17 @@ export async function verifyUserAuthCode(emailAddress: string, code: number): Pr
 
 export async function checkUserVerification(userid: string): Promise<boolean> {
     const [result]: any = await pool.query("SELECT verified FROM users WHERE user_id = ?", [userid]);
-    return result[0].verified;
+
+    const verified = result[0].verified;
+    const buff = Buffer.from(verified);
+    const isVerified = Boolean(buff.readInt8())
+
+    return isVerified;
+}
+
+export async function updateUserVerification(emailAddress: string, verified: boolean): Promise<boolean> {
+    const [result]: any = await pool.query("UPDATE users SET verified = ? WHERE email_address = ?", [verified, emailAddress]);
+    return result.affectedRows > 0;
 }
 
 export async function getTotalUsers(): Promise<any> {

@@ -87,6 +87,27 @@ export async function PATCH(request: Request): Promise<NextResponse> {
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
     const updated = await updateUser(user.user_id, firstName, lastName, email);
+
+    if (updated && user.email_address != email) {
+        try {
+            const code = generateCode();
+            const updated = await updateUserAuthCode(email, code);
+
+            if (updated) {
+                const recipients = [new Recipient(email, `${user.firstName} ${user.lastName}`)];
+        
+                const emailParams = new EmailParams()
+                    .setFrom({ email: "noreply@share.surf", name: "Share.surf" })
+                    .setSubject("Share.surf - Verification")
+                    .setHtml(`<p>Hello ${user.firstName},</p> <p>Your email address has been updated on <i>Share.surf</i>. Verify your new email address by entering the following code:<b>${code}</b></p>`);
+            
+                await sendEmail(emailParams, recipients);
+            }
+        } catch (ex: any) {
+            console.error(ex);
+        }
+    }
+
     return NextResponse.json({ updated, passwordUpdated });
 }
 

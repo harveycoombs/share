@@ -83,7 +83,7 @@ export default function RegistrationForm() {
 
         const response = await fetch("/api/user/verify", {
             method: "POST",
-            body: new URLSearchParams({ code })
+            body: new URLSearchParams({ email: emailAddress, code })
         });
 
         const json = await response.json();
@@ -102,18 +102,49 @@ export default function RegistrationForm() {
         setLoading(false);
     }
 
+    function handleDigitInput(e: any, index: number) {
+        const value = e.target.value;
+
+        switch (index) {
+            case 0:
+                setFirstDigit(value);
+                break;
+            case 1:
+                setSecondDigit(value);
+                break;
+            case 2:
+                setThirdDigit(value);
+                break;
+            case 3:
+                setFourthDigit(value);
+                break;
+            case 4:
+                setFifthDigit(value);
+                break;
+            case 5:
+                setSixthDigit(value);
+                break;
+        }
+
+        if (!value?.length) {
+            e.target.previousSibling?.focus();
+        } else {
+            e.target.nextSibling?.focus();
+        }
+    }
+
     return verifying ? (
         <form onSubmit={verify} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
             {feedback}
             <Label classes="block mt-5" error={errorExists} warning={warningExists}>Verification Code</Label>
 
             <div className="w-full mt-2.5 grid grid-cols-6 gap-2">
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFirstDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setSecondDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setThirdDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFourthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFifthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setSixthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 0)} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 1)} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 2)} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 3)} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 4)} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 5)} />
             </div>
 
             <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Verify</Button>

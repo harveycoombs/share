@@ -25,9 +25,10 @@ export default function LoginForm() {
 
     async function login(e: any) {
         e.preventDefault();
-        
-        setFeedback(null);
+
         setLoading(true);
+
+        setFeedback(null);
         setErrorExistence(false);
         setWarningExistence(false);
         setVerifying(false);
@@ -36,6 +37,8 @@ export default function LoginForm() {
             method: "POST",
             body: new URLSearchParams({ email, password })
         });
+
+        setLoading(false);
     
         switch (response.status) {
             case 200:
@@ -44,7 +47,6 @@ export default function LoginForm() {
             case 400:
                 setFeedback(<div className="text-sm font-medium text-amber-500 text-center mb-5">Invalid credentials</div>);
                 setWarningExistence(true);
-                setLoading(false);
                 break;
             case 403:
                 setVerifying(true);
@@ -52,7 +54,6 @@ export default function LoginForm() {
             default:
                 setFeedback(<div className="text-sm font-medium text-red-500 text-center mb-5">Something went wrong</div>);
                 setErrorExistence(true);
-                setLoading(false);
                 break;
         }
     }
@@ -69,30 +70,100 @@ export default function LoginForm() {
 
         const response = await fetch("/api/user/verify", {
             method: "POST",
-            body: new URLSearchParams({ code })
+            body: new URLSearchParams({ email, code })
         });
 
-        const json = await response.json();
+        setLoading(false);
 
         switch (response.status) {
             case 200:
-                if (!json.success) break;
                 window.location.href = "/";
+                break;
+            case 400:
+                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Invalid code</div>);
+                setWarningExistence(true);
                 break;
             default:
                 setFeedback(<div className="text-sm font-medium text-red-500 text-center mt-5">Something went wrong</div>);
                 setErrorExistence(true);
                 break;
         }
-
-        setLoading(false);
     }
 
     function resetForm() {
         setFeedback(null); 
         setErrorExistence(false); 
         setWarningExistence(false);
+        setVerifying(false);
     }
+
+    function handleDigitInput(e: any, index: number) {
+        const value = e.target.value;
+
+        switch (index) {
+            case 0:
+                setFirstDigit(value);
+                break;
+            case 1:
+                setSecondDigit(value);
+                break;
+            case 2:
+                setThirdDigit(value);
+                break;
+            case 3:
+                setFourthDigit(value);
+                break;
+            case 4:
+                setFifthDigit(value);
+                break;
+            case 5:
+                setSixthDigit(value);
+                break;
+        }
+
+        if (!value?.length) {
+            e.target.previousSibling?.focus();
+        } else {
+            switch (index) {
+                case 0:
+                    setFirstDigit("");
+                    break;
+                case 1:
+                    setSecondDigit("");
+                    break;
+                case 2:
+                    setThirdDigit("");
+                    break;
+                case 3:
+                    setFourthDigit("");
+                    break;
+                case 4:
+                    setFifthDigit("");
+                    break;
+                case 5:
+                    setSixthDigit("");
+                    break;
+            }
+
+            e.target.nextSibling?.focus();
+        }
+    }
+
+    function handlePaste(e: any) {
+        if (!e.clipboardData?.getData("text")?.length) return;
+
+        const text = (e.clipboardData?.getData("text") ?? "");
+
+        setFirstDigit(text.charAt(0));
+        setSecondDigit(text.charAt(1));
+        setThirdDigit(text.charAt(2));
+        setFourthDigit(text.charAt(3));
+        setFifthDigit(text.charAt(4));
+        setSixthDigit(text.charAt(5));
+
+        e.preventDefault();
+    }
+
 
     return verifying ? (
         <form onSubmit={verify} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
@@ -100,12 +171,12 @@ export default function LoginForm() {
             <Label classes="block mt-5" error={errorExists} warning={warningExists}>Verification Code</Label>
 
             <div className="w-full mt-2.5 grid grid-cols-6 gap-2">
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFirstDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setSecondDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setThirdDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFourthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setFifthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => { setSixthDigit(e.target.value); e.target.nextSibling?.focus(); }} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={firstDigit} onInput={(e: any) => handleDigitInput(e, 0)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={secondDigit} onInput={(e: any) => handleDigitInput(e, 1)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={thirdDigit} onInput={(e: any) => handleDigitInput(e, 2)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={fourthDigit} onInput={(e: any) => handleDigitInput(e, 3)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={fifthDigit} onInput={(e: any) => handleDigitInput(e, 4)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={sixthDigit} onInput={(e: any) => handleDigitInput(e, 5)} onPaste={handlePaste} />
             </div>
 
             <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Verify</Button>

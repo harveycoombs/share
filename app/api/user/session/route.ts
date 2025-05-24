@@ -56,7 +56,7 @@ export async function POST(request: Request): Promise<NextResponse> {
                 console.error(ex);
             }
 
-            return NextResponse.json({ error: "User is unverified." }, { status: 400 });
+            return NextResponse.json({ error: "User is unverified." }, { status: 403 });
         }
 
         const credentials = createJWT(user);
