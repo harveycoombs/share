@@ -129,8 +129,44 @@ export default function RegistrationForm() {
         if (!value?.length) {
             e.target.previousSibling?.focus();
         } else {
+            switch (index) {
+                case 0:
+                    setFirstDigit("");
+                    break;
+                case 1:
+                    setSecondDigit("");
+                    break;
+                case 2:
+                    setThirdDigit("");
+                    break;
+                case 3:
+                    setFourthDigit("");
+                    break;
+                case 4:
+                    setFifthDigit("");
+                    break;
+                case 5:
+                    setSixthDigit("");
+                    break;
+            }
+
             e.target.nextSibling?.focus();
         }
+    }
+
+    function handlePaste(e: any) {
+        if (!e.clipboardData?.getData("text")?.length) return;
+
+        const text = (e.clipboardData?.getData("text") ?? "");
+
+        setFirstDigit(text.charAt(0));
+        setSecondDigit(text.charAt(1));
+        setThirdDigit(text.charAt(2));
+        setFourthDigit(text.charAt(3));
+        setFifthDigit(text.charAt(4));
+        setSixthDigit(text.charAt(5));
+
+        e.preventDefault();
     }
 
     return verifying ? (
@@ -139,12 +175,12 @@ export default function RegistrationForm() {
             <Label classes="block mt-5" error={errorExists} warning={warningExists}>Verification Code</Label>
 
             <div className="w-full mt-2.5 grid grid-cols-6 gap-2">
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 0)} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 1)} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 2)} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 3)} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 4)} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" onInput={(e: any) => handleDigitInput(e, 5)} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={firstDigit} onInput={(e: any) => handleDigitInput(e, 0)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={secondDigit} onInput={(e: any) => handleDigitInput(e, 1)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={thirdDigit} onInput={(e: any) => handleDigitInput(e, 2)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={fourthDigit} onInput={(e: any) => handleDigitInput(e, 3)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={fifthDigit} onInput={(e: any) => handleDigitInput(e, 4)} onPaste={handlePaste} />
+                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={sixthDigit} onInput={(e: any) => handleDigitInput(e, 5)} onPaste={handlePaste} />
             </div>
 
             <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Verify</Button>

@@ -164,7 +164,6 @@ export default function LoginForm() {
         e.preventDefault();
     }
 
-
     return verifying ? (
         <form onSubmit={verify} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
             {feedback}
