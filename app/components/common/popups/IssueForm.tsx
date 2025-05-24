@@ -1,5 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/Popup";
 import Label from "@/app/components/common/Label";
@@ -17,7 +19,7 @@ export default function IssueForm({ onClose }: Properties) {
     const [description, setDescription] = useState<string>("");
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [success, setSuccess] = useState<boolean>(false);
+    const [success, setSuccess] = useState<boolean|null>(null);
     const [countdown, setCountdown] = useState<number>(5);
 
     async function submit() {
@@ -62,16 +64,18 @@ export default function IssueForm({ onClose }: Properties) {
 
     return (
         <Popup title="Report An Issue" classes="w-100" onClose={onClose}>
+            {success === false && <div className="block w-full rounded-md bg-red-100/75 p-2 leading-none font-medium text-sm text-red-400 mt-2.75"><FontAwesomeIcon icon={faExclamationCircle} className="mr-1.5" />Something went wrong</div>}
+
             <Label classes="block w-full mt-2.75">Your Name</Label>
-            <Field classes="block w-full" warning={!success && !name.length} onInput={(e: any) => setName(e.target.value)} />
+            <Field classes="block w-full" warning={success === false && !name.length} onInput={(e: any) => setName(e.target.value)} />
 
             <Label classes="block w-full mt-2.75">Your Email Address</Label>
-            <Field classes="block w-full" warning={!success && !email.length} onInput={(e: any) => setEmail(e.target.value)} />
+            <Field type="email" classes="block w-full" warning={success === false && !email.length} onInput={(e: any) => setEmail(e.target.value)} />
 
             <Label classes="block w-full mt-2.75">Describe the issue</Label>
-            <TextBox classes="block w-full max-h-50 min-h-10" warning={!success && !description.length} onInput={(e: any) => setDescription(e.target.value)} rows={8} />
+            <TextBox classes="block w-full max-h-50 min-h-10" warning={success === false && !description.length} onInput={(e: any) => setDescription(e.target.value)} rows={8} />
 
-            {success ? <Button classes="block w-full mt-2.75" color="bg-green-500 hover:bg-green-600 active:bg-green-700" onClick={onClose}>Submitted. Closing in {countdown}s</Button> : <Button classes="block w-full mt-2.75" onClick={submit} loading={loading}>Submit</Button>}
+            {success ? <Button classes="block w-full mt-2.75" color="bg-green-500 hover:bg-green-600 active:bg-green-700" onClick={onClose}>Submitted. Closing in {countdown}s</Button>: <Button classes="block w-full mt-2.75" onClick={submit} loading={loading}>Submit</Button>}
         </Popup>
     );
 }
