@@ -84,7 +84,20 @@ export default function RegistrationForm() {
         const response = await fetch("/api/user/verify", {
             method: "POST",
             body: new URLSearchParams({ code })
-        }); 
+        });
+
+        const json = await response.json();
+
+        switch (response.status) {
+            case 200:
+                if (!json.success) break;
+                window.location.href = "/";
+                break;
+            default:
+                setFeedback(<div className="text-sm font-medium text-red-500 text-center mt-5">Something went wrong</div>);
+                setErrorExistence(true);
+                break;
+        }
 
         setLoading(false);
     }

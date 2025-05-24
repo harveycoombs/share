@@ -31,14 +31,14 @@ export async function POST(request: Request): Promise<NextResponse> {
     const title = (files.length == 1) ? files[0].name : new Date().getTime().toString();
     const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host");
 
-    const uploadid = await insertUploadHistory(user?.user_id ?? 0, title, ip ?? "", files.length, files.map(file => file.size).reduce((a, b) => a + b, 0), password);
+    const uploadid = await insertUploadHistory(user?.user_id, title, ip ?? "", files.length, files.map(file => file.size).reduce((a, b) => a + b, 0), password);
 
     if (!uploadid?.length) return NextResponse.json({ error: "Unable to record upload in database." }, { status: 500 });
 
     try {
         await fs.mkdir(`./uploads/${uploadid}`);
     } catch (ex: any) {
-        await deleteUpload(user?.user_id ?? 0, uploadid);
+        await deleteUpload(user?.user_id, uploadid);
         return NextResponse.json({ error: ex.message }, { status: 500 });
     }
     

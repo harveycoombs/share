@@ -43,12 +43,12 @@ export async function getTotalUploads(): Promise<number> {
 }
 
 export async function getTotalUploadsFromGuests(): Promise<number> {
-    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id = 0");
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id IS NULL OR user_id = ''");
     return result[0].total;
 }
 
 export async function getTotalUploadsFromRegisteredUsers(): Promise<number> {
-    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id <> 0");
+    const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM uploads WHERE user_id IS NOT NULL AND user_id <> ''");
     return result[0].total;
 }
 
