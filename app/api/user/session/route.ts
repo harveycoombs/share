@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-import { getUserByEmailAddress, verifyCredentials } from "@/lib/users";
+import { checkUserVerification, getUserByEmailAddress, updateUserAuthCode, verifyCredentials } from "@/lib/users";
 import { authenticate, createJWT } from "@/lib/jwt";
+import { Recipient } from "mailersend";
+import { EmailParams } from "mailersend";
+import { generateCode } from "@/lib/utils";
+import sendEmail from "@/lib/mail";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -31,6 +35,30 @@ export async function POST(request: Request): Promise<NextResponse> {
     
         if (!user) return NextResponse.json({ success: false }, { status: 500 });
     
+        const verified = await checkUserVerification(user.user_id);
+    
+        if (!verified) {
+            try {
+                const code = generateCode();
+                const updated = await updateUserAuthCode(email, code);
+    
+                if (updated) {
+                    const recipients = [new Recipient(email, `${user.firstName} ${user.lastName}`)];
+            
+                    const emailParams = new EmailParams()
+                        .setFrom({ email: "noreply@share.surf", name: "Share.surf" })
+                        .setSubject("Share.surf - Verification")
+                        .setHtml(`<p>Hello ${user.firstName},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`);
+                
+                    await sendEmail(emailParams, recipients);
+                }
+            } catch (ex: any) {
+                console.error(ex);
+            }
+
+            return NextResponse.json({ error: "User is unverified." }, { status: 400 });
+        }
+
         const credentials = createJWT(user);
     
         const response = NextResponse.json({ success: true }, { status: 200 });

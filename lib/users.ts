@@ -77,6 +77,11 @@ export async function verifyUserAuthCode(emailAddress: string, code: number): Pr
     return result[0].total > 0;
 }
 
+export async function checkUserVerification(userid: string): Promise<boolean> {
+    const [result]: any = await pool.query("SELECT verified FROM users WHERE user_id = ?", [userid]);
+    return result[0].verified;
+}
+
 export async function getTotalUsers(): Promise<any> {
     const [result]: any = await pool.query("SELECT COUNT(*) AS total FROM users");
     return result[0].total;
