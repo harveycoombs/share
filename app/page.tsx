@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faClock } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -165,7 +165,7 @@ export default function Home() {
                         <h1 className="text-5xl font-bold leading-none">share.surf</h1>
                     </div>
 
-                    <h2 className="block font-medium text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
+                    <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-600">The no-frills file sharing service</h2>
                 </div>
                 
                 {(id.length > 0 || error.length > 0) && (
@@ -191,12 +191,12 @@ export default function Home() {
 
                 {!loading && !id.length && (
                     <div className="w-115 max-sm:w-full">
-                        <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg">
+                        <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg dark:bg-indigo-200">
                             <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
                             Drag or paste files onto this page to upload
                         </div>
 
-                        <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
+                        <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
                             <Button onClick={() => uploader.current?.click()} classes={passwordFieldIsVisible ? "max-sm:w-full" : ""}>Browse Files</Button>
 
                             <div className={`flex items-center gap-3.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
@@ -211,15 +211,16 @@ export default function Home() {
                                             onChange={(e: any) => setPassword(e.target.value)}
                                         />
 
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500 dark:text-zinc-600 dark:hover:text-zinc-500 dark:active:text-zinc-400" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
                                     </div>
                                 ) : <UploadOption icon={faKey} title="Set Upload Password" onClick={() => setPasswordFieldVisibility(true)} />}
                             </div>
                         </div>
 
-                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:flex-col max-sm:gap-2 max-sm:items-center">
-                            <div>Uploads expire after 24 hours</div>
-                            <div>Uploads must be &lt;= 2GB</div>
+                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:justify-center dark:text-zinc-600">
+                            <div>Expires after 24 hours</div>
+                            <div className="hidden mx-2 max-sm:block">&middot;</div>
+                            <div>2GB upload limit</div>
                         </div>
                     </div>
                 )}
@@ -233,5 +234,5 @@ export default function Home() {
 }
 
 function UploadOption({ icon, ...rest }: any) {
-    return <div className="text-lg leading-none text-slate-300 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" {...rest}><FontAwesomeIcon icon={icon} /></div>;
+    return <div className="text-lg leading-none text-slate-300 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500 dark:text-zinc-600 dark:hover:text-zinc-500 dark:active:text-zinc-400" {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }

@@ -75,10 +75,10 @@ export default function UploadHistory({ onClose }: Properties) {
 
                     {
                         selecting ? <div className="flex items-center gap-1">
-                            <div className="text-xs font-medium text-slate-400/75 mr-1.5 select-none">{selectedUploads.length} Selected</div>
-                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
-                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
-                        </div> : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>
+                            <div className="text-xs font-medium text-slate-400/75 mr-1.5 select-none dark:text-zinc-400">{selectedUploads.length} Selected</div>
+                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
+                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
+                        </div> : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>
                     }
                 </div>
 
@@ -89,7 +89,7 @@ export default function UploadHistory({ onClose }: Properties) {
                 error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
                 : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
                 : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
-                : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
+                : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400 dark:text-zinc-500">You haven't uploaded anything yet</div>
             }</div>
         </Popup>
     );
@@ -200,19 +200,19 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 
     return (
         <AnimatePresence>
-            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5" ref={uploadRef}>
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5 dark:bg-zinc-700/60" ref={uploadRef}>
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
                 <div>
                     <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded ${data.types.length == 1 ? getTypeColor(data.types[0]) : "bg-pink-100 text-pink-400"} max-sm:hidden`}><FontAwesomeIcon icon={data.types.length == 1 ? getTypeIcon(data.types[0]) : faFileZipper} /></div>
 
                     <div className="inline-block align-middle">
                         <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
-                            {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
-                            <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
+                            {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500 dark:text-white dark:font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
+                            <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75 dark:text-zinc-500"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
                                 {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
                             </div>
                         </strong>
-                        <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
+                        <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none dark:text-zinc-400">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
                     </div>
                 </div>
 
@@ -230,6 +230,6 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 }
 
 function UploadOption({ icon, url, ...rest }: any) {
-    const classList = "leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/60 active:bg-slate-200";
+    const classList = "leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/60 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80";
     return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={icon} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={icon} /></div>;
 }
