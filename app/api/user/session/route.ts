@@ -37,6 +37,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     
         const verified = await checkUserVerification(user.user_id);
     
+        let message;
+
         if (!verified) {
             try {
                 const code = generateCode();
@@ -51,12 +53,15 @@ export async function POST(request: Request): Promise<NextResponse> {
                         .setHtml(`<p>Hello ${user.firstName},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`);
                 
                     await sendEmail(emailParams, recipients);
+
+                    message = "Verification code sent.";
                 }
             } catch (ex: any) {
                 console.error(ex);
+                message = `Unable to send verification code: ${ex.message}`;
             }
 
-            return NextResponse.json({ error: "User is unverified." }, { status: 403 });
+            return NextResponse.json({ error: "User is unverified.", message }, { status: 403 });
         }
 
         const credentials = createJWT(user);
