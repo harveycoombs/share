@@ -8,6 +8,7 @@ import Label from "@/app/components/common/Label";
 import Field from "@/app/components/common/Field";
 import TextBox from "@/app/components/common/TextBox";
 import Button from "@/app/components/common/Button";
+import Notice from "../Notice";
 
 interface Properties {
     onClose: () => void;
@@ -64,7 +65,7 @@ export default function IssueForm({ onClose }: Properties) {
 
     return (
         <Popup title="Report An Issue" classes="w-100" onClose={onClose}>
-            {success === false && <div className="block w-full rounded-md bg-red-100/75 p-2 leading-none font-medium text-sm text-red-400 mt-2.75"><FontAwesomeIcon icon={faExclamationCircle} className="mr-1.5" />Something went wrong</div>}
+            {success === false && <Notice color="red" classes="mt-2.75"><FontAwesomeIcon icon={faExclamationCircle} className="mr-1.5" />Something went wrong</Notice>}
 
             <Label classes="block w-full mt-2.75">Your Name</Label>
             <Field classes="block w-full" warning={success === false && !name.length} onInput={(e: any) => setName(e.target.value)} />
