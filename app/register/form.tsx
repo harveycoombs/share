@@ -128,7 +128,7 @@ export default function RegistrationForm() {
 
         if (!value?.length) {
             e.target.previousSibling?.focus();
-        } else {
+
             switch (index) {
                 case 0:
                     setFirstDigit("");
@@ -149,7 +149,7 @@ export default function RegistrationForm() {
                     setSixthDigit("");
                     break;
             }
-
+        } else {
             e.target.nextSibling?.focus();
         }
     }

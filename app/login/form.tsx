@@ -123,7 +123,7 @@ export default function LoginForm() {
 
         if (!value?.length) {
             e.target.previousSibling?.focus();
-        } else {
+
             switch (index) {
                 case 0:
                     setFirstDigit("");
@@ -144,7 +144,7 @@ export default function LoginForm() {
                     setSixthDigit("");
                     break;
             }
-
+        } else {
             e.target.nextSibling?.focus();
         }
     }
