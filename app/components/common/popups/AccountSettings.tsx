@@ -7,7 +7,8 @@ import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
 import Button from "@/app/components/common/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
+import Notice from "../Notice";
 
 interface Properties {
     onClose: () => void;
@@ -24,7 +25,10 @@ export default function AccountSettings({ onClose }: Properties) {
     const [newPassword, setNewPassword] = useState<string>("");
     const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
 
-    const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
+    const [error, setError] = useState<string>("");
+    const [warning, setWarning] = useState<string>("");
+    const [success, setSuccess] = useState<string>("");
+
     const [deletionIntent, setDeletionIntent] = useState<boolean>(false);
 
     const [updating, setUpdating] = useState<boolean>(false);
@@ -47,10 +51,12 @@ export default function AccountSettings({ onClose }: Properties) {
 
     async function updateDetails() {
         setUpdating(true);
-        setFeedback(null);
+        setError("");
+        setWarning("");
+        setSuccess("");
 
         if (newPassword?.length && newPassword != confirmNewPassword) {
-            setFeedback(<div className="bg-red-400 w-full text-center p-1 rounded">New passwords do not match</div>);
+            setWarning("New passwords do not match");
             setUpdating(false);
             return;
         }
@@ -63,7 +69,12 @@ export default function AccountSettings({ onClose }: Properties) {
         const json = await response.json();
 
         setUpdating(false);
-        setFeedback(json.updated ? <div className="bg-green-400 w-full text-center p-1 rounded">Details updated successfully</div> : <div className="bg-red-400 w-full text-center p-1 rounded">Something went wrong</div>);
+
+        if (json.updated) {
+            setSuccess("Details updated successfully");
+        } else {
+            setError("Something went wrong");
+        }
     }
 
     async function deleteAccount() {
@@ -76,7 +87,7 @@ export default function AccountSettings({ onClose }: Properties) {
         setDeleting(false);
 
         if (!json.deleted) {
-            setFeedback(<div className="bg-red-400 w-full text-center p-1 rounded">Something went wrong</div>);
+            setError("Something went wrong");
             return;
         }
         
@@ -99,7 +110,7 @@ export default function AccountSettings({ onClose }: Properties) {
         const json = await response.json();
 
         if (!json.uploaded) {
-            setFeedback(<div className="bg-red-400 w-full text-center p-1 rounded">Something went wrong</div>);
+            setError("Something went wrong");
             return;
         }
 
@@ -107,8 +118,12 @@ export default function AccountSettings({ onClose }: Properties) {
     }
 
     return (
-        <Popup title="Settings" onClose={onClose} classes="max-sm:w-15/16">
-            {feedback && <div className="w-full mb-2 text-sm text-white font-medium">{feedback}</div>}
+        <Popup title="Account Settings" onClose={onClose} classes="max-sm:w-15/16">
+            {(error.length + warning.length + success.length) > 0 && <Notice color={error.length ? "red" : warning.length ? "amber" : "green"}>
+                <FontAwesomeIcon icon={error.length ? faExclamationCircle : warning.length ? faWarning : faCheck} className="mr-1.5" />
+                {error.length ? error : warning.length ? warning : success}
+            </Notice>}
+
             <div className="w-full">
                 <div>
                     <div className="flex gap-3 items-center w-fit mx-auto my-4 select-none">
@@ -141,13 +156,13 @@ export default function AccountSettings({ onClose }: Properties) {
 
                         <div className="w-60 max-sm:w-full">
                             <Label classes="block w-full mt-2.75 mb-0.5">Old Password</Label>
-                            <Field type="password" classes="block w-full" />
+                            <Field type="password" classes="block w-full" onInput={(e: any) => setOldPassword(e.target.value)} />
 
                             <Label classes="block w-full mt-2.75 mb-0.5">New Password</Label>
-                            <Field type="password" classes="block w-full" />
+                            <Field type="password" classes="block w-full" onInput={(e: any) => setNewPassword(e.target.value)} />
 
                             <Label classes="block w-full mt-2.75 mb-0.5">Confirm New Password</Label>
-                            <Field type="password" classes="block w-full" />
+                            <Field type="password" classes="block w-full" onInput={(e: any) => setConfirmNewPassword(e.target.value)} />
                         </div>
                     </div>
                 </div>
