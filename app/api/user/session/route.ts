@@ -58,7 +58,7 @@ export async function POST(request: Request): Promise<NextResponse> {
                 }
             } catch (ex: any) {
                 console.error(ex);
-                message = `Unable to send verification code: ${ex.message}`;
+                message = `Unable to send verification code: ${ex}`;
             }
 
             return NextResponse.json({ error: "User is unverified.", message }, { status: 403 });
