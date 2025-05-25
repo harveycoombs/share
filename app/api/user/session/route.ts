@@ -36,8 +36,6 @@ export async function POST(request: Request): Promise<NextResponse> {
         if (!user) return NextResponse.json({ success: false }, { status: 500 });
     
         const verified = await checkUserVerification(user.user_id);
-    
-        let message;
 
         if (!verified) {
             try {
@@ -45,23 +43,20 @@ export async function POST(request: Request): Promise<NextResponse> {
                 const updated = await updateUserAuthCode(email, code);
     
                 if (updated) {
-                    const recipients = [new Recipient(email, `${user.firstName} ${user.lastName}`)];
+                    const recipients = [new Recipient(email, `${user.first_name} ${user.last_name}`)];
             
                     const emailParams = new EmailParams()
                         .setFrom({ email: "noreply@share.surf", name: "Share.surf" })
                         .setSubject("Share.surf - Verification")
-                        .setHtml(`<p>Hello ${user.firstName},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`);
+                        .setHtml(`<p>Hello ${user.first_name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code: <b>${code}</b></p>`);
                 
                     await sendEmail(emailParams, recipients);
-
-                    message = "Verification code sent.";
                 }
             } catch (ex: any) {
                 console.error(ex);
-                message = `Unable to send verification code: ${ex.body.message}`;
             }
 
-            return NextResponse.json({ error: "User is unverified.", message }, { status: 403 });
+            return NextResponse.json({ error: "User is unverified." }, { status: 403 });
         }
 
         const credentials = createJWT(user);
