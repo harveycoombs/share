@@ -77,7 +77,7 @@ export default function LoginForm() {
 
         switch (response.status) {
             case 200:
-                //window.location.href = "/";
+                window.location.href = "/";
                 break;
             case 400:
                 setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Invalid code</div>);
