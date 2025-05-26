@@ -1,7 +1,14 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faClock } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus } from "@fortawesome/free-solid-svg-icons";
+
+declare module "react" {
+    interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+        webkitdirectory?: string;
+        directory?: string;
+    }
+}
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -20,6 +27,7 @@ export default function Home() {
     const [uploadTime, setUploadTime] = useState<number>(0);
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
+    const [uploadingFolder, setUploadingFolder] = useState<boolean>(false);
 
     const uploader = useRef<HTMLInputElement>(null);
 
@@ -31,6 +39,8 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
+        setUploadingFolder(false);
+
         if (!files?.length) return;
 
         if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > 2147483648) {
@@ -87,6 +97,7 @@ export default function Home() {
         setProgress(0);
         setFiles(null);
         setUploadTime(0);
+        setUploadingFolder(false);
         setLoading(false);
         setPassword("");
 
@@ -156,6 +167,16 @@ export default function Home() {
 
     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
 
+    function browseFiles() {
+        setUploadingFolder(true);
+        uploader.current?.click();
+    }
+
+    function browseFolders() {
+        setUploadingFolder(false);
+        uploader.current?.click();
+    }
+
     return (
         <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
             <section className="w-fit select-none max-sm:w-full max-sm:px-4">
@@ -197,7 +218,17 @@ export default function Home() {
                         </div>
 
                         <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
-                            <Button onClick={() => uploader.current?.click()} classes={passwordFieldIsVisible ? "max-sm:w-full" : ""}>Browse Files</Button>
+                            <div>
+                                <Button onClick={browseFiles} classes={`inline-block align-middle${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>Browse Files</Button>
+                                
+                                <button 
+                                    className="p-3 rounded-md ml-2 text-[0.8rem] leading-none font-semibold hover:bg-slate-50 hover:text-slate-500 active:bg-slate-100 active:text-slate-600 dark:hover:bg-zinc-800/60 dark:active:bg-zinc-800/90 dark:hover:text-zinc-400 dark:active:text-zinc-400 duration-150 cursor-pointer text-center select-none"
+                                    title="Upload Folder"
+                                    onClick={browseFolders}
+                                >
+                                    <FontAwesomeIcon icon={faFolderPlus} />
+                                </button>
+                            </div>
 
                             <div className={`flex items-center gap-3.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
                                 <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)} />
@@ -226,7 +257,15 @@ export default function Home() {
                 )}
             </section>
 
-            <input type="file" className="hidden" multiple={true} ref={uploader} onInput={(e: any) => setFiles(e.target.files)} />
+            <input 
+                type="file"
+                className="hidden"
+                multiple={true}
+                ref={uploader}
+                onInput={(e: any) => setFiles(e.target.files)}
+                webkitdirectory={uploadingFolder ? "true" : undefined}
+                directory={uploadingFolder ? "true" : undefined}
+            />
 
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
         </main>
