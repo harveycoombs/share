@@ -18,7 +18,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const files: any[] = data.getAll("files");
     const password = data.get("password")?.toString() ?? "";
 
-    if (!files) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
+    if (!files.length) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
 
     if (files.reduce((total: number, file: any) => total + file.size, 0) > 2147483648) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
 
@@ -39,7 +39,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         await fs.mkdir(`./uploads/${uploadid}`);
     } catch (ex: any) {
         await deleteUpload(user?.user_id, uploadid);
-        return NextResponse.json({ error: ex.message }, { status: 500 });
+        return NextResponse.json({ error: ex.message, location: "directory creation" }, { status: 500 });
     }
     
     const errors: any[] = [];
