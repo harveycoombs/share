@@ -39,7 +39,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         await fs.mkdir(`./uploads/${uploadid}`);
     } catch (ex: any) {
         await deleteUpload(user?.user_id, uploadid);
-        return NextResponse.json({ error: ex.message, location: "directory creation" }, { status: 500 });
+        return NextResponse.json({ error: ex.message }, { status: 500 });
     }
     
     const errors: any[] = [];
@@ -49,7 +49,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         
         try {
             const buffer = Buffer.from(await file.arrayBuffer());
-            await fs.writeFile(`./uploads/${uploadid}/${file.name}`, new Uint8Array(buffer));
+            await fs.writeFile(`./uploads/${uploadid}/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
         } catch (ex: any) {
             errors.push({
                 error: ex.message,
