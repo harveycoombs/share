@@ -1,19 +1,13 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus } from "@fortawesome/free-solid-svg-icons";
-
-declare module "react" {
-    interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
-        webkitdirectory?: string;
-        directory?: string;
-    }
-}
+import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import UploadHistory from "@/app/components/common/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
+import Notice from "./components/common/Notice";
 
 export default function Home() {
     const [files, setFiles] = useState<FileList|null>(null);
@@ -27,7 +21,6 @@ export default function Home() {
     const [uploadTime, setUploadTime] = useState<number>(0);
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
-    const [uploadingFolder, setUploadingFolder] = useState<boolean>(false);
 
     const uploader = useRef<HTMLInputElement>(null);
 
@@ -39,8 +32,6 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        setUploadingFolder(false);
-
         if (!files?.length) return;
 
         if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > 2147483648) {
@@ -97,7 +88,6 @@ export default function Home() {
         setProgress(0);
         setFiles(null);
         setUploadTime(0);
-        setUploadingFolder(false);
         setLoading(false);
         setPassword("");
 
@@ -168,12 +158,16 @@ export default function Home() {
     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
 
     function browseFiles() {
-        setUploadingFolder(true);
+        uploader.current?.removeAttribute("webkitdirectory");
+        uploader.current?.removeAttribute("directory");
+
         uploader.current?.click();
     }
 
     function browseFolders() {
-        setUploadingFolder(false);
+        uploader.current?.setAttribute("webkitdirectory", "true");
+        uploader.current?.setAttribute("directory", "true");
+
         uploader.current?.click();
     }
 
@@ -189,12 +183,9 @@ export default function Home() {
                     <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-600">The no-frills file sharing service</h2>
                 </div>
                 
-                {(id.length > 0 || error.length > 0) && (
+                {id.length > 0 && (
                     <div>
-                        <strong className={`block w-fit mx-auto text-2xl font-semibold${error.length ? " text-red-500" : id ? " text-emerald-500 cursor-pointer break-all" : dragging ? " text-slate-500" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{
-                            error.length ? error : 
-                            id ? `${document.location.href}uploads/${id}` : ""
-                        }</strong>
+                        <strong className={`block w-fit mx-auto text-2xl font-semibold${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}uploads/${id}` : ""}</strong>
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
@@ -212,10 +203,12 @@ export default function Home() {
 
                 {!loading && !id.length && (
                     <div className="w-115 max-sm:w-full">
-                        <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg dark:bg-indigo-200">
-                            <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
-                            Drag or paste files onto this page to upload
-                        </div>
+                        {error.length ? <Notice color="red"><FontAwesomeIcon icon={faExclamationCircle} className="mr-1.5" />{error}</Notice> : (
+                            <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg dark:bg-indigo-200">
+                                <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
+                                Drag or paste files onto this page to upload
+                            </div>
+                        )}
 
                         <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
                             <div>
@@ -263,8 +256,6 @@ export default function Home() {
                 multiple={true}
                 ref={uploader}
                 onInput={(e: any) => setFiles(e.target.files)}
-                webkitdirectory={uploadingFolder ? "true" : undefined}
-                directory={uploadingFolder ? "true" : undefined}
             />
 
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
