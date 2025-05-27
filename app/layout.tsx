@@ -50,7 +50,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                <meta name="theme-color" content="#37BFF9" />
+                <meta name="theme-color" content="#615FFF" />
 
                 <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
                 <link rel="canonical" href="https://share.surf" />
