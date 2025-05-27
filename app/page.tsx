@@ -7,7 +7,7 @@ import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import UploadHistory from "@/app/components/common/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
-import Notice from "./components/common/Notice";
+import Notice from "@/app/components/common/Notice";
 
 export default function Home() {
     const [files, setFiles] = useState<FileList|null>(null);
