@@ -42,6 +42,8 @@ export default function Home() {
 
         setLoading(true);
 
+        const start = new Date().getTime();
+
         const data = new FormData();
 
         data.append("password", password);
@@ -62,10 +64,12 @@ export default function Home() {
 
             setLoading(false);
 
+            const end = new Date().getTime();
+
             switch (e.target.status) {
                 case 200:
                     setID(e.target.response.id);
-                    setUploadTime(e.target.response.duration);
+                    setUploadTime(start - end);
                     break;
                 case 413:
                     setError("File is too large");
