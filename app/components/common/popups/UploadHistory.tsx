@@ -199,33 +199,43 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     }
 
     return (
-        <AnimatePresence>
-            <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.3, ease: "easeOut" }} className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden mb-1.5 dark:bg-zinc-700/60" ref={uploadRef}>
-                {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
-                <div>
-                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded ${data.types.length == 1 ? getTypeColor(data.types[0]) : "bg-pink-100 text-pink-400"} max-sm:hidden`}><FontAwesomeIcon icon={data.types.length == 1 ? getTypeIcon(data.types[0]) : faFileZipper} /></div>
+        <div className="group mb-1.5">
+            <AnimatePresence>
+                <motion.div 
+                    initial={{ scale: 0.8, opacity: 0 }} 
+                    animate={{ scale: 1, opacity: 1 }} 
+                    transition={{ duration: 0.3, ease: "easeOut" }} 
+                    className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden dark:bg-zinc-700/60"
+                    ref={uploadRef}
+                >
+                    {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
+                    <div>
+                        <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded ${data.types.length == 1 ? getTypeColor(data.types[0]) : "bg-pink-100 text-pink-400"} max-sm:hidden`}><FontAwesomeIcon icon={data.types.length == 1 ? getTypeIcon(data.types[0]) : faFileZipper} /></div>
 
-                    <div className="inline-block align-middle">
-                        <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
-                            {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500 dark:text-white dark:font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
-                            <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75 dark:text-zinc-500"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
-                                {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
-                            </div>
-                        </strong>
-                        <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none dark:text-zinc-400">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
+                        <div className="inline-block align-middle">
+                            <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
+                                {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500 dark:text-white dark:font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
+                                <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75 dark:text-zinc-500"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
+                                    {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
+                                </div>
+                            </strong>
+                            <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none dark:text-zinc-400">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex items-center gap-1">
-                    <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
-                    <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.upload_id}`} download={true} target="_blank" />
-                    <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} />
-                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
-                </div>
+                    <div className="flex items-center gap-1">
+                        <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
+                        <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.upload_id}`} download={true} target="_blank" />
+                        <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} />
+                        {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
+                    </div>
 
-                {!data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
-            </motion.div>
-        </AnimatePresence>
+                    {!data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
+                </motion.div>
+            </AnimatePresence>
+
+            <div className="hidden text-xs leading-none font-medium text-slate-400/75 mt-1 dark:text-zinc-400 group-hover:block">{new Date(data.upload_date).toLocaleDateString()} {new Date(data.upload_date).toLocaleTimeString()}</div>
+        </div>
     ); 
 }
 
