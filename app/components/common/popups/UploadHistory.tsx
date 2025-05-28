@@ -104,6 +104,8 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     const [editLoading, setEditLoading] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
+    const [hovering, setHovering] = useState<boolean>(false);
+
     const uploadRef = useRef<HTMLDivElement>(null);
     
     async function deleteUpload() {
@@ -199,12 +201,12 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     }
 
     return (
-        <div className="group mb-1.5">
+        <div className="group mb-1.5" onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
             <AnimatePresence>
                 <motion.div 
-                    initial={{ scale: 0.8, opacity: 0 }} 
-                    animate={{ scale: 1, opacity: 1 }} 
-                    transition={{ duration: 0.3, ease: "easeOut" }} 
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden dark:bg-zinc-700/60"
                     ref={uploadRef}
                 >
@@ -215,6 +217,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                         <div className="inline-block align-middle">
                             <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
                                 {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500 dark:text-white dark:font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
+
                                 <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75 dark:text-zinc-500"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
                                     {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
                                 </div>
@@ -234,7 +237,14 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                 </motion.div>
             </AnimatePresence>
 
-            <div className="hidden text-xs leading-none font-medium text-slate-400/75 mt-1 dark:text-zinc-400 group-hover:block">{new Date(data.upload_date).toLocaleDateString()} {new Date(data.upload_date).toLocaleTimeString()}</div>
+            <motion.div 
+                initial={{ height: 0 }}
+                animate={{ height: hovering ? "auto" : 0 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="text-xs leading-none font-medium text-slate-400/75 mt-1 overflow-hidden dark:text-zinc-400"
+            >
+                {new Date(data.upload_date).toLocaleDateString()} {new Date(data.upload_date).toLocaleTimeString()}
+            </motion.div>
         </div>
     ); 
 }
