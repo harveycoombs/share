@@ -241,7 +241,7 @@ export default function Home() {
 
                                         <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500 dark:text-zinc-600 dark:hover:text-zinc-500 dark:active:text-zinc-400" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
                                     </div>
-                                ) : <UploadOption icon={faKey} title="Set Upload Password" onClick={() => setPasswordFieldVisibility(true)} />}
+                                ) : <UploadOption icon={faKey} title="Set Upload Password" onClick={() => setPasswordFieldVisibility(sessionExists)} />}
                             </div>
                         </div>
 
