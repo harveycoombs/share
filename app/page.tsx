@@ -69,7 +69,7 @@ export default function Home() {
             switch (e.target.status) {
                 case 200:
                     setID(e.target.response.id);
-                    setUploadTime(start - end);
+                    setUploadTime(end - start);
                     break;
                 case 413:
                     setError("File is too large");
