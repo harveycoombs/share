@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChain, faCheck, faCircleNotch, faCode, faDownload, faFile, faFilePdf, faFileZipper, faImage, faListCheck, faMusic, faPenToSquare, faTrashAlt, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faChain, faCheck, faCircleNotch, faCode, faDownload, faEye, faFile, faFilePdf, faFileZipper, faImage, faListCheck, faMusic, faPenToSquare, faTrashAlt, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
@@ -95,6 +95,42 @@ export default function UploadHistory({ onClose }: Properties) {
     );
 }
 
+function getTypeIcon(type: string) {
+    switch (true) {
+        case type.includes("image"):
+            return faImage;
+        case type.includes("video"):
+            return faVideo;
+        case type.includes("audio"):
+            return faMusic;
+        case type.includes("text"):
+            return faCode;
+        case type == "application/zip":
+            return faFileZipper;
+        case type == "application/pdf":
+            return faFilePdf;
+        default:
+            return faFile;
+    }
+}
+
+function getTypeColor(type: string) {
+    switch (type.split("/")[0]) {
+        case "image":
+            return "bg-emerald-100 text-emerald-400";
+        case "video":
+            return "bg-rose-100 text-rose-400";
+        case "audio":
+            return "bg-purple-100 text-purple-400";
+        case "text":
+            return "bg-orange-100 text-orange-400";
+        case "application":
+            return "bg-amber-100 text-amber-400";
+        default:
+            return "bg-indigo-100 text-indigo-400";
+    }
+}
+
 function Upload({ data, bulkSelect, onSelect }: any) {
     const [feedback, setFeedback] = useState<string>("");
 
@@ -164,42 +200,6 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         })();
     }, [editing]);
 
-    function getTypeIcon(type: string) {
-        switch (true) {
-            case type.includes("image"):
-                return faImage;
-            case type.includes("video"):
-                return faVideo;
-            case type.includes("audio"):
-                return faMusic;
-            case type.includes("text"):
-                return faCode;
-            case type == "application/zip":
-                return faFileZipper;
-            case type == "application/pdf":
-                return faFilePdf;
-            default:
-                return faFile;
-        }
-    }
-
-    function getTypeColor(type: string) {
-        switch (type.split("/")[0]) {
-            case "image":
-                return "bg-emerald-100 text-emerald-400";
-            case "video":
-                return "bg-rose-100 text-rose-400";
-            case "audio":
-                return "bg-purple-100 text-purple-400";
-            case "text":
-                return "bg-orange-100 text-orange-400";
-            case "application":
-                return "bg-amber-100 text-amber-400";
-            default:
-                return "bg-indigo-100 text-indigo-400";
-        }
-    }
-
     return (
         <div className="group mb-1.5" onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
             <AnimatePresence>
@@ -228,8 +228,9 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 
                     <div className="flex items-center gap-1">
                         <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
+                        <UploadOption icon={faEye} title="View" url={`/uploads/${data.upload_id}`} target="_blank" />
                         <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.upload_id}`} download={true} target="_blank" />
-                        <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} />
+                        <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} loading={deleteLoading} />
                         {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                     </div>
 
@@ -249,7 +250,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     ); 
 }
 
-function UploadOption({ icon, url, ...rest }: any) {
-    const classList = "leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/60 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80";
-    return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={icon} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={icon} /></div>;
+function UploadOption({ icon, url, loading, ...rest }: any) {
+    const classList = `leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150${loading ? " pointer-events-none" : ""} hover:bg-slate-200/60 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80`;
+    return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} /></div>;
 }
