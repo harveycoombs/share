@@ -22,16 +22,16 @@ MAILERSEND_API_KEY=
 ```
 
 ### 2. Install Dependencies
-Run one of the following commands in the terminal to install all necessary dependencies.
+Run one of the following commands in the terminal to install all necessary dependencies:
 <br/>
 ```npm i``` or ```npm install```
 
 ### 3. Run Share
-To run Share in development mode, run the following command.
+To run Share in development mode, run the following command:
 <br/>
 ```npm run dev```
 
-To build and deploy Share, run the following commands (in order).
+To build and deploy Share, run the following commands (in order):
 <br/>
 ```npm run build``` and ```npm run start```
 
