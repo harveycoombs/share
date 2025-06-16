@@ -23,7 +23,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
         resend.emails.send({
             from: "noreply@share.surf",
-            to: "contact@harveycoombs.com",
+            to: emailAddress,
             subject: "Share.surf - Issue",
             html: `<p>${description}</p><br/><br/><p>Reporter Name: <strong>${name}</strong></p><p>Reporter Email Address: <strong>${emailAddress}</strong></p><p>User ID: <strong>${user?.user_id ?? "Guest"}</strong></p><p>IP Address: <strong>${ipAddress}</strong></p><p>User Agent: <strong>${userAgent}</strong></p>`
         });
