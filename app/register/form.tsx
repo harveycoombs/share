@@ -18,6 +18,7 @@ export default function RegistrationForm() {
     const [loading, setLoading] = useState<boolean>(false);
     const [errorExists, setErrorExistence] = useState<boolean>(false);
     const [warningExists, setWarningExistence] = useState<boolean>(false);
+    const [captchaIsVisible, setCaptchaVisibility] = useState<boolean>(false);
 
     const [verifying, setVerifying] = useState<boolean>(false);
 
@@ -212,14 +213,14 @@ export default function RegistrationForm() {
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Confirm Password</Label>
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPasswordConfirmation(e.target.value)} />
 
-            <div className="mt-2.5 w-fit relative left-1/2 -translate-x-1/2">
+            {captchaIsVisible && <div className="mt-2.5 w-fit relative left-1/2 -translate-x-1/2">
                 <HCaptcha
                     sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
                     onVerify={(token,ekey) => register(token, ekey)}
                 />
-            </div>
+            </div>}
 
-            <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Continue</Button>
+            {!captchaIsVisible && <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists} onClick={() => setCaptchaVisibility(true)}>Continue</Button>}
             <Button url="/login" transparent={true} classes="block w-full mt-2.5">I Already Have An Account</Button>
         </div>
     );
