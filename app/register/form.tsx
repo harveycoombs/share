@@ -1,6 +1,7 @@
 
 "use client";
 import { useState } from "react";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
@@ -27,9 +28,7 @@ export default function RegistrationForm() {
     const [fifthDigit, setFifthDigit] = useState<string>("");
     const [sixthDigit, setSixthDigit] = useState<string>("");
 
-    async function register(e: any) {
-        e.preventDefault();
-        
+    async function register(token: string, ekey: string) {
         setFeedback(null);
         setLoading(true);
         setErrorExistence(false);
@@ -51,7 +50,13 @@ export default function RegistrationForm() {
 
         const response = await fetch("/api/user", {
             method: "POST",
-            body: new URLSearchParams({ firstName, lastName, emailAddress, password })
+            body: new URLSearchParams({
+                firstName,
+                lastName,
+                emailAddress,
+                password,
+                captchaToken: token
+            })
         });
 
         setLoading(false);
@@ -59,6 +64,14 @@ export default function RegistrationForm() {
         switch (response.status) {
             case 200:
                 setVerifying(true);
+                break;
+            case 400:
+                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">One or more fields were not provided</div>);
+                setWarningExistence(true);
+                break;
+            case 401:
+                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Invalid captcha</div>);
+                setWarningExistence(true);
                 break;
             case 409:
                 setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Email address already in use</div>);
@@ -186,7 +199,7 @@ export default function RegistrationForm() {
             <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Verify</Button>
         </form>
     ) : (
-        <form onSubmit={register} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
+        <div onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
             {feedback}
             <Label classes="block mt-5" error={errorExists} warning={warningExists}>First Name</Label>
             <Field type="text" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setFirstName(e.target.value)} />
@@ -198,8 +211,16 @@ export default function RegistrationForm() {
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Confirm Password</Label>
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPasswordConfirmation(e.target.value)} />
+
+            <div className="mt-2.5 w-fit relative left-1/2 -translate-x-1/2">
+                <HCaptcha
+                    sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
+                    onVerify={(token,ekey) => register(token, ekey)}
+                />
+            </div>
+
             <Button classes="block w-full mt-2.5" loading={loading} disabled={errorExists || warningExists}>Continue</Button>
             <Button url="/login" transparent={true} classes="block w-full mt-2.5">I Already Have An Account</Button>
-        </form>
+        </div>
     );
 }

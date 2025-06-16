@@ -25,8 +25,17 @@ export async function POST(request: Request): Promise<NextResponse> {
     const lastName = data.get("lastName")?.toString() ?? "";
     const email = data.get("emailAddress")?.toString() ?? "";
     const password = data.get("password")?.toString() ?? "";
+    const captchaToken = data.get("captchaToken")?.toString() ?? "";
 
-    if (!firstName || !lastName || !email || !password) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    if (!firstName?.length || !lastName?.length || !email?.length || !password?.length || !captchaToken?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+
+    const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY}`,
+    });
+
+    if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
 
     const exists = await emailExists(email);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
