@@ -1,11 +1,10 @@
 import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { EmailParams, Recipient } from "mailersend";
+import { Resend } from "resend";
 
 import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword, updateUserAuthCode } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
-import sendEmail from "@/lib/mail";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -48,14 +47,14 @@ export async function POST(request: Request): Promise<NextResponse> {
             const updated = await updateUserAuthCode(email, code);
 
             if (updated) {
-                const recipients = [new Recipient(email, `${firstName} ${lastName}`)];
-        
-                const emailParams = new EmailParams()
-                    .setFrom({ email: "noreply@share.surf", name: "Share.surf" })
-                    .setSubject("Share.surf - Verification")
-                    .setHtml(`<p>Hello ${firstName},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`);
-            
-                await sendEmail(emailParams, recipients);
+                const resend = new Resend(process.env.RESEND_API_KEY);
+
+                resend.emails.send({
+                    from: "noreply@share.surf",
+                    to: email,
+                    subject: "Share.surf - Verification",
+                    html: `<p>Hello ${firstName},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`
+                });
             }
         } catch (ex: any) {
             console.error(ex);
@@ -103,14 +102,14 @@ export async function PATCH(request: Request): Promise<NextResponse> {
             const updated = await updateUserAuthCode(email, code);
 
             if (updated) {
-                const recipients = [new Recipient(email, `${user.first_name} ${user.last_name}`)];
-        
-                const emailParams = new EmailParams()
-                    .setFrom({ email: "noreply@share.surf", name: "Share.surf" })
-                    .setSubject("Share.surf - Verification")
-                    .setHtml(`<p>Hello ${user.first_name},</p> <p>Your email address has been updated on <i>Share.surf</i>. Verify your new email address by entering the following code: <b>${code}</b></p>`);
-            
-                await sendEmail(emailParams, recipients);
+                const resend = new Resend(process.env.RESEND_API_KEY);
+
+                resend.emails.send({
+                    from: "noreply@share.surf",
+                    to: email,
+                    subject: "Share.surf - Verification",
+                    html: `<p>Hello ${user.first_name},</p> <p>Your email address has been updated on <i>Share.surf</i>. Verify your new email address by entering the following code: <b>${code}</b></p>`
+                });
             }
         } catch (ex: any) {
             console.error(ex);

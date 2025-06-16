@@ -18,13 +18,13 @@
     "argon2": "^0.41.1",
     "framer-motion": "^11.18.2",
     "jsonwebtoken": "^9.0.2",
-    "mailersend": "^2.5.0",
     "mime": "^4.0.6",
     "mysql2": "^3.12.0",
     "mysql2-promise": "^0.1.4",
     "next": "^15.3.3",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "resend": "^4.6.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.7",

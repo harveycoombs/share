@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { EmailParams, Recipient } from "mailersend";
+import { Resend } from "resend";
 
-import sendEmail from "@/lib/mail";
 import { authenticate } from "@/lib/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -20,14 +19,14 @@ export async function POST(request: Request): Promise<NextResponse> {
     const user = await authenticate(token ?? "");
     
     try {
-        const recipients = [new Recipient("contact@harveycoombs.com", "Harvey Coombs")];
+        const resend = new Resend(process.env.RESEND_API_KEY);
 
-        const emailParams = new EmailParams()
-            .setFrom({ email: "noreply@share.surf", name: "Share.surf" })
-            .setSubject("Share.surf - Issue")
-            .setHtml(`<p>${description}</p><br/><br/><p>Reporter Name: <strong>${name}</strong></p><p>Reporter Email Address: <strong>${emailAddress}</strong></p><p>User ID: <strong>${user?.user_id ?? "Guest"}</strong></p><p>IP Address: <strong>${ipAddress}</strong></p><p>User Agent: <strong>${userAgent}</strong></p>`);
-    
-        await sendEmail(emailParams, recipients);
+        resend.emails.send({
+            from: "noreply@share.surf",
+            to: "contact@harveycoombs.com",
+            subject: "Share.surf - Issue",
+            html: `<p>${description}</p><br/><br/><p>Reporter Name: <strong>${name}</strong></p><p>Reporter Email Address: <strong>${emailAddress}</strong></p><p>User ID: <strong>${user?.user_id ?? "Guest"}</strong></p><p>IP Address: <strong>${ipAddress}</strong></p><p>User Agent: <strong>${userAgent}</strong></p>`
+        });
 
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (ex: any) {
