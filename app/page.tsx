@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { motion } from "motion/react";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -177,7 +178,12 @@ export default function Home() {
 
     return (
         <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-            <section className="w-fit select-none max-sm:w-full max-sm:px-4">
+            <motion.section
+                className="w-fit select-none max-sm:w-full max-sm:px-4"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+            >
                 <div className="w-115 mx-auto mb-16 max-sm:w-full">
                     <div className="w-fit mx-auto flex items-center gap-4">
                         <Logo width={56} height={56} className="" />
@@ -252,7 +258,7 @@ export default function Home() {
                         </div>
                     </div>
                 )}
-            </section>
+            </motion.section>
 
             <input 
                 type="file"
