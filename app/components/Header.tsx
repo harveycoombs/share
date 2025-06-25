@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,19 +20,21 @@ export default function Header() {
     const [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
     const [issueFormAreVisible, setIssueFormVisibility] = useState<boolean>(false);
 
-    useEffect(() => {
-        (async () => {
-            const response = await fetch("/api/user/session");
-            
-            if (!response.ok) {
-                setUser(null);
-                return;
-            }
+    const fetchUser = useCallback(async () => {
+        const response = await fetch("/api/user/session");
+        
+        if (!response.ok) {
+            setUser(null);
+            return;
+        }
 
-            const json = await response.json();
-            setUser(json.user);
-        })();
+        const json = await response.json();
+        setUser(json.user);
     }, []);
+
+    useEffect(() => {
+        fetchUser();
+    }, [fetchUser]);
 
     async function logout() {
         await fetch("/api/user/session", { method: "DELETE" });
