@@ -162,6 +162,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
             return;
         }
 
+        uploadRef?.current?.nextElementSibling?.remove();
         uploadRef?.current?.remove();
     }
 
