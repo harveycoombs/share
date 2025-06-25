@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "motion/react";
@@ -87,7 +87,7 @@ export default function Home() {
         request.send(data);
     }, [files]);
 
-    function resetUploader() {
+    const resetUploader = useCallback(() => {
         setID("");
         setError("");
         setProgress(0);
@@ -99,9 +99,9 @@ export default function Home() {
         if (uploader.current) {
             uploader.current.value = "";
         }
-    }
+    }, []);
 
-    async function copyUploadURL(e: any) {
+    const copyUploadURL = useCallback(async (e: any) => {
         if (!id) return;
 
         const url = e.target.innerText;
@@ -110,26 +110,26 @@ export default function Home() {
         e.target.innerText = "Copied to Clipboard";
 
         setTimeout(() => e.target.innerText = url, 1200);
-    }
+    }, [id]);
 
-    function handleDragOverEvent(e: any) {
+    const handleDragOverEvent = useCallback((e: any) => {
         e.preventDefault();
 
         if (!dragging && !files?.length) handleDragEnterEvent();
-    }
+    }, [dragging, files]);
     
-    function handleDragEnterEvent() {
+    const handleDragEnterEvent = useCallback(() => {
         if (files?.length) return;
 
         setDragging(true);
-    }
+    }, [files]);
     
-    function handleDragLeaveEvent() {
+    const handleDragLeaveEvent = useCallback(() => {
         if (files?.length) return;
         setDragging(false);
-    }
+    }, [files]);
 
-    function handleDropEvent(e: any) {
+    const handleDropEvent = useCallback((e: any) => {
         e.preventDefault();
 
         if (files?.length) return;
@@ -140,9 +140,9 @@ export default function Home() {
 
             handleDragLeaveEvent();
         }
-    }
+    }, [files, uploader, handleDragLeaveEvent]);
 
-    function handlePaste(e: ClipboardEvent) {
+    const handlePaste = useCallback((e: ClipboardEvent) => {
         if (!e.clipboardData?.files?.length) return;
 
         const transfer = new DataTransfer();
@@ -153,7 +153,7 @@ export default function Home() {
 
         setFiles(transfer.files);
         uploader.current?.dispatchEvent(new Event("change"));
-    }
+    }, [setFiles, uploader]);
 
     useEffect(() => {
         window.addEventListener("paste", handlePaste);
@@ -162,19 +162,19 @@ export default function Home() {
 
     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
 
-    function browseFiles() {
+    const browseFiles = useCallback(() => {
         uploader.current?.removeAttribute("webkitdirectory");
         uploader.current?.removeAttribute("directory");
 
         uploader.current?.click();
-    }
+    }, [uploader]);
 
-    function browseFolders() {
+    const browseFolders = useCallback(() => {
         uploader.current?.setAttribute("webkitdirectory", "true");
         uploader.current?.setAttribute("directory", "true");
 
         uploader.current?.click();
-    }
+    }, [uploader]);
 
     return (
         <main className="min-h-[calc(100vh-117px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
