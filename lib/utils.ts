@@ -15,3 +15,31 @@ export function formatNumber(raw: number): string {
     const formatter = new Intl.NumberFormat("en-US");
     return formatter.format(raw);
 }
+
+export function formatTime(ms: number): string {
+    const units = [
+        { value: 24 * 60 * 60 * 1000, label: "d" },
+        { value: 60 * 60 * 1000, label: "h" },
+        { value: 60 * 1000, label: "m" },
+        { value: 1000, label: "s" },
+        { value: 1, label: "ms" }
+    ];
+
+    let remaining = ms;
+    let result = "";
+    let started = false;
+
+    for (let { value, label } of units) {
+        const count = Math.floor(remaining / value);
+        remaining %= value;
+        
+        if (count > 0 || started) {
+            result += `${count}${label}`;
+
+            if (remaining > 0) result += " ";
+            started = true;
+        }
+    }
+
+    return result.trim().length ? result : "0s";
+}

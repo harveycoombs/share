@@ -9,6 +9,7 @@ import Button from "@/app/components/common/Button";
 import UploadHistory from "@/app/components/common/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
+import { formatTime } from "@/lib/utils";
 
 export default function Home() {
     const [files, setFiles] = useState<FileList|null>(null);
@@ -19,7 +20,7 @@ export default function Home() {
     const [progress, setProgress] = useState<number>(0);
     const [password, setPassword] = useState<string>("");
     const [passwordFieldIsVisible, setPasswordFieldVisibility] = useState<boolean>(false);
-    const [uploadTime, setUploadTime] = useState<number>(0);
+    const [uploadTime, setUploadTime] = useState<string>("");
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
 
@@ -70,7 +71,7 @@ export default function Home() {
             switch (e.target.status) {
                 case 200:
                     setID(e.target.response.id);
-                    setUploadTime(end - start);
+                    setUploadTime(formatTime(end - start));
                     break;
                 case 413:
                     setError("File is too large");
@@ -92,7 +93,7 @@ export default function Home() {
         setError("");
         setProgress(0);
         setFiles(null);
-        setUploadTime(0);
+        setUploadTime("");
         setLoading(false);
         setPassword("");
 
@@ -199,7 +200,7 @@ export default function Home() {
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
-                            <div className="text-sm font-semibold text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}ms</div>
+                            <div className="text-sm font-semibold text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
                         </div>
                     </div>
                 )}
