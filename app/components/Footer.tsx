@@ -8,7 +8,7 @@ import packageJson from "@/package.json";
 export default function Footer() {
     return (
         <footer className="p-4 flex justify-between items-center select-none bg-white text-slate-400/60 text-sm font-medium max-md:text-xs max-sm:flex-col max-sm:items-center max-sm:gap-2 dark:bg-zinc-950 dark:text-zinc-600">
-            <div>2021 &ndash; {new Date().getFullYear()} &middot; Share {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
+            <div>2021 &ndash; {new Date().getFullYear()} &middot; Share {packageJson.version} (formerly cynohost.com) &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
 
             <div className="flex items-center gap-4 max-sm:gap-3">
                 <Link href="/stats" className="hover:underline max-sm:hidden">Stats</Link>
