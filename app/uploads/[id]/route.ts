@@ -40,42 +40,33 @@ export async function GET(request: Request, { params }: any) {
 
             let contentType = mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream";
 
-            if (contentType.startsWith("video/")) {
-                const fileStream = createReadStream(`./uploads/${id}/${files[0]}`);
-
-                const stream = new ReadableStream({
-                    async start(controller) {
-                        for await (const chunk of fileStream) {
-                            controller.enqueue(chunk);
-                        }
-
-                        controller.close();
-                    }
-                });
-
-                return new NextResponse(stream, {
-                    headers: {
-                        "Content-Type": contentType,
-                        "Content-Disposition": `${isProtected ? "attachment" : "inline"}; filename="${files[0]}"`,
-                        "Transfer-Encoding": "chunked",
-                        "Cache-Control": "no-cache"
-                    }
-                });
-            } else {
-                const content = await fs.readFile(`./uploads/${id}/${files[0]}`);
-
-                if (contentType == "text/html") {
-                    contentType = "text/plain";
-                }
-
-                return new NextResponse(new Uint8Array(content), {
-                    headers: {
-                        "Content-Type": contentType,
-                        "Content-Disposition": `${isProtected ? "attachment" : "inline"}; filename="${files[0]}"`,
-                        "Content-Length": stats.size.toString()
-                    }
-                });
+            if (contentType == "text/html") {
+                contentType = "text/plain";
             }
+
+            const fileStream = createReadStream(`./uploads/${id}/${files[0]}`, { highWaterMark: 1024 * 1024, start: 0, end: stats.size });
+
+            const stream = new ReadableStream({
+                async start(controller) {
+                    for await (const chunk of fileStream) {
+                        controller.enqueue(chunk);
+                    }
+
+                    controller.close();
+                }
+            });
+
+            return new NextResponse(stream, {
+                headers: {
+                    "Content-Type": contentType,
+                    "Content-Disposition": `${isProtected ? "attachment" : "inline"}; filename="${files[0]}"`,
+                    "Transfer-Encoding": "chunked",
+                    "Cache-Control": "no-cache",
+                    "Content-Length": stats.size.toString(),
+                    "Accept-Ranges": "bytes",
+                    "Content-Range": `bytes 0-${stats.size - 1}/${stats.size}`
+                }
+            });
         default:
             const zip = new AdmZip();
 
