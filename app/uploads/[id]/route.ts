@@ -37,34 +37,43 @@ export async function GET(request: Request, { params }: any) {
             return NextResponse.json({ error: "The specified upload does not exist." }, { status: 404 });
         case 1:
             const stats = await fs.stat(`./uploads/${id}/${files[0]}`);
-
             let contentType = mime.getType(`./uploads/${id}/${files[0]}`) ?? "application/octet-stream";
 
             if (contentType == "text/html") {
                 contentType = "text/plain";
             }
 
-            const fileStream = createReadStream(`./uploads/${id}/${files[0]}`, { highWaterMark: 1024 * 1024, start: 0, end: stats.size });
+            const range = request.headers.get("range");
+            let start = 0;
+            let end = stats.size - 1;
+
+            if (range) {
+                const parts = range.replace(/bytes=/, "").split("-");
+                start = parseInt(parts[0], 10);
+                end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
+            }
+
+            const contentLength = end - start + 1;
+            const fileStream = createReadStream(`./uploads/${id}/${files[0]}`, { start, end });
 
             const stream = new ReadableStream({
                 async start(controller) {
                     for await (const chunk of fileStream) {
                         controller.enqueue(chunk);
                     }
-
                     controller.close();
                 }
             });
 
             return new NextResponse(stream, {
+                status: range ? 206 : 200,
                 headers: {
                     "Content-Type": contentType,
                     "Content-Disposition": `${isProtected ? "attachment" : "inline"}; filename="${files[0]}"`,
-                    "Transfer-Encoding": "chunked",
-                    "Cache-Control": "no-cache",
-                    "Content-Length": stats.size.toString(),
                     "Accept-Ranges": "bytes",
-                    "Content-Range": `bytes 0-${stats.size - 1}/${stats.size}`
+                    "Content-Length": contentLength.toString(),
+                    "Content-Range": `bytes ${start}-${end}/${stats.size}`,
+                    "Cache-Control": "no-cache"
                 }
             });
         default:
