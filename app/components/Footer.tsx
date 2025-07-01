@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import packageJson from "@/package.json";
 
@@ -16,7 +16,6 @@ export default function Footer() {
                 <Link href="/documents/privacy-policy.pdf" className="hover:underline">Privacy Policy</Link>
                 <Link href="/documents/terms-of-service.pdf" className="hover:underline">Terms of Service</Link>
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
-                <FooterIcon icon={faLinkedin} title="LinkedIn" url="https://www.linkedin.com/in/harveycoombs" classes="max-sm:hidden" />
             </div>
         </footer>
     );
