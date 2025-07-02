@@ -1,6 +1,6 @@
 
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import Button from "@/app/components/common/Button";
@@ -13,6 +13,7 @@ export default function RegistrationForm() {
     const [emailAddress, setEmailAddress] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [passwordConfirmation, setPasswordConfirmation] = useState<string>("");
+    const [passwordStrength, setPasswordStrength] = useState<number>(0);
 
     const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -183,6 +184,29 @@ export default function RegistrationForm() {
         e.preventDefault();
     }
 
+    useEffect(() => {
+        const symbolsExpr = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
+        const numbersExpr = /[0-9]/;
+        const uppercaseExpr = /[A-Z]/;
+        const lowercaseExpr = /[a-z]/;
+
+        const hasSymbols = symbolsExpr.test(password);
+        const hasNumbers = numbersExpr.test(password);
+        const hasUppercaseChars = uppercaseExpr.test(password);
+        const hasLowercaseChars = lowercaseExpr.test(password);
+
+        switch (true) {
+            case (hasSymbols || hasNumbers) && (hasUppercaseChars || hasLowercaseChars) && password.length >= 12:
+                setPasswordStrength(2);
+                break;
+            case (hasSymbols || hasNumbers) && (hasUppercaseChars || hasLowercaseChars) && password.length >= 6:
+                setPasswordStrength(1);
+                break;
+            default:
+                setPasswordStrength(0);
+        }
+    }, [password])
+
     return verifying ? (
         <form onSubmit={verify} onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
             {feedback}
@@ -212,6 +236,16 @@ export default function RegistrationForm() {
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Confirm Password</Label>
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPasswordConfirmation(e.target.value)} />
+
+            <div className="mt-4 mb-5">
+                <div className="text-sm font-medium mb-1">{passwordStrength == 0 ? "Weak" : passwordStrength == 1 ? "Average" : "Strong"}</div>
+
+                <div className="flex gap-2">
+                    <div className={`w-1/3 h-1.25 rounded-l-full ${passwordStrength == 0 ? "bg-red-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-green-500"}`}></div>
+                    <div className={`w-1/3 h-1.25 ${passwordStrength == 2 ? "bg-green-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-gray-200"}`}></div>
+                    <div className={`w-1/3 h-1.25 rounded-r-full ${passwordStrength == 2 ? "bg-green-500" : "bg-gray-200"}`}></div>
+                </div>
+            </div>
 
             {captchaIsVisible && <div className="mt-2.5 w-fit relative left-1/2 -translate-x-1/2">
                 <HCaptcha
