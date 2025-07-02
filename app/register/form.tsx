@@ -1,6 +1,7 @@
 
 "use client";
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import router from "next/router";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -105,17 +106,30 @@ export default function RegistrationForm() {
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Password</Label>
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
 
-            <div className="my-4.5 w-fit relative left-1/2 -translate-x-1/2">
+            <div className="mt-3">
+                <div className="text-[0.8rem] font-medium mb-1">{passwordStrength == 0 ? "Weak" : passwordStrength == 1 ? "Average" : "Strong"} password</div>
+
+                <div className="flex gap-1.5">
+                    <div className={`w-1/3 h-1.25 rounded-l-full ${passwordStrength == 0 ? "bg-red-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-green-500"}`}></div>
+                    <div className={`w-1/3 h-1.25 ${passwordStrength == 2 ? "bg-green-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-gray-200"}`}></div>
+                    <div className={`w-1/3 h-1.25 rounded-r-full ${passwordStrength == 2 ? "bg-green-500" : "bg-gray-200"}`}></div>
+                </div>
+            </div>
+
+            <div className="mt-5 mb-4.5 w-fit relative left-1/2 -translate-x-1/2">
                 <HCaptcha
                     sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
-                    onVerify={(token,ekey) => setCaptchaToken(token)}
+                    onVerify={(token, _) => setCaptchaToken(token)}
                 />
             </div>
 
-            <Button classes="block w-full" loading={loading} disabled={errorExists || warningExists} onClick={register}>Continue</Button>
-            <Button url="/login" transparent={true} classes="block w-full mt-2.5">I Already Have An Account</Button>
+            <Button classes="block w-full" loading={loading} disabled={errorExists || warningExists || !captchaToken?.length} onClick={register}>Continue</Button>
+            
+            <div className="text-sm font-medium text-center text-slate-400 select-none my-5">
+                Already have an account?<Link href="/login" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign In</Link>
+            </div>
 
-            <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none mt-4.5 mb-6">
+            <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
                 <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center bg-white px-1.5">OR</span>
             </div>
             
