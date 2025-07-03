@@ -10,7 +10,6 @@ import "./globals.css";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
-
 const monaSans = Mona_Sans({
     weight: ["400", "500", "600", "700", "800", "900"],
     subsets: ["latin"]
