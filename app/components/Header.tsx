@@ -59,8 +59,9 @@ export default function Header() {
                         <FontAwesomeIcon icon={faEllipsis} />
                     </div>
 
-                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white rounded-lg shadow-lg w-38 dark:bg-zinc-800`}>
-                        <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-red-500 border-t border-slate-200/50 hover:bg-red-50 duration-150 cursor-pointer" onClick={logout}>Log out</div>
+                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38 dark:bg-zinc-800`}>
+                        <HeaderSubMenuItem first={true}>Platform Settings</HeaderSubMenuItem>
+                        <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
                     </div>
                 </nav> : <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
                     <Button url="/login" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
@@ -73,7 +74,9 @@ export default function Header() {
     );
 }
 
-function HeaderSubMenuItem({ url, children, classes, ...rest }: any) {
-    const classList = `block px-2.5 py-1.75 text-[0.8rem] font-medium border-t border-slate-200/50 text-slate-700 hover:bg-slate-100/50 duration-150 cursor-pointer${classes?.length ? " " + classes : ""}`;
-    return url?.length ? <Link href={url} target="_blank" rel="noopener noreferrer" className={classList} {...rest}>{children}</Link> : <div className={classList} {...rest}>{children}</div>;
+function HeaderSubMenuItem({ url = "", children, classes = "", first = false, red = false, ...rest }: any) {
+    const color = red ? "text-red-500 hover:bg-red-50" : "text-slate-700 hover:bg-slate-100/50";
+    const classList = `block px-2.5 py-1.75 text-[0.8rem] font-medium ${first ? "" : "border-t border-slate-200/50"} ${color} duration-150 cursor-pointer${classes}`;
+
+    return url.length ? <Link href={url} target="_blank" rel="noopener noreferrer" className={classList} {...rest}>{children}</Link> : <div className={classList} {...rest}>{children}</div>;
 }
