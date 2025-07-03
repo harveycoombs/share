@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import router from "next/router";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faApple, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
-import { faApple, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import SSOButton from "@/app/components/common/SSOButton";
 
 export default function RegistrationForm() {
     const [name, setName] = useState<string>("");
@@ -134,18 +134,10 @@ export default function RegistrationForm() {
             </div>
             
             <div className="grid grid-cols-3 gap-2">
-                <SSOButton icon={faGoogle} classes="hover:bg-blue-100 hover:text-blue-500" />
-                <SSOButton icon={faApple} classes="text-xl hover:bg-slate-300 hover:text-white" />
-                <SSOButton icon={faMicrosoft} classes="hover:bg-emerald-100 hover:text-emerald-500" />
+                <SSOButton icon={faGoogle} classes="hover:bg-blue-100 hover:text-blue-500" title="Sign up with Google" />
+                <SSOButton icon={faApple} classes="text-xl hover:bg-slate-300 hover:text-white" title="Sign up with Apple" />
+                <SSOButton icon={faMicrosoft} classes="hover:bg-emerald-100 hover:text-emerald-500" title="Sign up with Microsoft" />
             </div>
-        </div>
-    );
-}
-
-function SSOButton({ icon, classes = "", ...rest }: any) {
-    return (
-        <div className={`p-2 rounded-md bg-slate-100 text-slate-500 text-lg text-center select-none cursor-pointer duration-150 ${classes}`} {...rest}>
-            <FontAwesomeIcon icon={icon} className="duration-150" />
         </div>
     );
 }

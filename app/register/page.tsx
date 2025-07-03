@@ -1,14 +1,10 @@
 "use client";
-import { useState } from "react";
 import Link from "next/link";
 
 import Logo from "@/app/components/common/Logo";
 import RegistrationForm from "@/app/register/form";
-import IssueForm from "@/app/components/common/popups/IssueForm";
 
 export default function Register() {
-    const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
-
     return (
         <main className="min-h-[calc(100vh-52px)] grid place-items-center">
             <section className="w-75.5 py-3.5">

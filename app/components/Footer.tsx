@@ -1,11 +1,15 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import packageJson from "@/package.json";
+import IssueForm from "@/app/components/common/popups/IssueForm";
 
 export default function Footer() {
+    const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
+
     return (
         <footer className="p-4 flex justify-between items-center select-none bg-white text-slate-400/60 text-sm font-medium max-md:text-xs max-sm:flex-col max-sm:items-center max-sm:gap-2 dark:bg-zinc-950 dark:text-zinc-600">
             <div>2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
@@ -15,8 +19,11 @@ export default function Footer() {
                 <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" className="hover:underline">Donate</Link>
                 <Link href="/documents/privacy-policy.pdf" className="hover:underline">Privacy Policy</Link>
                 <Link href="/documents/terms-of-service.pdf" className="hover:underline">Terms of Service</Link>
+                <div className="hover:underline cursor-pointer" onClick={() => setIssueFormVisibility(true)}>Report an Issue</div>
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
             </div>
+
+            {issueFormVisibility && <IssueForm onClose={() => setIssueFormVisibility(false)} />}
         </footer>
     );
 }

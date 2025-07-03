@@ -9,7 +9,6 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import AccountSettings from "@/app/components/common/popups/AccountSettings";
-import IssueForm from "@/app/components/common/popups/IssueForm";
 
 export default function Header() {
     const path = usePathname();
@@ -18,7 +17,6 @@ export default function Header() {
     const [user, setUser] = useState<any>(null);
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
-    const [issueFormAreVisible, setIssueFormVisibility] = useState<boolean>(false);
 
     const fetchUser = useCallback(async () => {
         const response = await fetch("/api/user/session");
@@ -62,7 +60,6 @@ export default function Header() {
                     </div>
 
                     <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white rounded-lg shadow-lg w-38 dark:bg-zinc-800`}>
-                        <HeaderSubMenuItem onClick={() => setIssueFormVisibility(true)}>Report Issue</HeaderSubMenuItem>
                         <div className="px-2.5 py-1.75 text-[0.8rem] font-medium text-red-500 border-t border-slate-200/50 hover:bg-red-50 duration-150 cursor-pointer" onClick={logout}>Log out</div>
                     </div>
                 </nav> : <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
@@ -72,7 +69,6 @@ export default function Header() {
             </header>
 
             {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
-            {issueFormAreVisible && <IssueForm onClose={() => setIssueFormVisibility(false)} />}
         </>
     );
 }

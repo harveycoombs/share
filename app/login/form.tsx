@@ -1,10 +1,13 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import router from "next/router";
+import { faApple, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
+import SSOButton from "@/app/components/common/SSOButton";
 
 export default function LoginForm() {
     const [email, setEmailAddress] = useState<string>("");
@@ -57,7 +60,20 @@ export default function LoginForm() {
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Password</Label>
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
             <Button classes="block w-full mt-2.5" loading={loading}>Continue</Button>
-            <Button url="/register" transparent={true} classes="block w-full mt-2.5">Register</Button>
+
+            <div className="text-sm font-medium text-center text-slate-400 select-none my-5">
+                Don&apos;t have an account?<Link href="/register" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign Up</Link>
+            </div>
+
+            <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
+                <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center bg-white px-1.5">OR</span>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-2">
+                <SSOButton icon={faGoogle} classes="hover:bg-blue-100 hover:text-blue-500" title="Sign in with Google" />
+                <SSOButton icon={faApple} classes="text-xl hover:bg-slate-300 hover:text-white" title="Sign in with Apple" />
+                <SSOButton icon={faMicrosoft} classes="hover:bg-emerald-100 hover:text-emerald-500" title="Sign in with Microsoft" />
+            </div>
         </form>
     );
 }
