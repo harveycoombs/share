@@ -20,7 +20,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!files.length) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
 
-    if (files.reduce((total: number, file: any) => total + file.size, 0) > 2147483648) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
+    if (files.reduce((total: number, file: any) => total + file.size, 0) > 1073941824) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
 
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
