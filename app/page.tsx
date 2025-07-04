@@ -219,21 +219,26 @@ export default function Home() {
                             {error.length ? error : "Drag or paste files onto this page to upload"}
                         </Notice>
 
-                        <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
+                        <div className={`flex justify-between items-center p-2.5 rounded-xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
                             <div>
                                 <Button onClick={browseFiles} classes={`inline-block align-middle${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>Browse Files</Button>
                                 
-                                <button 
-                                    className="p-3 rounded-md ml-2 text-[0.8rem] leading-none font-semibold hover:bg-slate-50 hover:text-slate-500 active:bg-slate-100 active:text-slate-600 dark:hover:bg-zinc-800/60 dark:active:bg-zinc-800/90 dark:hover:text-zinc-400 dark:active:text-zinc-400 duration-150 cursor-pointer text-center select-none"
+                                <Button
+                                    color="gray"
+                                    classes="ml-2.5"
+                                    square={true}
                                     title="Upload Folder"
                                     onClick={browseFolders}
                                 >
                                     <FontAwesomeIcon icon={faFolderPlus} />
-                                </button>
+                                </Button>
                             </div>
 
-                            <div className={`flex items-center gap-3.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
-                                <UploadOption icon={faClockRotateLeft} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} disabled={!sessionExists} onClick={() => setHistoryVisibility(sessionExists)} />
+                            <div className={`flex items-center gap-2.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
+                                <Button color="gray" square={true} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)}>
+                                    <FontAwesomeIcon icon={faClockRotateLeft} />
+                                </Button>
+
                                 {passwordFieldIsVisible ? (
                                     <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow-1" : ""}`}>
                                         <Field 
@@ -246,7 +251,11 @@ export default function Home() {
 
                                         <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500 dark:text-zinc-600 dark:hover:text-zinc-500 dark:active:text-zinc-400" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
                                     </div>
-                                ) : <UploadOption icon={faKey} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} disabled={!sessionExists} onClick={() => setPasswordFieldVisibility(sessionExists)} />}
+                                ) : (
+                                    <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => setPasswordFieldVisibility(sessionExists)}>
+                                        <FontAwesomeIcon icon={faKey} />
+                                    </Button>
+                                )}
                             </div>
                         </div>
 
@@ -269,16 +278,5 @@ export default function Home() {
 
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
         </main>
-    );
-}
-
-function UploadOption({ icon, disabled, ...rest }: any) {
-    return (
-        <div 
-            className={`text-lg leading-none text-slate-300 dark:text-zinc-600 duration-150 ${disabled ? "cursor-not-allowed" : "cursor-pointer hover:text-slate-400 active:text-slate-500 dark:hover:text-zinc-500 dark:active:text-zinc-400"}`} 
-            {...rest}
-        >
-            <FontAwesomeIcon icon={icon} />
-        </div>
     );
 }

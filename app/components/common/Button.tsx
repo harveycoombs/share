@@ -6,7 +6,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 interface Properties {
     children: React.ReactNode;
     url?: string;
-    small?: boolean;
+    square?: boolean;
     classes?: string;
     color?: string;
     loading?: boolean;
@@ -14,7 +14,7 @@ interface Properties {
     [key: string]: any;
 }
 
-export default function Button({ children, url, small, classes = "", color = "", loading, disabled, ...rest }: Properties) {
+export default function Button({ children, url, square, classes = "", color = "", loading, disabled, ...rest }: Properties) {
     let appearance = "";
 
     switch (color) {
@@ -29,7 +29,7 @@ export default function Button({ children, url, small, classes = "", color = "",
             break;
     }
 
-    const classList = `px-4.5 py-3 rounded-lg text-[0.8rem] leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none ${classes}`;
+    const classList = `${square ? "p-3" : "px-4.5 py-3"} rounded-lg text-[0.8rem] leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none ${classes}`;
 
     return url?.length ? (
         <Link href={url} className={classList} {...rest} draggable={false}>
