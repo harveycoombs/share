@@ -134,9 +134,9 @@ export default function RegistrationForm() {
             </div>
             
             <div className="grid grid-cols-3 gap-2">
-                <SSOButton icon={faGoogle} classes="hover:bg-blue-100 hover:text-blue-500" title="Sign up with Google" />
-                <SSOButton icon={faApple} classes="text-xl hover:bg-slate-300 hover:text-white" title="Sign up with Apple" />
-                <SSOButton icon={faMicrosoft} classes="hover:bg-emerald-100 hover:text-emerald-500" title="Sign up with Microsoft" />
+                <SSOButton icon={faGoogle} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign up with Google" />
+                <SSOButton icon={faApple} classes="text-xl hover:from-slate-100 hover:to-slate-200" title="Sign up with Apple" />
+                <SSOButton icon={faMicrosoft} classes="hover:from-emerald-50 hover:to-emerald-100 hover:text-emerald-500 hover:border-emerald-300" title="Sign up with Microsoft" />
             </div>
         </div>
     );

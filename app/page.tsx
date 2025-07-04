@@ -214,12 +214,10 @@ export default function Home() {
 
                 {!loading && !id.length && (
                     <div className="w-115 max-sm:w-full">
-                        {error.length ? <Notice color="red"><FontAwesomeIcon icon={faExclamationCircle} className="mr-1.5" />{error}</Notice> : (
-                            <div className="w-full px-2.5 py-2 text-sm font-medium text-indigo-500 bg-indigo-100 rounded-lg dark:bg-indigo-200">
-                                <FontAwesomeIcon icon={faInfoCircle} className="mr-2 text-base translate-y-0.25" />
-                                Drag or paste files onto this page to upload
-                            </div>
-                        )}
+                        <Notice color={error.length ? "red" : "indigo"}>
+                            <FontAwesomeIcon icon={error.length ? faExclamationCircle : faInfoCircle} className={error.length ? "mr-1.5" : "mr-1.5 text-base translate-y-0.25"} />
+                            {error.length ? error : "Drag or paste files onto this page to upload"}
+                        </Notice>
 
                         <div className={`flex justify-between items-center p-2.5 rounded-lg mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
                             <div>

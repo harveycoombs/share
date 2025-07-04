@@ -8,16 +8,36 @@ interface Properties {
     url?: string;
     small?: boolean;
     classes?: string;
-    transparent?: boolean;
     color?: string;
     loading?: boolean;
     disabled?: boolean;
     [key: string]: any;
 }
 
-export default function Button({ children, url, small, classes = "", transparent, color = "bg-indigo-500 hover:bg-indigo-600 active:bg-indigo-700", loading, disabled, ...rest }: Properties) {
-    const appearance = transparent ? "font-semibold hover:bg-slate-50 hover:text-slate-500 active:bg-slate-100 active:text-slate-600 dark:hover:bg-zinc-800/60 dark:active:bg-zinc-800/90 dark:hover:text-zinc-400 dark:active:text-zinc-400" : `font-medium text-white ${color}`;
-    const classList = `px-5 py-3 rounded-md text-[0.8rem] leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none${classes.length > 0 && " " + classes} `;
+export default function Button({ children, url, small, classes = "", color = "", loading, disabled, ...rest }: Properties) {
+    let appearance = "";
 
-    return url?.length ? <Link href={url} className={classList} {...rest}>{loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}</Link> : <button className={classList} disabled={disabled || loading} {...rest}>{loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}</button>;
+    switch (color) {
+        case "red":
+            appearance = "text-white font-medium bg-gradient-to-b from-red-500 to-red-600 border border-red-700 hover:from-red-600 hover:to-red-700 active:from-red-700 active:to-red-800";
+            break;
+        case "gray":
+            appearance = "text-slate-600 font-medium bg-gradient-to-b from-slate-50 to-slate-100 border border-slate-200 hover:from-slate-100 hover:to-slate-200 active:from-slate-200 active:to-slate-300";
+            break;
+        default:
+            appearance = "text-white font-medium bg-gradient-to-b from-indigo-500 to-indigo-600 border border-indigo-700 hover:from-indigo-600 hover:to-indigo-700 active:from-indigo-700 active:to-indigo-800";
+            break;
+    }
+
+    const classList = `px-4.5 py-3 rounded-lg text-[0.8rem] leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none ${classes}`;
+
+    return url?.length ? (
+        <Link href={url} className={classList} {...rest} draggable={false}>
+            {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
+        </Link>
+    ) : (
+        <button className={classList} disabled={disabled || loading} {...rest}>
+            {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
+        </button>
+    );
 }
