@@ -65,7 +65,7 @@ export default function Header() {
                     </div>
                 </nav> : <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
                     <Button url="/login" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
-                    <Button url="/register" classes="inline-block align-middle ml-2 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
+                    <Button url="/register" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
                 </nav>}
             </header>
 
