@@ -69,7 +69,7 @@ export default function UploadHistory({ onClose }: Properties) {
 
     return (
         <Popup title="Upload History" onClose={onClose} classes="w-125 max-[532px]:w-15/16">
-            <div className="sticky top-0 z-10 bg-white pt-1 pb-2">
+            <div className="sticky top-0 z-10 bg-white pt-1">
                 <div className="w-full flex items-center justify-between">
                     <Field type="text" placeholder="Search" onInput={(e: any) => setSearch(e.target.value)} />
 
@@ -211,7 +211,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className={`flex justify-between items-center p-2 rounded-lg border ${colors.border} bg-gradient-to-b ${colors.background} ${colors.text} relative overflow-hidden`}
+                className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border ${colors.border} bg-gradient-to-b ${colors.background} ${colors.text} relative overflow-hidden`}
                 ref={uploadRef}
             >
                 {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
