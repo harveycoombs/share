@@ -17,8 +17,7 @@ interface Properties {
 export default function AccountSettings({ onClose }: Properties) {
     const [user, setUser] = useState<any>(null);
 
-    const [firstName, setFirstName] = useState<string>("");
-    const [lastName, setLastName] = useState<string>("");
+    const [name, setName] = useState<string>("");
     const [emailAddress, setEmailAddress] = useState<string>("");
 
     const [oldPassword, setOldPassword] = useState<string>("");
@@ -42,10 +41,6 @@ export default function AccountSettings({ onClose }: Properties) {
             const json = await response.json();
 
             setUser(json.details);
-
-            setFirstName(json.details.first_name);
-            setLastName(json.details.last_name);
-            setEmailAddress(json.details.email_address);
         })();
     }, []);
 
@@ -63,7 +58,7 @@ export default function AccountSettings({ onClose }: Properties) {
 
         const response = await fetch("/api/user", {
             method: "PATCH",
-            body: new URLSearchParams({ firstName, lastName, emailAddress, oldPassword, newPassword })
+            body: new URLSearchParams({ name, emailAddress, oldPassword, newPassword })
         });
 
         const json = await response.json();
@@ -144,11 +139,8 @@ export default function AccountSettings({ onClose }: Properties) {
 
                     <div className="mt-2 w-full flex gap-6 max-sm:flex-col max-sm:gap-0">
                         <div className="w-60 max-sm:w-full">
-                            <Label classes="block w-full mt-2.75 mb-0.5">First Name</Label>
-                            <Field classes="block w-full" defaultValue={user?.first_name ?? ""} onInput={(e: any) => setFirstName(e.target.value)} />
-
-                            <Label classes="block w-full mt-2.75 mb-0.5">Last Name</Label>
-                            <Field classes="block w-full" defaultValue={user?.last_name ?? ""} onInput={(e: any) => setLastName(e.target.value)} />
+                            <Label classes="block w-full mt-2.75 mb-0.5">Name</Label>
+                            <Field classes="block w-full" defaultValue={user?.name ?? ""} onInput={(e: any) => setName(e.target.value)} />
 
                             <Label classes="block w-full mt-2.75 mb-0.5">Email Address</Label>
                             <Field type="email" classes="block w-full" defaultValue={user?.email_address ?? ""} onInput={(e: any) => setEmailAddress(e.target.value)} />
@@ -169,7 +161,7 @@ export default function AccountSettings({ onClose }: Properties) {
 
                 <div className="mt-3 w-full flex gap-6 max-sm:flex-col max-sm:gap-2.75">
                     <Button classes="w-60 max-sm:w-full" onClick={updateDetails} loading={updating}>Save Changes</Button>
-                    <Button classes="w-60 max-sm:w-full" color="bg-red-500 hover:bg-red-600 active:bg-red-700" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
+                    <Button classes="w-60 max-sm:w-full" color="red" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
                 </div>
             </div>
         </Popup>
