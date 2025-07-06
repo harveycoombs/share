@@ -11,7 +11,7 @@ export default function Footer() {
     const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
 
     return (
-        <footer className="p-4 flex justify-between items-center select-none bg-white text-slate-400/60 text-sm font-medium max-md:text-xs max-sm:flex-col max-sm:items-center max-sm:gap-2 dark:bg-zinc-950 dark:text-zinc-600">
+        <footer className="p-4 flex justify-between items-center select-none bg-white text-slate-400/60 text-sm font-medium max-md:text-xs max-sm:flex-col max-sm:items-center max-sm:gap-2">
             <div>2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
 
             <div className="flex items-center gap-4 max-sm:gap-3">
@@ -29,5 +29,5 @@ export default function Footer() {
 }
 
 function FooterIcon({ icon, title, url, classes }: any) {
-    return <Link href={url} target="_blank" rel="noopener" title={title} className={`text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85 max-sm:text-base dark:text-zinc-400${classes?.length ? " " + classes : ""}`}><FontAwesomeIcon icon={icon} /></Link>
+    return <Link href={url} target="_blank" rel="noopener" title={title} className={`text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85 max-sm:text-base ${classes?.length ? " " + classes : ""}`}><FontAwesomeIcon icon={icon} /></Link>
 }

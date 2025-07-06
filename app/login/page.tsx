@@ -11,7 +11,7 @@ export default function Login() {
                 <Link href="/" className="block w-fit mx-auto mb-5 select-none cursor-pointer duration-150 hover:opacity-80 active:opacity-60"><Logo width={220} height={43} /></Link>
 
                 <strong className="block font-semibold text-lg text-center mt-2 select-none">Welcome Back</strong>
-                <div className="text-sm font-medium text-center text-slate-400 select-none mb-7 dark:text-zinc-400">Sign in using the form below</div>
+                <div className="text-sm font-medium text-center text-slate-400 select-none mb-7">Sign in using the form below</div>
 
                 <LoginForm />
             </section>

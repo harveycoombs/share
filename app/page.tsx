@@ -191,7 +191,7 @@ export default function Home() {
                         <h1 className="text-5xl font-bold leading-none">share.surf</h1>
                     </div>
 
-                    <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-600">The no-frills file sharing service</h2>
+                    <h2 className="block font-medium text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
                 </div>
                 
                 {id.length > 0 && (
@@ -219,7 +219,7 @@ export default function Home() {
                             {error.length ? error : "Drag or paste files onto this page to upload"}
                         </Notice>
 
-                        <div className={`flex justify-between items-center p-2.5 rounded-xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
+                        <div className={`flex justify-between items-center p-2.5 rounded-xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
                             <div>
                                 <Button onClick={browseFiles} classes={`inline-block align-middle${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>Browse Files</Button>
                                 
@@ -249,7 +249,7 @@ export default function Home() {
                                             onChange={(e: any) => setPassword(e.target.value)}
                                         />
 
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500 dark:text-zinc-600 dark:hover:text-zinc-500 dark:active:text-zinc-400" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
                                     </div>
                                 ) : (
                                     <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => setPasswordFieldVisibility(sessionExists)}>
@@ -259,7 +259,7 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:justify-center dark:text-zinc-600">
+                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:justify-center">
                             <div>Expires after 24 hours</div>
                             <div className="hidden mx-2 max-sm:block">&middot;</div>
                             <div>1GB upload limit</div>

@@ -55,11 +55,11 @@ export default function Header() {
                         draggable={false} onClick={() => setAccountSettingsVisibility(true)}
                     />
 
-                    <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85 dark:text-zinc-400" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                    <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
                         <FontAwesomeIcon icon={faEllipsis} />
                     </div>
 
-                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38 dark:bg-zinc-800`}>
+                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38`}>
                         <HeaderSubMenuItem first={true}>Platform Settings</HeaderSubMenuItem>
                         <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
                     </div>

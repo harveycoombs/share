@@ -69,16 +69,16 @@ export default function UploadHistory({ onClose }: Properties) {
 
     return (
         <Popup title="Upload History" onClose={onClose} classes="w-125 max-[532px]:w-15/16">
-            <div className="sticky top-0 z-10 bg-white dark:bg-zinc-800 pt-1 pb-2">
+            <div className="sticky top-0 z-10 bg-white pt-1 pb-2">
                 <div className="w-full flex items-center justify-between">
                     <Field type="text" placeholder="Search" onInput={(e: any) => setSearch(e.target.value)} />
 
                     {
                         selecting ? <div className="flex items-center gap-1">
-                            <div className="text-xs font-medium text-slate-400/75 mr-1.5 select-none dark:text-zinc-400">{selectedUploads.length} Selected</div>
-                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
-                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
-                        </div> : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>
+                            <div className="text-xs font-medium text-slate-400/75 mr-1.5 select-none">{selectedUploads.length} Selected</div>
+                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
+                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
+                        </div> : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>
                     }
                 </div>
 
@@ -89,45 +89,47 @@ export default function UploadHistory({ onClose }: Properties) {
                 error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
                 : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
                 : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
-                : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400 dark:text-zinc-500">You haven't uploaded anything yet</div>
+                : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
             }</div>
         </Popup>
     );
 }
 
 function getTypeIcon(type: string) {
-    switch (true) {
-        case type.includes("image"):
+    if (type == "application/zip") return faFileZipper;
+
+    switch (type.split("/")[0]) {
+        case "image":
             return faImage;
-        case type.includes("video"):
+        case "video":
             return faVideo;
-        case type.includes("audio"):
+        case "audio":
             return faMusic;
-        case type.includes("text"):
+        case "text":
             return faCode;
-        case type == "application/zip":
-            return faFileZipper;
-        case type == "application/pdf":
+        case "application":
             return faFilePdf;
         default:
             return faFile;
     }
 }
 
-function getTypeColor(type: string) {
+function getTypeColors(type: string) {
+    if (type == "application/zip") return { text: "text-pink-400", background: "from-pink-50/75 to-pink-100/75", border: "border-pink-300/75" };
+
     switch (type.split("/")[0]) {
         case "image":
-            return "bg-emerald-100 text-emerald-400";
+            return { text: "text-emerald-600", icon: "text-emerald-500", background: "from-emerald-50/75 to-emerald-100/75", border: "border-emerald-300/75" };
         case "video":
-            return "bg-rose-100 text-rose-400";
+            return { text: "text-rose-600", icon: "text-rose-500", background: "from-rose-50/75 to-rose-100/75", border: "border-rose-300/75" };
         case "audio":
-            return "bg-purple-100 text-purple-400";
+            return { text: "text-purple-600", icon: "text-purple-500", background: "from-purple-50/75 to-purple-100/75", border: "border-purple-300/75" };
         case "text":
-            return "bg-orange-100 text-orange-400";
+            return { text: "text-orange-600", icon: "text-orange-500", background: "from-orange-50/75 to-orange-100/75", border: "border-orange-300/75" };
         case "application":
-            return "bg-amber-100 text-amber-400";
+            return { text: "text-amber-600", icon: "text-amber-500", background: "from-amber-50/75 to-amber-100/75", border: "border-amber-300/75" };
         default:
-            return "bg-indigo-100 text-indigo-400";
+            return { text: "text-indigo-600", icon: "text-indigo-500", background: "from-indigo-50/75 to-indigo-100/75", border: "border-indigo-300/75" };
     }
 }
 
@@ -139,8 +141,6 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 
     const [editLoading, setEditLoading] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
-
-    const [hovering, setHovering] = useState<boolean>(false);
 
     const uploadRef = useRef<HTMLDivElement>(null);
     
@@ -201,57 +201,49 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         })();
     }, [editing]);
 
+    const type = data.types.length > 1 ? "application/zip" : data.types[0];
+
+    const colors = getTypeColors(type);
+
     return (
-        <div className="group mb-1.5" onMouseEnter={() => setHovering(true)} onMouseLeave={() => setHovering(false)}>
-            <AnimatePresence>
-                <motion.div 
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="flex justify-between items-center p-2 rounded-md bg-slate-50 relative overflow-hidden dark:bg-zinc-700/60"
-                    ref={uploadRef}
-                >
-                    {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
-                    <div>
-                        <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded ${data.types.length == 1 ? getTypeColor(data.types[0]) : "bg-pink-100 text-pink-400"} max-sm:hidden`}><FontAwesomeIcon icon={data.types.length == 1 ? getTypeIcon(data.types[0]) : faFileZipper} /></div>
-
-                        <div className="inline-block align-middle">
-                            <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
-                                {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-bold text-slate-500 bg-transparent outline-hidden" autoFocus /> : <div className="font-bold text-slate-500 dark:text-white dark:font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
-
-                                <div className={`ml-1 ${editing ? "text-emerald-400" : "text-slate-400/75 dark:text-zinc-500"} cursor-pointer duration-150 ${editing ? "hover:text-emerald-500 active:text-emerald-600" : "hover:text-slate-400 active:text-slate-500"}`} title="Edit Name" onClick={() => setEditing(!editing)}>
-                                    {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
-                                </div>
-                            </strong>
-                            <div className="text-slate-400 text-xs font-semibold mt-0.5 select-none dark:text-zinc-400">{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                        <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
-                        <UploadOption icon={faEye} title="View" url={`/uploads/${data.upload_id}`} target="_blank" />
-                        <UploadOption icon={faDownload} title="Download" url={`/uploads/${data.upload_id}`} download={true} target="_blank" />
-                        <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} loading={deleteLoading} />
-                        {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
-                    </div>
-
-                    {!data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
-                </motion.div>
-            </AnimatePresence>
-
+        <AnimatePresence>
             <motion.div 
-                initial={{ height: 0 }}
-                animate={{ height: hovering ? "auto" : 0 }}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className="text-xs leading-none font-medium text-slate-400/75 mt-1 overflow-hidden dark:text-zinc-400"
+                className={`flex justify-between items-center p-2 rounded-lg border ${colors.border} bg-gradient-to-b ${colors.background} ${colors.text} relative overflow-hidden`}
+                ref={uploadRef}
             >
-                {new Date(data.upload_date).toLocaleDateString()} {new Date(data.upload_date).toLocaleTimeString()}
+                {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
+                <div>
+                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded-xl bg-white ${colors.icon} border ${colors.border} max-sm:hidden`}><FontAwesomeIcon icon={getTypeIcon(type)} /></div>
+
+                    <div className="inline-block align-middle">
+                        <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
+                            {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-semibold bg-transparent outline-hidden" autoFocus /> : <div className="font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
+
+                            <div className={`ml-1 cursor-pointer duration-150 ${colors.icon}`} title="Edit Name" onClick={() => setEditing(!editing)}>
+                                {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
+                            </div>
+                        </strong>
+
+                        <div className={`text-xs font-medium ${colors.text} opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
+                    </div>
+                </div>
+
+                <div className="flex items-center gap-1">
+                    <UploadOption icon={faChain} classes={colors.icon} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
+                    <UploadOption icon={faTrashAlt} classes={colors.icon} title="Delete" onClick={deleteUpload} loading={deleteLoading} />
+                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
+                </div>
+
+                {!data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
             </motion.div>
-        </div>
+        </AnimatePresence>
     ); 
 }
 
-function UploadOption({ icon, url, loading, ...rest }: any) {
-    const classList = `leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150${loading ? " pointer-events-none" : ""} hover:bg-slate-200/60 active:bg-slate-200 dark:text-zinc-500 dark:hover:text-zinc-400 dark:active:text-zinc-500 dark:hover:bg-zinc-700 dark:active:bg-zinc-700/80`;
+function UploadOption({ icon, url, loading, classes = "", ...rest }: any) {
+    const classList = `leading-none p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150${loading ? " pointer-events-none" : ""} hover:bg-slate-200/60 active:bg-slate-200 ${classes?.length ? " " + classes : ""}`;
     return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} /></div>;
 }
