@@ -28,7 +28,7 @@ export default function RegistrationForm() {
         setErrorExistence(false);
         setWarningExistence(false);
 
-        if (!name || !email || !password) {
+        if (!name?.length || !email?.length || !password?.length) {
             setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">One or more fields were not provided</div>);
             setWarningExistence(true);
             setLoading(false);
@@ -44,8 +44,6 @@ export default function RegistrationForm() {
                 captchaToken
             })
         });
-
-        setLoading(false);
 
         switch (response.status) {
             case 200:
@@ -68,6 +66,8 @@ export default function RegistrationForm() {
                 setErrorExistence(true);
                 break;
         }
+
+        setLoading(false);
     }
 
     useEffect(() => {
