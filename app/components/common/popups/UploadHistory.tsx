@@ -115,21 +115,21 @@ function getTypeIcon(type: string) {
 }
 
 function getTypeColors(type: string) {
-    if (type == "application/zip") return { text: "text-pink-400", background: "from-pink-50/75 to-pink-100/75", border: "border-pink-300/75" };
+    if (type == "application/zip") return { text: "text-pink-400", background: "from-pink-50/70 to-pink-100/70", border: "border-pink-300/75" };
 
     switch (type.split("/")[0]) {
         case "image":
-            return { text: "text-emerald-600", icon: "text-emerald-500", background: "from-emerald-50/75 to-emerald-100/75", border: "border-emerald-300/75" };
+            return { text: "text-emerald-600", icon: "text-emerald-500", background: "from-emerald-50/70 to-emerald-100/70", border: "border-emerald-300/75" };
         case "video":
-            return { text: "text-rose-600", icon: "text-rose-500", background: "from-rose-50/75 to-rose-100/75", border: "border-rose-300/75" };
+            return { text: "text-rose-600", icon: "text-rose-500", background: "from-rose-50/70 to-rose-100/70", border: "border-rose-300/75" };
         case "audio":
-            return { text: "text-purple-600", icon: "text-purple-500", background: "from-purple-50/75 to-purple-100/75", border: "border-purple-300/75" };
+            return { text: "text-purple-600", icon: "text-purple-500", background: "from-purple-50/70 to-purple-100/70", border: "border-purple-300/75" };
         case "text":
-            return { text: "text-orange-600", icon: "text-orange-500", background: "from-orange-50/75 to-orange-100/75", border: "border-orange-300/75" };
+            return { text: "text-orange-600", icon: "text-orange-500", background: "from-orange-50/70 to-orange-100/70", border: "border-orange-300/75" };
         case "application":
-            return { text: "text-amber-600", icon: "text-amber-500", background: "from-amber-50/75 to-amber-100/75", border: "border-amber-300/75" };
+            return { text: "text-amber-600", icon: "text-amber-500", background: "from-amber-50/70 to-amber-100/70", border: "border-amber-300/75" };
         default:
-            return { text: "text-indigo-600", icon: "text-indigo-500", background: "from-indigo-50/75 to-indigo-100/75", border: "border-indigo-300/75" };
+            return { text: "text-indigo-600", icon: "text-indigo-500", background: "from-indigo-50/70 to-indigo-100/70", border: "border-indigo-300/75" };
     }
 }
 
