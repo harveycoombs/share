@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import router from "next/router";
 import { faApple, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 
 import Button from "@/app/components/common/Button";
@@ -43,7 +42,7 @@ export default function LoginForm() {
                 setWarningExistence(true);
                 break;
             case 403:
-                router.push("/verify");
+                window.location.href = `/verify?email=${encodeURIComponent(email)}`;
                 break;
             default:
                 setFeedback(<div className="text-sm font-medium text-red-500 text-center mb-5">Something went wrong</div>);

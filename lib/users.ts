@@ -3,17 +3,17 @@ import pool from "./database";
 import { generateHash, verify } from "./passwords";
 
 export async function getUserByID(userid: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, first_name, last_name FROM users WHERE user_id = $1 AND deleted = false", [userid]);
+    const result = await pool.query("SELECT user_id, first_name, last_name FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
     return result.rows[0];
 }
 
 export async function getUserByEmailAddress(emailAddress: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, first_name, last_name FROM users WHERE email_address = $1 AND deleted = false", [emailAddress]);
+    const result = await pool.query("SELECT user_id, first_name, last_name FROM share.users WHERE email_address = $1 AND deleted = false", [emailAddress]);
     return result.rows[0];
 }
 
 export async function getUserDetails(userid: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, first_name, last_name, email_address, creation_date FROM users WHERE user_id = $1 AND deleted = false", [userid]);
+    const result = await pool.query("SELECT user_id, first_name, last_name, email_address, creation_date FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
     return result.rows[0];
 }
 
@@ -24,7 +24,7 @@ export async function getUserSettings(userid: string): Promise<any> {
 
 export async function getPasswordHash(identifier: string | number): Promise<string> {
     const field = typeof identifier == "number" ? "user_id" : "email_address";
-    const result = await pool.query(`SELECT password FROM users WHERE ${field} = $1 AND deleted = false`, [identifier]);
+    const result = await pool.query(`SELECT password FROM share.users WHERE ${field} = $1 AND deleted = false`, [identifier]);
     return result.rows[0]?.password;
 }
 
@@ -38,81 +38,81 @@ export async function verifyCredentials(emailAddress: string, password: string):
 }
 
 export async function emailExists(emailAddress: string, userid: string|null = null): Promise<boolean> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM users WHERE email_address = $1 AND user_id <> $2 AND deleted = false", [emailAddress, userid]);
+    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE email_address = $1 AND user_id <> $2 AND deleted = false", [emailAddress, userid]);
     return parseInt(result.rows[0].total) > 0;
 }
 
-export async function createUser(firstName: string, lastName: string, emailAddress: string, password: string): Promise<boolean> {
+export async function createUser(name: string, emailAddress: string, password: string): Promise<boolean> {
     const passwordHash = await generateHash(password);
     const result = await pool.query(
-        "INSERT INTO users (user_id, creation_date, first_name, last_name, email_address, password) VALUES (gen_random_uuid(), NOW(), $1, $2, $3, $4)",
-        [firstName, lastName, emailAddress, passwordHash]
+        "INSERT INTO share.users (user_id, creation_date, name, email_address, password) VALUES (gen_random_uuid(), NOW(), $1, $2, $3)",
+        [name, emailAddress, passwordHash]
     );
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
 export async function updateUser(userid: string, firstName: string, lastName: string, emailAddress: string): Promise<boolean> {
-    const result = await pool.query("UPDATE users SET first_name = $1, last_name = $2, email_address = $3 WHERE user_id = $4", [firstName, lastName, emailAddress, userid]);
+    const result = await pool.query("UPDATE share.users SET first_name = $1, last_name = $2, email_address = $3 WHERE user_id = $4", [firstName, lastName, emailAddress, userid]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
 export async function updateUserPassword(userid: string, password: string): Promise<boolean> {
     const passwordHash = await generateHash(password);
-    const result = await pool.query("UPDATE users SET password = $1 WHERE user_id = $2", [passwordHash, userid]);
+    const result = await pool.query("UPDATE share.users SET password = $1 WHERE user_id = $2", [passwordHash, userid]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
 export async function updateUserAuthCode(emailAddress: string, code: number|null): Promise<boolean> {
-    const result = await pool.query("UPDATE users SET auth_code = $1 WHERE email_address = $2", [code, emailAddress]);
+    const result = await pool.query("UPDATE share.users SET auth_code = $1 WHERE email_address = $2", [code, emailAddress]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
 export async function deleteUser(userid: string): Promise<boolean> {
-    const result = await pool.query("UPDATE users SET deleted = true WHERE user_id = $1", [userid]);
+    const result = await pool.query("UPDATE share.users SET deleted = true WHERE user_id = $1", [userid]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
 export async function verifyUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM users WHERE email_address = $1 AND auth_code = $2", [emailAddress, code]);
+    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE email_address = $1 AND auth_code = $2", [emailAddress, code]);
     return parseInt(result.rows[0].total) > 0;
 }
 
 export async function checkUserVerification(userid: string): Promise<boolean> {
-    const result = await pool.query("SELECT verified FROM users WHERE user_id = $1", [userid]);
+    const result = await pool.query("SELECT verified FROM share.users WHERE user_id = $1", [userid]);
     return result.rows[0]?.verified || false;
 }
 
 export async function updateUserVerification(emailAddress: string, verified: boolean): Promise<boolean> {
-    const result = await pool.query("UPDATE users SET verified = $1 WHERE email_address = $2", [verified, emailAddress]);
+    const result = await pool.query("UPDATE share.users SET verified = $1 WHERE email_address = $2", [verified, emailAddress]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
 export async function getTotalUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM users");
+    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users");
     return parseInt(result.rows[0].total);
 }
 
 export async function getTotalVerifiedUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM users WHERE verified = true");
+    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE verified = true");
     return parseInt(result.rows[0].total);
 }
 
 export async function getTotalUnverifiedUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM users WHERE verified = false");
+    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE verified = false");
     return parseInt(result.rows[0].total);
 }
 
 export async function getTotalDeletedUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM users WHERE deleted = true");
+    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE deleted = true");
     return parseInt(result.rows[0].total);
 }
 
 export async function getOldestUser(): Promise<any> {
-    const result = await pool.query("SELECT * FROM users ORDER BY creation_date ASC LIMIT 1");
+    const result = await pool.query("SELECT * FROM share.users ORDER BY creation_date ASC LIMIT 1");
     return result.rows[0];
 }
 
 export async function getNewestUser(): Promise<any> {
-    const result = await pool.query("SELECT * FROM users ORDER BY creation_date DESC LIMIT 1");
+    const result = await pool.query("SELECT * FROM share.users ORDER BY creation_date DESC LIMIT 1");
     return result.rows[0];
 }

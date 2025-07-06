@@ -2,7 +2,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import router from "next/router";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { faApple, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 
@@ -50,7 +49,7 @@ export default function RegistrationForm() {
 
         switch (response.status) {
             case 200:
-                router.push("/verify");
+                window.location.href = `/verify?email=${encodeURIComponent(email)}`;
                 break;
             case 400:
                 setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">One or more fields were not provided</div>);
@@ -123,7 +122,7 @@ export default function RegistrationForm() {
                 />
             </div>
 
-            <Button classes="block w-full" loading={loading} disabled={errorExists || warningExists || !captchaToken?.length} onClick={register}>Continue</Button>
+            <Button classes="block w-full" loading={loading} disabled={errorExists || warningExists/* || !captchaToken?.length*/} onClick={register}>Continue</Button>
             
             <div className="text-sm font-medium text-center text-slate-400 select-none my-5">
                 Already have an account?<Link href="/login" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign In</Link>

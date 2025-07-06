@@ -20,26 +20,25 @@ export async function GET(_: Request): Promise<NextResponse> {
 export async function POST(request: Request): Promise<NextResponse> {
     const data = await request.formData();
     
-    const firstName = data.get("firstName")?.toString() ?? "";
-    const lastName = data.get("lastName")?.toString() ?? "";
-    const email = data.get("emailAddress")?.toString() ?? "";
+    const name = data.get("name")?.toString() ?? "";
+    const email = data.get("email")?.toString() ?? "";
     const password = data.get("password")?.toString() ?? "";
-    const captchaToken = data.get("captchaToken")?.toString() ?? "";
+    //const captchaToken = data.get("captchaToken")?.toString() ?? "";
 
-    if (!firstName?.length || !lastName?.length || !email?.length || !password?.length || !captchaToken?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    if (!name?.length || !email?.length || !password?.length/* || !captchaToken?.length*/) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
-    const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
+    /*const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY}`,
     });
 
-    if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
+    if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });*/
 
     const exists = await emailExists(email);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
-    const created = await createUser(firstName, lastName, email, password);
+    const created = await createUser(name, email, password);
 
     if (created) {
         try {
@@ -53,7 +52,7 @@ export async function POST(request: Request): Promise<NextResponse> {
                     from: "noreply@share.surf",
                     to: email,
                     subject: "Share.surf - Verification",
-                    html: `<p>Hello ${firstName},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`
+                    html: `<p>Hello ${name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`
                 });
             }
         } catch (ex: any) {
