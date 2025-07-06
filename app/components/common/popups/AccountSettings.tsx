@@ -132,7 +132,7 @@ export default function AccountSettings({ onClose }: Properties) {
                         </div>
 
                         <div>
-                            <strong className="block font-bold">{user?.first_name} {user?.last_name}</strong>
+                            <strong className="block font-bold">{user?.name} {user?.last_name}</strong>
                             <div className="text-xs text-slate-400/75 font-semibold">Joined {new Date(user?.creation_date).toLocaleDateString()}</div>
                         </div>
                     </div>

@@ -3,17 +3,17 @@ import pool from "./database";
 import { generateHash, verify } from "./passwords";
 
 export async function getUserByID(userid: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, first_name, last_name FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
+    const result = await pool.query("SELECT user_id, name FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
     return result.rows[0];
 }
 
 export async function getUserByEmailAddress(emailAddress: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, first_name, last_name FROM share.users WHERE email_address = $1 AND deleted = false", [emailAddress]);
+    const result = await pool.query("SELECT user_id, name FROM share.users WHERE email_address = $1 AND deleted = false", [emailAddress]);
     return result.rows[0];
 }
 
 export async function getUserDetails(userid: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, first_name, last_name, email_address, creation_date FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
+    const result = await pool.query("SELECT user_id, name, email_address, creation_date FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
     return result.rows[0];
 }
 
@@ -51,8 +51,8 @@ export async function createUser(name: string, emailAddress: string, password: s
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
-export async function updateUser(userid: string, firstName: string, lastName: string, emailAddress: string): Promise<boolean> {
-    const result = await pool.query("UPDATE share.users SET first_name = $1, last_name = $2, email_address = $3 WHERE user_id = $4", [firstName, lastName, emailAddress, userid]);
+export async function updateUser(userid: string, name: string, emailAddress: string): Promise<boolean> {
+    const result = await pool.query("UPDATE share.users SET name = $1, email_address = $2 WHERE user_id = $3", [name, emailAddress, userid]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
 

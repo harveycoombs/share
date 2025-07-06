@@ -47,7 +47,7 @@ export default function Header() {
                 {user ? <nav className="relative">
                     <Image 
                         src={`/api/user/avatar?t=${new Date().getTime()}`}
-                        alt={`${user?.first_name} ${user?.last_name} (You)`} 
+                        alt={`${user?.name} (You)`} 
                         width={32} 
                         height={32}
                         className="inline-block align-middle rounded object-cover aspect-square cursor-pointer duration-150 hover:opacity-80 active:opacity-70"

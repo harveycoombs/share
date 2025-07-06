@@ -74,8 +74,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
     const data = await request.formData();
     
-    const firstName = data.get("firstName")?.toString() ?? "";
-    const lastName = data.get("lastName")?.toString() ?? "";
+    const name = data.get("name")?.toString() ?? "";
     const email = data.get("emailAddress")?.toString() ?? "";
 
     const oldPassword = data.get("oldpassword")?.toString() ?? "";
@@ -88,12 +87,12 @@ export async function PATCH(request: Request): Promise<NextResponse> {
         passwordUpdated = await updateUserPassword(user.user_id, newPassword);
     }
 
-    if ((!firstName?.length || !lastName?.length || !email?.length) && (!oldPassword?.length || !newPassword?.length)) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    if ((!name?.length || !email?.length) && (!oldPassword?.length || !newPassword?.length)) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
     const exists = await emailExists(email, user.user_id);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
-    const updated = await updateUser(user.user_id, firstName, lastName, email);
+    const updated = await updateUser(user.user_id, name, email);
 
     if (updated && user.email_address != email) {
         try {
@@ -107,7 +106,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
                     from: "noreply@share.surf",
                     to: email,
                     subject: "Share.surf - Verification",
-                    html: `<p>Hello ${user.first_name},</p> <p>Your email address has been updated on <i>Share.surf</i>. Verify your new email address by entering the following code: <b>${code}</b></p>`
+                    html: `<p>Hello ${user.name},</p> <p>Your email address has been updated on <i>Share.surf</i>. Verify your new email address by entering the following code: <b>${code}</b></p>`
                 });
             }
         } catch (ex: any) {
