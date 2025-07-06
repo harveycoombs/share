@@ -86,33 +86,3 @@ export async function updateUserVerification(emailAddress: string, verified: boo
     const result = await pool.query("UPDATE share.users SET verified = $1 WHERE email_address = $2", [verified, emailAddress]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
-
-export async function getTotalUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users");
-    return parseInt(result.rows[0].total);
-}
-
-export async function getTotalVerifiedUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE verified = true");
-    return parseInt(result.rows[0].total);
-}
-
-export async function getTotalUnverifiedUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE verified = false");
-    return parseInt(result.rows[0].total);
-}
-
-export async function getTotalDeletedUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE deleted = true");
-    return parseInt(result.rows[0].total);
-}
-
-export async function getOldestUser(): Promise<any> {
-    const result = await pool.query("SELECT * FROM share.users ORDER BY creation_date ASC LIMIT 1");
-    return result.rows[0];
-}
-
-export async function getNewestUser(): Promise<any> {
-    const result = await pool.query("SELECT * FROM share.users ORDER BY creation_date DESC LIMIT 1");
-    return result.rows[0];
-}

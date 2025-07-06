@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
-import Script from "next/script";
 
 import packageJson from "@/package.json";
 
@@ -53,8 +52,6 @@ export default function RootLayout({
 
                 <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
                 <link rel="canonical" href="https://share.surf" />
-
-                <Script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7873492896986281" crossOrigin="anonymous"></Script>
             </head>
 
             <body className={`${monaSans.className} h-screen bg-white text-slate-800`}>

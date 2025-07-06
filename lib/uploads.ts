@@ -45,23 +45,3 @@ export async function getUploadPasswordHash(id: string): Promise<string> {
     const result = await pool.query("SELECT password FROM share.uploads WHERE upload_id = $1", [id]);
     return result.rows[0]?.password;
 }
-
-export async function getTotalUploads(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.uploads");
-    return parseInt(result.rows[0].total);
-}
-
-export async function getTotalUploadsFromGuests(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.uploads WHERE user_id IS NULL OR user_id = ''");
-    return parseInt(result.rows[0].total);
-}
-
-export async function getTotalUploadsFromRegisteredUsers(): Promise<number> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.uploads WHERE user_id IS NOT NULL AND user_id <> ''");
-    return parseInt(result.rows[0].total);
-}
-
-export async function getTotalUploadsStorageUsed(): Promise<number> {
-    const result = await pool.query("SELECT SUM(size) AS total FROM share.uploads");
-    return parseInt(result.rows[0].total) || 0;
-}
