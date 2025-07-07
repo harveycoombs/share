@@ -145,5 +145,5 @@ export default function Settings({ onClose }: Properties) {
 }
 
 function SettingsSectionTab({ name, ...rest }: any) {
-    return <div className="py-1.5 px-2.5 border-b-3 border-transparent translate-y-px text-[0.8rem] text-slate-400/75 font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-slate-700" {...rest}>{name}</div>;
+    return <div className="py-1.5 px-2.5 border-b-3 border-transparent translate-y-px text-[0.8rem] text-slate-400/75 font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-indigo-500" {...rest}>{name}</div>;
 }
