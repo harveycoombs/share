@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import packageJson from "@/package.json";
-import IssueForm from "@/app/components/common/popups/IssueForm";
+import IssueForm from "@/app/components/popups/IssueForm";
 
 export default function Footer() {
     const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);

@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
-import UploadHistory from "@/app/components/common/popups/UploadHistory";
+import UploadHistory from "@/app/components/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
 import { formatTime } from "@/lib/utils";

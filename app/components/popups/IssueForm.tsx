@@ -8,7 +8,7 @@ import Label from "@/app/components/common/Label";
 import Field from "@/app/components/common/Field";
 import TextBox from "@/app/components/common/TextBox";
 import Button from "@/app/components/common/Button";
-import Notice from "../Notice";
+import Notice from "../common/Notice";
 
 interface Properties {
     onClose: () => void;

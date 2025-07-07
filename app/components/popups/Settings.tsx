@@ -8,13 +8,13 @@ import Label from "@/app/components/common/Label";
 import Button from "@/app/components/common/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
-import Notice from "../Notice";
+import Notice from "../common/Notice";
 
 interface Properties {
     onClose: () => void;
 }
 
-export default function AccountSettings({ onClose }: Properties) {
+export default function Settings({ onClose }: Properties) {
     const [user, setUser] = useState<any>(null);
 
     const [name, setName] = useState<string>("");
@@ -113,57 +113,37 @@ export default function AccountSettings({ onClose }: Properties) {
     }
 
     return (
-        <Popup title="Account Settings" onClose={onClose} classes="max-sm:w-15/16">
+        <Popup title="Account Settings" classes="w-120" onClose={onClose}>
             {(error.length + warning.length + success.length) > 0 && <Notice color={error.length ? "red" : warning.length ? "amber" : "green"}>
                 <FontAwesomeIcon icon={error.length ? faExclamationCircle : warning.length ? faWarning : faCheck} className="mr-1.5" />
                 {error.length ? error : warning.length ? warning : success}
             </Notice>}
 
-            <div className="w-full">
+            <div className="flex gap-3.5 items-center w-fit mx-auto my-4 select-none">
+                <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
+                    <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt="Share" width={58} height={58} className="object-cover aspect-square" draggable={false} />
+                    <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
+                        <FontAwesomeIcon icon={faCamera} className="text-white" />
+                    </div>
+
+                    <input type="file" ref={avatarUploader} className="hidden" accept="image/*" onChange={handleAvatarUpload} />
+                </div>
+
                 <div>
-                    <div className="flex gap-3 items-center w-fit mx-auto my-4 select-none">
-                        <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
-                            <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt="Share" width={56} height={56} className="object-cover aspect-square" draggable={false} />
-                            <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
-                                <FontAwesomeIcon icon={faCamera} className="text-white" />
-                            </div>
-
-                            <input type="file" ref={avatarUploader} className="hidden" accept="image/*" onChange={handleAvatarUpload} />
-                        </div>
-
-                        <div>
-                            <strong className="block font-bold">{user?.name} {user?.last_name}</strong>
-                            <div className="text-xs text-slate-400/75 font-semibold">Joined {new Date(user?.creation_date).toLocaleDateString()}</div>
-                        </div>
-                    </div>
-
-                    <div className="mt-2 w-full flex gap-6 max-sm:flex-col max-sm:gap-0">
-                        <div className="w-60 max-sm:w-full">
-                            <Label classes="block w-full mt-2.75 mb-0.5">Name</Label>
-                            <Field classes="block w-full" defaultValue={user?.name ?? ""} onInput={(e: any) => setName(e.target.value)} />
-
-                            <Label classes="block w-full mt-2.75 mb-0.5">Email Address</Label>
-                            <Field type="email" classes="block w-full" defaultValue={user?.email_address ?? ""} onInput={(e: any) => setEmailAddress(e.target.value)} />
-                        </div>
-
-                        <div className="w-60 max-sm:w-full">
-                            <Label classes="block w-full mt-2.75 mb-0.5">Old Password</Label>
-                            <Field type="password" classes="block w-full" onInput={(e: any) => setOldPassword(e.target.value)} />
-
-                            <Label classes="block w-full mt-2.75 mb-0.5">New Password</Label>
-                            <Field type="password" classes="block w-full" onInput={(e: any) => setNewPassword(e.target.value)} />
-
-                            <Label classes="block w-full mt-2.75 mb-0.5">Confirm New Password</Label>
-                            <Field type="password" classes="block w-full" onInput={(e: any) => setConfirmNewPassword(e.target.value)} />
-                        </div>
-                    </div>
+                    <strong className="block font-bold">{user?.name}</strong>
+                    <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(user?.creation_date).toLocaleDateString()}</div>
                 </div>
+            </div>
 
-                <div className="mt-3 w-full flex gap-6 max-sm:flex-col max-sm:gap-2.75">
-                    <Button classes="w-60 max-sm:w-full" onClick={updateDetails} loading={updating}>Save Changes</Button>
-                    <Button classes="w-60 max-sm:w-full" color="red" loading={deleting} onClick={deletionIntent ? deleteAccount : () => setDeletionIntent(true)}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
-                </div>
+            <div className="w-full my-3.5 border-b border-slate-300 flex gap-1.5 justify-center">
+                <SettingsSectionTab name="Details" onClick={() => {}} />
+                <SettingsSectionTab name="Security" onClick={() => {}} />
+                <SettingsSectionTab name="Platform" onClick={() => {}} />
             </div>
         </Popup>
     );
+}
+
+function SettingsSectionTab({ name, ...rest }: any) {
+    return <div className="py-1.5 px-2.5 border-b-3 border-transparent translate-y-px text-[0.8rem] text-slate-400/75 font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-slate-700" {...rest}>{name}</div>;
 }

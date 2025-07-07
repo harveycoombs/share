@@ -8,7 +8,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
-import AccountSettings from "@/app/components/common/popups/AccountSettings";
+import Settings from "@/app/components/popups/Settings";
 
 export default function Header() {
     const path = usePathname();
@@ -16,7 +16,7 @@ export default function Header() {
 
     const [user, setUser] = useState<any>(null);
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
-    const [accountSettingsAreVisible, setAccountSettingsVisibility] = useState<boolean>(false);
+    const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
 
     const fetchUser = useCallback(async () => {
         const response = await fetch("/api/user/session");
@@ -50,9 +50,8 @@ export default function Header() {
                         alt={`${user?.name} (You)`} 
                         width={32} 
                         height={32}
-                        className="inline-block align-middle rounded object-cover aspect-square cursor-pointer duration-150 hover:opacity-80 active:opacity-70"
-                        title="View Account Settings"
-                        draggable={false} onClick={() => setAccountSettingsVisibility(true)}
+                        className="inline-block align-middle rounded object-cover aspect-square duration-150 hover:opacity-80 active:opacity-70"
+                        draggable={false}
                     />
 
                     <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
@@ -60,7 +59,7 @@ export default function Header() {
                     </div>
 
                     <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38`}>
-                        <HeaderSubMenuItem first={true}>Platform Settings</HeaderSubMenuItem>
+                        <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
                         <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
                     </div>
                 </nav> : <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
@@ -69,7 +68,7 @@ export default function Header() {
                 </nav>}
             </header>
 
-            {accountSettingsAreVisible && user && <AccountSettings onClose={() => setAccountSettingsVisibility(false)} />}
+            {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
         </>
     );
 }
