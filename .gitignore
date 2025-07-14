@@ -37,7 +37,6 @@ next-env.d.ts
 
 # temporary uploads directory
 /temp
-/uploads
 
 #dotenv
 .env
