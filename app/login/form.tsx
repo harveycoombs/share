@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { faApple, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
 
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
@@ -70,7 +70,7 @@ export default function LoginForm() {
             
             <div className="grid grid-cols-3 gap-2">
                 <SSOButton icon={faGoogle} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign in with Google" />
-                <SSOButton icon={faApple} classes="text-xl hover:from-slate-100 hover:to-slate-200" title="Sign in with Apple" />
+                <SSOButton icon={faDiscord} classes="hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-500 hover:border-indigo-400" title="Sign in with Discord" />
                 <SSOButton icon={faMicrosoft} classes="hover:from-emerald-50 hover:to-emerald-100 hover:text-emerald-500 hover:border-emerald-300" title="Sign in with Microsoft" />
             </div>
         </form>
