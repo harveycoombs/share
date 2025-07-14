@@ -260,9 +260,9 @@ export default function Home() {
                         </div>
 
                         <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:justify-center">
-                            <div>Expires after 24 hours</div>
+                            <div>Expires after 48 hours</div>
                             <div className="hidden mx-2 max-sm:block">&middot;</div>
-                            <div>1GB upload limit</div>
+                            <div>750MB upload limit</div>
                         </div>
                     </div>
                 )}

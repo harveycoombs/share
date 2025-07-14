@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import * as fs from "fs/promises";
 import { cookies } from "next/headers";
+import AdmZip from "adm-zip";
 
 import { authenticate } from "@/lib/jwt";
-import { deleteUpload, insertUploadHistory } from "@/lib/uploads";
+import { insertUploadHistory } from "@/lib/uploads";
 import { uploadFile } from "@/lib/files";
 
 export const config = {
@@ -21,7 +22,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!files.length) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
 
-    if (files.reduce((total: number, file: any) => total + file.size, 0) > 1073941824) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
+    if (files.reduce((total: number, file: any) => total + file.size, 0) > 750000000) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
 
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
@@ -34,48 +35,44 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!uploadid?.length) return NextResponse.json({ error: "Unable to record upload in database." }, { status: 500 });
 
-    if (files.length == 1) {
-        const file = files[0];
+    try {
+        if (files.length == 1) {
+            const file = files[0];
 
-        if (!(file instanceof File)) return NextResponse.json({ error: "Invalid file." }, { status: 400 });
+            if (!(file instanceof File)) return NextResponse.json({ error: "Invalid file." }, { status: 400 });
 
-        const buffer = Buffer.from(await file.arrayBuffer());
-        await fs.writeFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
+            const buffer = Buffer.from(await file.arrayBuffer());
+            await fs.writeFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
 
-        await uploadFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `uploads/${uploadid}`);
+            await uploadFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `uploads/${uploadid}`);
 
-        await fs.unlink(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
+            await fs.unlink(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
+
+            return NextResponse.json({ id: uploadid }, { status: 200 });
+        }
+    } catch (ex: any) {
+        return NextResponse.json({ error: `Unable to upload file: ${ex.message}` }, { status: 500 });
+    }
+
+    try {
+        const zip = new AdmZip();
+
+        for (const file of files) {
+            if (!(file instanceof File)) continue;
+            
+            const buffer = Buffer.from(await file.arrayBuffer());
+            zip.addFile(file.name.substring(file.name.lastIndexOf("/") + 1), buffer);
+        }
+
+        const buffer = await zip.toBufferPromise();
+        await fs.writeFile(`./temp/zip.zip`, new Uint8Array(buffer));
+
+        await uploadFile(`./temp/zip.zip`, `uploads/${uploadid}/zip.zip`);
+
+        await fs.unlink(`./temp/zip.zip`);
 
         return NextResponse.json({ id: uploadid }, { status: 200 });
-    }
-
-    /*try {
-        await fs.mkdir(`./uploads/${uploadid}`);
     } catch (ex: any) {
-        await deleteUpload(user?.user_id, uploadid);
-        return NextResponse.json({ error: ex.message }, { status: 500 });
+        return NextResponse.json({ error: `Unable to upload files: ${ex.message}` }, { status: 500 });
     }
-    
-    const errors: any[] = [];
-    
-    for (const file of files) {
-        if (!(file instanceof File)) continue;
-        
-        try {
-            const buffer = Buffer.from(await file.arrayBuffer());
-            await fs.writeFile(`./uploads/${uploadid}/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
-        } catch (ex: any) {
-            errors.push({
-                error: ex.message,
-                file: file.name
-            });
-        }
-    }
-
-    if (errors.length) {
-        await deleteUpload(user?.user_id ?? 0, uploadid);
-        return NextResponse.json({ errors: errors }, { status: 500 });
-    }*/
-
-    return NextResponse.json({ id: uploadid }, { status: 200 });
 }
