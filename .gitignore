@@ -35,9 +35,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# uploads & reports directories
+# temporary uploads directory
+/temp
 /uploads
-/reports
 
 #dotenv
 .env

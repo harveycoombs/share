@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 
 import { authenticate } from "@/lib/jwt";
 import { deleteUpload, insertUploadHistory } from "@/lib/uploads";
+import { uploadFile } from "@/lib/files";
 
 export const config = {
     api: {
@@ -33,7 +34,22 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!uploadid?.length) return NextResponse.json({ error: "Unable to record upload in database." }, { status: 500 });
 
-    try {
+    if (files.length == 1) {
+        const file = files[0];
+
+        if (!(file instanceof File)) return NextResponse.json({ error: "Invalid file." }, { status: 400 });
+
+        const buffer = Buffer.from(await file.arrayBuffer());
+        await fs.writeFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
+
+        await uploadFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `uploads/${uploadid}`);
+
+        await fs.unlink(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
+
+        return NextResponse.json({ id: uploadid }, { status: 200 });
+    }
+
+    /*try {
         await fs.mkdir(`./uploads/${uploadid}`);
     } catch (ex: any) {
         await deleteUpload(user?.user_id, uploadid);
@@ -59,7 +75,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (errors.length) {
         await deleteUpload(user?.user_id ?? 0, uploadid);
         return NextResponse.json({ errors: errors }, { status: 500 });
-    }
+    }*/
 
     return NextResponse.json({ id: uploadid }, { status: 200 });
 }
