@@ -70,7 +70,7 @@ export default function LoginForm() {
             
             <div className="grid grid-cols-3 gap-2">
                 <SSOButton icon={faGoogle} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign in with Google" />
-                <SSOButton icon={faDiscord} classes="hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-500 hover:border-indigo-400" title="Sign in with Discord" />
+                <SSOButton icon={faDiscord} classes="hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-500 hover:border-indigo-300" title="Sign in with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fauth%2Fdiscord&scope=identify+email" />
                 <SSOButton icon={faMicrosoft} classes="hover:from-emerald-50 hover:to-emerald-100 hover:text-emerald-500 hover:border-emerald-300" title="Sign in with Microsoft" />
             </div>
         </form>

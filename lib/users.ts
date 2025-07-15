@@ -86,3 +86,8 @@ export async function updateUserVerification(emailAddress: string, verified: boo
     const result = await pool.query("UPDATE share.users SET verified = $1 WHERE email_address = $2", [verified, emailAddress]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
+
+export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<string> {
+    const result = await pool.query("SELECT discord_id FROM share.users WHERE email_address = $1", [emailAddress]);
+    return result.rows[0]?.discord_id ?? "";
+}
