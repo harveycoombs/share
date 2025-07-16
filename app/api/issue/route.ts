@@ -10,6 +10,17 @@ export async function POST(request: Request): Promise<NextResponse> {
     const description = data.get("description")?.toString() ?? "";
     const name = data.get("name")?.toString() ?? "";
     const emailAddress = data.get("email")?.toString() ?? "";
+    const captchaToken = data.get("captchaToken")?.toString() ?? "";
+
+    if (!description.length || !name.length || !emailAddress.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+
+    const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY}`,
+    });
+
+    if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
 
     const ipAddress = request.headers.get("x-forwarded-for") ?? "Unknown";
     const userAgent = request.headers.get("user-agent") ?? "Unknown";

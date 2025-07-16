@@ -54,7 +54,7 @@ export default function RootLayout({
                 <link rel="canonical" href="https://share.surf" />
             </head>
 
-            <body className={`${monaSans.className} h-screen bg-white text-slate-800`}>
+            <body className={`${monaSans.className} h-screen bg-white text-slate-800 overflow-x-hidden`}>
                 <Header />
                 {children}
                 <Footer />
