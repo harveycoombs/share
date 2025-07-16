@@ -1,7 +1,11 @@
 import Popup from "@/app/components/common/Popup";
 
-export default function AccountPrompt() {
+interface Properties {
+    onClose: () => void;
+}
+
+export default function AccountPrompt({ onClose }: Properties) {
     return (
-        <Popup title="Share Account">
+        <Popup title="Share Account" onClose={onClose}>
         </Popup>
 }
