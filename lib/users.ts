@@ -51,6 +51,14 @@ export async function createUser(name: string, emailAddress: string, password: s
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
+export async function createUserFromDiscord(name: string, emailAddress: string, discordid: string): Promise<boolean> {
+    const result = await pool.query(
+        "INSERT INTO share.users (user_id, creation_date, name, email_address, discord_id) VALUES (gen_random_uuid(), NOW(), $1, $2, $3)",
+        [name, emailAddress, discordid]
+    );
+    return result.rowCount ? result.rowCount > 0 : false;
+}
+
 export async function updateUser(userid: string, name: string, emailAddress: string): Promise<boolean> {
     const result = await pool.query("UPDATE share.users SET name = $1, email_address = $2 WHERE user_id = $3", [name, emailAddress, userid]);
     return result.rowCount ? result.rowCount > 0 : false;

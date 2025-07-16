@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
-import jwt from "jsonwebtoken";
 
-import { emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
+import { createUserFromDiscord, emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
 
 export async function GET(request: NextRequest) {
@@ -62,7 +61,17 @@ export async function GET(request: NextRequest) {
                 });
             }
         } else {
-            // TO-DO: finish this
+            const newShareUser = await createUserFromDiscord(user.username, user.email, user.id);
+
+            if (newShareUser) {
+                const credentials = createJWT(newShareUser);
+
+                response.cookies.set("token", credentials.token, {
+                    httpOnly: true,
+                    secure: true,
+                    maxAge: 3155760000
+                });
+            }
         }
 
         return response;
