@@ -15,7 +15,6 @@ export default function Footer() {
             <div>2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
 
             <div className="flex items-center gap-4 max-sm:gap-3">
-                <Link href="/stats" className="hover:underline max-sm:hidden">Stats</Link>
                 <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" className="hover:underline">Donate</Link>
                 <Link href="/documents/privacy-policy.pdf" className="hover:underline">Privacy Policy</Link>
                 <Link href="/documents/terms-of-service.pdf" className="hover:underline">Terms of Service</Link>
