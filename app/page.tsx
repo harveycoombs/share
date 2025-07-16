@@ -24,6 +24,7 @@ export default function Home() {
     const [uploadTime, setUploadTime] = useState<string>("");
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
+    const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
 
     const uploader = useRef<HTMLInputElement>(null);
 
@@ -236,7 +237,7 @@ export default function Home() {
                             </div>
 
                             <div className={`flex items-center gap-2.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
-                                <Button color="gray" square={true} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => setHistoryVisibility(sessionExists)}>
+                                <Button color="gray" square={true} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => sessionExists ? setHistoryVisibility(true) : setAccountPromptVisibility(true)}>
                                     <FontAwesomeIcon icon={faClockRotateLeft} />
                                 </Button>
 
@@ -253,7 +254,7 @@ export default function Home() {
                                         <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
                                     </div>
                                 ) : (
-                                    <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => setPasswordFieldVisibility(sessionExists)}>
+                                    <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => sessionExists ? setPasswordFieldVisibility(sessionExists) : setAccountPromptVisibility(true)}>
                                         <FontAwesomeIcon icon={faKey} />
                                     </Button>
                                 )}
@@ -278,6 +279,7 @@ export default function Home() {
             />
 
             {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
+            {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
         </main>
     );
 }
