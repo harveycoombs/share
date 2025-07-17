@@ -16,6 +16,7 @@ interface Properties {
 
 export default function Settings({ onClose }: Properties) {
     const [user, setUser] = useState<any>(null);
+    const [section, setSection] = useState<string>("details");
 
     const [name, setName] = useState<string>("");
     const [emailAddress, setEmailAddress] = useState<string>("");
@@ -136,14 +137,58 @@ export default function Settings({ onClose }: Properties) {
             </div>
 
             <div className="w-full my-3.5 border-b border-slate-300 flex gap-1.5 justify-center">
-                <SettingsSectionTab name="Details" onClick={() => {}} />
-                <SettingsSectionTab name="Security" onClick={() => {}} />
-                <SettingsSectionTab name="Platform" onClick={() => {}} />
+                <SettingsSectionTab name="Details" onClick={() => setSection("details")} selected={section == "details"} />
+                <SettingsSectionTab name="Security" onClick={() => setSection("security")} selected={section == "security"} />
+                <SettingsSectionTab name="Platform" onClick={() => setSection("platform")} selected={section == "platform"} />
+            </div>
+
+            {section == "details" && (
+                <div className="flex gap-3.5">
+                    <div className="w-1/2">
+                        <Label classes="block w-full">Name</Label>
+                        <Field classes="block w-full" defaultValue={user?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
+                    </div>
+
+                    <div className="w-1/2">
+                        <Label classes="block w-full">Email Address</Label>
+                        <Field classes="block w-full" defaultValue={user?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
+                    </div>
+                </div>
+            )}
+
+            {section == "security" && (
+                <>
+                    <div>
+                        <Label classes="block w-full">TOTP Authentication</Label>
+                        <div className="flex gap-3.5 items-center">
+                            <div className="w-4/5 text-sm font-medium leading-none">Device Name</div>
+                            <Button classes="w-1/5 shrink-0" color="red">Remove</Button>
+                        </div>
+                    </div>
+
+                    <div className="flex gap-3.5 mt-3.5">
+                        <div className="w-1/2">
+                            <Label classes="block w-full">Old Password</Label>
+                            <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
+                        </div>
+
+                        <div className="w-1/2">
+                            <Label classes="block w-full">New Password</Label>
+                            <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
+                        </div>
+                    </div>
+                </>
+            )}
+
+            <div className="flex mt-3.5 gap-3.5">
+                <Button classes="w-1/2" onClick={updateDetails}>Save</Button>
+                <Button classes="w-1/2" color="gray" onClick={onClose}>Cancel</Button>
+                {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>Delete Account</Button>}
             </div>
         </Popup>
     );
 }
 
-function SettingsSectionTab({ name, ...rest }: any) {
-    return <div className="py-1.5 px-2.5 border-b-3 border-transparent translate-y-px text-[0.8rem] text-slate-400/75 font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-indigo-500" {...rest}>{name}</div>;
+function SettingsSectionTab({ name, selected = false, ...rest }: any) {
+    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-[0.8rem] ${selected ? "border-indigo-500 text-indigo-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-indigo-500`} {...rest}>{name}</div>;
 }

@@ -48,9 +48,10 @@ export default function Header() {
                     <Image 
                         src={`/api/user/avatar?t=${new Date().getTime()}`}
                         alt={`${user?.name} (You)`} 
+                        title={`${user?.name} (You)`}
                         width={32} 
                         height={32}
-                        className="inline-block align-middle rounded object-cover aspect-square duration-150 hover:opacity-80 active:opacity-70"
+                        className="inline-block align-middle rounded object-cover aspect-square"
                         draggable={false}
                     />
 
