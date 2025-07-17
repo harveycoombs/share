@@ -17,7 +17,19 @@ export default function Popup({ title, onClose, children, classes, ...rest }: Pr
             <motion.div initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1, transition: { duration: 0.15, ease: "easeOut" }}} className={`bg-white p-3 rounded-lg${classes?.length ? " " + classes : ""}`} {...rest}>
                 <div className="flex justify-between items-center leading-none pb-1.5">
                     <strong className="text-sm font-medium text-slate-400/60 select-none">{title}</strong>
-                    <div className="text-slate-400/60 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={onClose}><FontAwesomeIcon icon={faXmark} /></div>
+
+                    <motion.div 
+                        className="text-slate-400/60 cursor-pointer duration-100 hover:text-red-500 active:text-red-600"
+                        onClick={onClose}
+                        whileHover={{ 
+                            scale: 1.1,
+                            rotate: 90,
+                            transition: { duration: 0.15 }
+                        }}
+                        whileTap={{ scale: 0.9 }}
+                    >
+                        <FontAwesomeIcon icon={faXmark} />
+                    </motion.div>
                 </div>
 
                 <div className="max-h-[75vh] overflow-y-auto">
