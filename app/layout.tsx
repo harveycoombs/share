@@ -9,6 +9,10 @@ import "./globals.css";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 
+import { cookies } from "next/headers";
+import { authenticate } from "@/lib/jwt";
+import UserProvider from "@/app/context/UserContext";
+
 const monaSans = Mona_Sans({
     weight: ["400", "500", "600", "700", "800", "900"],
     subsets: ["latin"]
@@ -40,11 +44,15 @@ export const metadata: Metadata = {
     }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
+
     return (
         <html lang="en">
             <head>
@@ -55,9 +63,11 @@ export default function RootLayout({
             </head>
 
             <body className={`${monaSans.className} h-screen bg-white text-slate-800 overflow-x-hidden`}>
-                <Header />
-                {children}
-                <Footer />
+                <UserProvider user={user}>
+                    <Header />
+                    {children}
+                    <Footer />
+                </UserProvider>
             </body>
         </html>
     );

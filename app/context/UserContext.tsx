@@ -2,10 +2,8 @@
 
 import { createContext } from "react";
 
-export const UserContext = createContext<{
-    user: any;
-    setUser: (user: any) => void;
-}>({
-    user: null,
-    setUser: () => {},
-});
+export const UserContext = createContext<any>(null);
+
+export default function UserProvider({ children, user }: any) {
+	return <UserContext.Provider value={user}>{children}</UserContext.Provider>;
+}

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,30 +9,16 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import Settings from "@/app/components/popups/Settings";
+import { UserContext } from "../context/UserContext";
 
 export default function Header() {
     const path = usePathname();
     if (path == "/login" || path == "/register") return null;
 
-    const [user, setUser] = useState<any>(null);
+    const user = useContext(UserContext);
+
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
-
-    const fetchUser = useCallback(async () => {
-        const response = await fetch("/api/user/session");
-        
-        if (!response.ok) {
-            setUser(null);
-            return;
-        }
-
-        const json = await response.json();
-        setUser(json.user);
-    }, []);
-
-    useEffect(() => {
-        fetchUser();
-    }, [fetchUser]);
 
     async function logout() {
         await fetch("/api/user/session", { method: "DELETE" });
