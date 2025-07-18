@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useCallback, useContext, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -9,7 +9,7 @@ import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
 import Settings from "@/app/components/popups/Settings";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "@/app/context/UserContext";
 
 export default function Header() {
     const path = usePathname();
@@ -20,10 +20,16 @@ export default function Header() {
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
 
-    async function logout() {
+    const logout = useCallback(async () => {
         await fetch("/api/user/session", { method: "DELETE" });
         window.location.reload();
-    }
+    }, []);
+
+    const userAvatar = `/api/user/avatar?t=${new Date().getTime()}`;
+
+    const avatarLabel = useMemo(() => {
+        return `${user?.name} (You)`;
+    }, [user]);
 
     return (
         <>
@@ -32,9 +38,9 @@ export default function Header() {
 
                 {user ? <nav className="relative">
                     <Image 
-                        src={`/api/user/avatar?t=${new Date().getTime()}`}
-                        alt={`${user?.name} (You)`} 
-                        title={`${user?.name} (You)`}
+                        src={userAvatar}
+                        alt={avatarLabel} 
+                        title={avatarLabel}
                         width={32} 
                         height={32}
                         className="inline-block align-middle rounded object-cover aspect-square"
