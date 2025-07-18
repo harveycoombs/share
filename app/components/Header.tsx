@@ -25,11 +25,8 @@ export default function Header() {
         window.location.reload();
     }, []);
 
-    const userAvatar = `/api/user/avatar?t=${new Date().getTime()}`;
-
-    const avatarLabel = useMemo(() => {
-        return `${user?.name} (You)`;
-    }, [user]);
+    const userAvatar = useMemo(() => `/api/user/avatar?t=${new Date().getTime()}`, []);
+    const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
 
     return (
         <>
