@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -10,9 +10,12 @@ import IssueForm from "@/app/components/popups/IssueForm";
 export default function Footer() {
     const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
 
+    const currentYear = useMemo(() => new Date().getFullYear(), []);
+    const version = useMemo(() => packageJson.version, []);
+
     return (
         <footer className="p-4 flex justify-between items-center select-none bg-white text-slate-400/60 text-sm font-medium max-md:text-xs max-sm:flex-col max-sm:items-center max-sm:gap-2">
-            <div>2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
+            <div>2021 &ndash; {currentYear} &middot; <span title="Formerly cynohost.com">Share</span> {version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline">Harvey Coombs</Link></div>
 
             <div className="flex items-center gap-4 max-sm:gap-3">
                 <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" className="hover:underline">Donate</Link>
