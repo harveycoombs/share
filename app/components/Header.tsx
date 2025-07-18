@@ -27,7 +27,7 @@ export default function Header() {
 
     const userAvatar = useMemo(() => `/api/user/avatar?t=${new Date().getTime()}`, []);
     const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
-    const logoClassList = useMemo(() => ((path == "/") && !user) ? "max-sm:hidden" : "", [path, user]);
+    const logoClassList = useMemo(() => !user ? "max-sm:hidden" : "", [user]);
 
     return (
         <>
