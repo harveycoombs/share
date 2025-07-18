@@ -27,35 +27,40 @@ export default function Header() {
 
     const userAvatar = useMemo(() => `/api/user/avatar?t=${new Date().getTime()}`, []);
     const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
+    const logoClassList = useMemo(() => ((path == "/") && !user) ? "max-sm:hidden" : "", [path, user]);
 
     return (
         <>
             <header className="p-3.5 flex justify-between select-none">
-                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${((path == "/") && !user) ? "max-sm:hidden" : ""}`} onClick={() => window.location.href = "/"}><Logo width={30} height={30} className="block" /></div>
+                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${logoClassList}`} onClick={() => window.location.href = "/"}><Logo width={30} height={30} className="block" /></div>
 
-                {user ? <nav className="relative">
-                    <Image 
-                        src={userAvatar}
-                        alt={avatarLabel} 
-                        title={avatarLabel}
-                        width={32} 
-                        height={32}
-                        className="inline-block align-middle rounded object-cover aspect-square"
-                        draggable={false}
-                    />
+                {user ? (
+                    <nav className="relative">
+                        <Image 
+                            src={userAvatar}
+                            alt={avatarLabel} 
+                            title={avatarLabel}
+                            width={32} 
+                            height={32}
+                            className="inline-block align-middle rounded object-cover aspect-square"
+                            draggable={false}
+                        />
 
-                    <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
-                        <FontAwesomeIcon icon={faEllipsis} />
-                    </div>
+                        <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                            <FontAwesomeIcon icon={faEllipsis} />
+                        </div>
 
-                    <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38`}>
-                        <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
-                        <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
-                    </div>
-                </nav> : <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
-                    <Button url="/login" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
-                    <Button url="/register" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
-                </nav>}
+                        <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38`}>
+                            <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
+                            <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
+                        </div>
+                    </nav>
+                ) : (
+                    <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
+                        <Button url="/login" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
+                        <Button url="/register" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
+                    </nav>
+                )}
             </header>
 
             {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
