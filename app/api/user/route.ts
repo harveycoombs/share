@@ -25,7 +25,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const password = data.get("password")?.toString() ?? "";
     const captchaToken = data.get("captchaToken")?.toString() ?? "";
 
-    if (!name?.length || !email?.length || !password?.length || !captchaToken?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    if (!name.length || !email.length || !password.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
     const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
