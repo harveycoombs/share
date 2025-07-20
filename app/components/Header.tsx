@@ -13,9 +13,13 @@ import { UserContext } from "@/app/context/UserContext";
 
 export default function Header() {
     const path = usePathname();
-    if (path == "/login" || path == "/register") return null;
-
     const user = useContext(UserContext);
+
+    if (user && (path == "/login" || path == "/register")) {
+        window.location.href = "/";
+    }
+
+    if (path == "/login" || path == "/register" || path.startsWith("/verify")) return null;
 
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
