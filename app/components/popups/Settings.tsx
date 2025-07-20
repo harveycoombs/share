@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 
 import Popup from "@/app/components/common/Popup";
@@ -9,6 +9,7 @@ import Button from "@/app/components/common/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
 import Notice from "../common/Notice";
+import QRCodeViewer from "./QRCodeViewer";
 
 interface Properties {
     onClose: () => void;
@@ -21,9 +22,11 @@ export default function Settings({ onClose }: Properties) {
     const [name, setName] = useState<string>("");
     const [emailAddress, setEmailAddress] = useState<string>("");
 
+    const [QRCode, setQRCode] = useState<string>("");
+    const [QRCodePopupIsVisible, setQRCodePopupVisibility] = useState<boolean>(false);
+
     const [oldPassword, setOldPassword] = useState<string>("");
     const [newPassword, setNewPassword] = useState<string>("");
-    const [confirmNewPassword, setConfirmNewPassword] = useState<string>("");
 
     const [error, setError] = useState<string>("");
     const [warning, setWarning] = useState<string>("");
@@ -45,17 +48,11 @@ export default function Settings({ onClose }: Properties) {
         })();
     }, []);
 
-    async function updateDetails() {
+    const updateDetails = useCallback(async () => {
         setUpdating(true);
         setError("");
         setWarning("");
         setSuccess("");
-
-        if (newPassword?.length && newPassword != confirmNewPassword) {
-            setWarning("New passwords do not match");
-            setUpdating(false);
-            return;
-        }
 
         const response = await fetch("/api/user", {
             method: "PATCH",
@@ -71,9 +68,9 @@ export default function Settings({ onClose }: Properties) {
         } else {
             setError("Something went wrong");
         }
-    }
+    }, [name, emailAddress, oldPassword, newPassword, setUpdating, setError, setWarning, setSuccess]);
 
-    async function deleteAccount() {
+    const deleteAccount = useCallback(async () => {
         const response = await fetch("/api/user", {
             method: "DELETE"
         });
@@ -88,9 +85,9 @@ export default function Settings({ onClose }: Properties) {
         }
         
         window.location.href = "/";
-    }
+    }, [setDeleting, setError]);
 
-    async function handleAvatarUpload(e: any) {
+    const handleAvatarUpload = useCallback(async (e: any) => {
         const file = e.target.files[0];
 
         if (!file) return;
@@ -111,7 +108,18 @@ export default function Settings({ onClose }: Properties) {
         }
 
         setUser(user);
-    }
+    }, [setError, setUser, user]);
+
+    const enableTOTP = useCallback(async () => {
+        const response = await fetch("/api/totp", { method: "POST" });
+        const json = await response.json();
+
+        setQRCode(json.qr);
+    }, [setQRCode]);
+
+    const disableTOTP = useCallback(async () => {
+        await fetch("/api/totp", { method: "POST" });
+    }, [setQRCode, setUser, user]);
 
     return (
         <Popup title="Account Settings" classes="w-120" onClose={onClose}>
@@ -159,11 +167,18 @@ export default function Settings({ onClose }: Properties) {
             {section == "security" && (
                 <>
                     <div>
-                        <Label classes="block w-full">TOTP Authentication</Label>
-                        <div className="flex gap-3.5 items-center">
-                            <div className="w-4/5 text-sm font-medium leading-none">Device Name</div>
-                            <Button classes="w-1/5 shrink-0" color="red">Remove</Button>
-                        </div>
+                        <Label classes="block w-full">2-Factor Authentication</Label>
+
+                        {QRCode.length ? (
+                            <div className="flex gap-2 items-center">
+                                <Image src={QRCode} alt="QR Code" width={120} height={120} className="block select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
+
+                                <div>
+                                    <strong className="font-semibold">TOTP Authentication</strong>
+                                    <div className="text-sm font-medium text-slate-400 mt-1">Scan the QR code with your authenticator app (Google Authenticator, Authy, Duo,etc.)</div>
+                                </div>
+                            </div>
+                        ) : user?.totp_enabled ? <Button classes="block w-fit" color="red" onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" onClick={enableTOTP}>Add TOTP</Button>}
                     </div>
 
                     <div className="flex gap-3.5 mt-3.5">
@@ -185,6 +200,8 @@ export default function Settings({ onClose }: Properties) {
                 <Button classes="w-1/2" color="gray" onClick={onClose}>Cancel</Button>
                 {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>Delete Account</Button>}
             </div>
+
+            {QRCodePopupIsVisible && <QRCodeViewer code={QRCode} onClose={() => setQRCodePopupVisibility(false)} />}
         </Popup>
     );
 }

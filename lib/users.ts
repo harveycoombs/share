@@ -99,3 +99,13 @@ export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<s
     const result = await pool.query("SELECT discord_id FROM share.users WHERE email_address = $1", [emailAddress]);
     return result.rows[0]?.discord_id ?? "";
 }
+
+export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
+    const result = await pool.query("SELECT totp_secret FROM share.users WHERE email_address = $1 AND totp_enabled = true AND deleted = false", [emailAddress]);
+    return result.rows[0]?.totp_secret ?? "";
+}
+
+export async function updateUserTOTPSettings(userid: string, secret: string, enabled: boolean): Promise<boolean> {
+    const result = await pool.query("UPDATE share.users SET totp_secret = $1, totp_enabled = $2 WHERE user_id = $3", [secret, enabled, userid]);
+    return result.rowCount ? result.rowCount > 0 : false;
+}

@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
                 client_secret: process.env.DISCORD_CLIENT_SECRET ?? "",
                 grant_type: "authorization_code",
                 code,
-                redirect_uri: "https://share.surf/api/auth/discord",
+                redirect_uri: "https://share.surf/api/sso/discord",
                 scope: "identify"
             })
         });
