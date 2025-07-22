@@ -86,10 +86,10 @@ export default function UploadHistory({ onClose }: Properties) {
             </div>
 
             <div className="h-150">{
-                error.length ? <div className="w-full min-h-72 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
-                : loading ? <div className="w-full min-h-72 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
-                : uploads.length ? <div className="w-full min-h-72">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
-                : <div className="w-full min-h-72 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
+                error.length ? <div className="w-full h-full pb-16 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
+                : loading ? <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
+                : uploads.length ? <div className="w-full h-full">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
+                : <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
             }</div>
         </Popup>
     );
@@ -235,8 +235,6 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                     <UploadOption icon={faTrashAlt} classes={colors.icon} title="Delete" onClick={deleteUpload} loading={deleteLoading} />
                     {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                 </div>
-
-                {!data.available && <div className="absolute inset-0 bg-red-200/50 grid place-items-center text-red-500 text-base font-medium">No longer available</div>}
             </motion.div>
         </AnimatePresence>
     ); 
