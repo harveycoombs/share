@@ -269,7 +269,7 @@ export default function Home() {
                         </div>
 
                         <div className="w-fit mx-auto mt-16">
-                            <Script type="text/javascript" src="/scripts/ad.js"></Script>
+                            <Script type="text/javascript" src="/scripts/options.js"></Script>
                             <Script type="text/javascript" src="//www.highperformanceformat.com/e764adcc0b5e6389c4608bb865f0b9c5/invoke.js"></Script>
                         </div>
                     </div>
