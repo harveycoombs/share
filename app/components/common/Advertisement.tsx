@@ -17,7 +17,7 @@ export default function Advertisement() {
         script.src = "https://www.highperformanceformat.com/e764adcc0b5e6389c4608bb865f0b9c5/invoke.js";
         script.async = true;
 
-        const container = document.querySelector("#advcontainer");
+        const container = document.querySelector("#adv");
 
         container?.appendChild(script);
 
