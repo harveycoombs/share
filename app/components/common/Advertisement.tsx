@@ -14,7 +14,7 @@ export default function Advertisement() {
         const script = document.createElement("script");
 
         script.type = "text/javascript";
-        script.src = "https://www.highperformanceformat.com/d1be5247516a9c83605c1b02ccd06b64/invoke.js";
+        script.src = `https://www.highperformanceformat.com/${process.env.NEXT_PUBLIC_ADSTERRA_KEY ?? ""}/invoke.js`;
         script.async = true;
 
         const container = document.querySelector("#adv");
