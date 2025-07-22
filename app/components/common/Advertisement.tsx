@@ -13,7 +13,7 @@ export default function Advertisement() {
         const script = document.createElement("script");
 
         script.type = "text/javascript";
-        script.src = "//www.highperformanceformat.com/e764adcc0b5e6389c4608bb865f0b9c5/invoke.js";
+        script.src = "https://www.highperformanceformat.com/e764adcc0b5e6389c4608bb865f0b9c5/invoke.js";
         script.async = true;
 
         document.body.appendChild(script);
