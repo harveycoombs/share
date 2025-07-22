@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
+import Script from "next/script";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "motion/react";
@@ -182,12 +183,12 @@ export default function Home() {
     return (
         <main className={`${sessionExists ? "min-h-[calc(100vh-112px)]" : "min-h-[calc(100vh-119px)]"} grid place-items-center`} onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
             <motion.section
-                className="w-fit select-none max-sm:w-full max-sm:px-4"
+                className="w-115 mx-auto select-none max-sm:w-full max-sm:px-4"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
             >
-                <div className="w-115 mx-auto mb-16 max-sm:w-full">
+                <div className="mb-16">
                     <div className="w-fit mx-auto flex items-center gap-4">
                         <Logo width={56} height={56} className="" />
                         <h1 className="text-5xl font-bold leading-none">share.surf</h1>
@@ -215,7 +216,7 @@ export default function Home() {
                 )}
 
                 {!loading && !id.length && (
-                    <div className="w-115 max-sm:w-full">
+                    <div>
                         <Notice color={error.length ? "red" : "indigo"}>
                             <FontAwesomeIcon icon={error.length ? faExclamationCircle : faInfoCircle} className={error.length ? "mr-1.5" : "mr-1.5 text-base translate-y-0.25"} />
                             {error.length ? error : "Drag or paste files onto this page to upload"}
@@ -265,6 +266,11 @@ export default function Home() {
                             <div>Expires after 48 hours</div>
                             <div className="hidden mx-2 max-sm:block">&middot;</div>
                             <div>750MB upload limit</div>
+                        </div>
+
+                        <div className="w-fit mx-auto mt-16">
+                            <Script type="text/javascript" src="/scripts/ad.js"></Script>
+                            <Script type="text/javascript" src="//www.highperformanceformat.com/e764adcc0b5e6389c4608bb865f0b9c5/invoke.js"></Script>
                         </div>
                     </div>
                 )}
