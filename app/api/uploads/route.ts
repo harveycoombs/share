@@ -24,17 +24,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const search = new URL(request.url).searchParams.get("search") ?? "";
-
-    const history = (await Promise.all((await getUploadHistory(user.user_id, search)).map(async (upload) => {
-        try {
-            upload.available = await fs.access(`./uploads/${upload.upload_id}`).then(() => true).catch(() => false);
-            upload.types = (await fs.readdir(`./uploads/${upload.upload_id}`)).map((file) => mime.getType(file));
-
-            return upload;
-        } catch {
-            return null;
-        }
-    }))).filter(upload => upload != null);
+    const history = await getUploadHistory(user.user_id, search);
 
     return NextResponse.json({ history }, { status: 200 });
 }
