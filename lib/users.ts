@@ -13,7 +13,7 @@ export async function getUserByEmailAddress(emailAddress: string): Promise<any> 
 }
 
 export async function getUserDetails(userid: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, name, email_address, creation_date FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
+    const result = await pool.query("SELECT user_id, name, email_address, creation_date, totp_enabled, totp_secret FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
     return result.rows[0];
 }
 

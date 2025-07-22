@@ -16,7 +16,7 @@ interface Properties {
 }
 
 export default function Settings({ onClose }: Properties) {
-    const [user, setUser] = useState<any>(null);
+    const [details, setDetails] = useState<any>(null);
     const [section, setSection] = useState<string>("details");
 
     const [name, setName] = useState<string>("");
@@ -36,17 +36,20 @@ export default function Settings({ onClose }: Properties) {
 
     const [updating, setUpdating] = useState<boolean>(false);
     const [deleting, setDeleting] = useState<boolean>(false);
+    const [updatingTOTP, setUpdatingTOTP] = useState<boolean>(false);
 
     const avatarUploader = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
+        if (updating || deleting || updatingTOTP) return;
+
         (async () => {
             const response = await fetch("/api/user");
             const json = await response.json();
 
-            setUser(json.details);
+            setDetails(json.details);
         })();
-    }, []);
+    }, [updating, deleting, updatingTOTP]);
 
     const updateDetails = useCallback(async () => {
         setUpdating(true);
@@ -107,19 +110,25 @@ export default function Settings({ onClose }: Properties) {
             return;
         }
 
-        setUser(user);
-    }, [setError, setUser, user]);
+        setDetails(details);
+    }, [setError, setDetails, details]);
 
     const enableTOTP = useCallback(async () => {
+        setUpdatingTOTP(true);
+
         const response = await fetch("/api/totp", { method: "POST" });
         const json = await response.json();
+
+        setUpdatingTOTP(false);
 
         setQRCode(json.qr);
     }, [setQRCode]);
 
     const disableTOTP = useCallback(async () => {
+        setUpdatingTOTP(true);
         await fetch("/api/totp", { method: "POST" });
-    }, [setQRCode, setUser, user]);
+        setUpdatingTOTP(false);
+    }, [setQRCode, setDetails, details]);
 
     return (
         <Popup title="Account Settings" classes="w-120" onClose={onClose}>
@@ -139,8 +148,8 @@ export default function Settings({ onClose }: Properties) {
                 </div>
 
                 <div>
-                    <strong className="block font-bold">{user?.name}</strong>
-                    <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(user?.creation_date).toLocaleDateString()}</div>
+                    <strong className="block font-bold">{details?.name}</strong>
+                    <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
                 </div>
             </div>
 
@@ -154,12 +163,12 @@ export default function Settings({ onClose }: Properties) {
                 <div className="flex gap-3.5">
                     <div className="w-1/2">
                         <Label classes="block w-full">Name</Label>
-                        <Field classes="block w-full" defaultValue={user?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
+                        <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
                     </div>
 
                     <div className="w-1/2">
                         <Label classes="block w-full">Email Address</Label>
-                        <Field classes="block w-full" defaultValue={user?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
+                        <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                     </div>
                 </div>
             )}
@@ -178,7 +187,7 @@ export default function Settings({ onClose }: Properties) {
                                     <div className="text-sm font-medium text-slate-400 mt-1">Scan the QR code with your authenticator app (Google Authenticator, Authy, Duo,etc.)</div>
                                 </div>
                             </div>
-                        ) : user?.totp_enabled ? <Button classes="block w-fit" color="red" onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" onClick={enableTOTP}>Add TOTP</Button>}
+                        ) : details?.totp_enabled ? <Button classes="block w-fit" color="red" onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" onClick={enableTOTP}>Add TOTP</Button>}
                     </div>
 
                     <div className="flex gap-3.5 mt-3.5">
