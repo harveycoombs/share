@@ -56,7 +56,7 @@ export default function Home() {
 
         const request = new XMLHttpRequest();
 
-        request.open("POST", "/api/upload", true);
+        request.open("POST", "/api/uploads", true);
         request.responseType = "json";
 
         request.upload.addEventListener("progress", (e: ProgressEvent) => {

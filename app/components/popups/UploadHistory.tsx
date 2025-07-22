@@ -28,7 +28,7 @@ export default function UploadHistory({ onClose }: Properties) {
         setError("");
 
         (async () => {
-            const response = await fetch(`/api/history?search=${search}`);
+            const response = await fetch(`/api/uploads?search=${search}`);
             const json = await response.json();
 
             setUploads(json.history ?? []);
@@ -52,7 +52,7 @@ export default function UploadHistory({ onClose }: Properties) {
     async function deleteUploads() {
         setFeedback("");
 
-        const response = await fetch("/api/history", {
+        const response = await fetch("/api/uploads", {
             method: "DELETE",
             body: new URLSearchParams({ uploads: JSON.stringify(selectedUploads) })
         });
@@ -148,7 +148,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         setFeedback("");
         setDeleteLoading(true);
 
-        const response = await fetch("/api/history", {
+        const response = await fetch("/api/uploads", {
             method: "DELETE",
             body: new URLSearchParams({ uploadid: data.upload_id })
         });
@@ -173,7 +173,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         setEditLoading(true);
 
         (async () => {
-            const response = await fetch("/api/history", {
+            const response = await fetch("/api/uploads", {
                 method: "PATCH",
                 body: new URLSearchParams({
                     uploadid: data.upload_id,

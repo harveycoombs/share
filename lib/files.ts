@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import fs from "fs";
 import mime from "mime";
 
@@ -19,6 +19,15 @@ export async function uploadFile(source: string, destination: string): Promise<a
         Key: destination,  
         Body: stream,
         ContentType: mime.getType(source) ?? ""
+    }));
+
+    return result;
+}
+
+export async function deleteFile(key: string): Promise<any> {
+    const result = await client.send(new DeleteObjectCommand({
+        Bucket: process.env.R2_BUCKET ?? "",
+        Key: key
     }));
 
     return result;
