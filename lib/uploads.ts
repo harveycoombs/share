@@ -10,17 +10,17 @@ export async function getUploadHistory(userid: string, search: string): Promise<
     return result.rows;
 }
 
-export async function insertUploadHistory(userid: string, title: string, ip: string, files: number, size: number, password: string): Promise<string> {
+export async function insertUploadHistory(userid: string, title: string, ip: string, files: number, size: number, password: string, contentType: string): Promise<string> {
     const passwordHash = password?.length ? await generateHash(password) : "";
     
     const result = await pool.query(
         `WITH new_upload AS (
-            INSERT INTO share.uploads (upload_id, user_id, title, ip_address, files, size, upload_date, password)
-            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, NOW(), $6)
+            INSERT INTO share.uploads (upload_id, user_id, title, ip_address, files, size, upload_date, password, content_type)
+            VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, NOW(), $6, $7)
             RETURNING upload_id
         )
         SELECT upload_id FROM new_upload`,
-        [userid, title, ip, files, size, passwordHash]
+        [userid, title, ip, files, size, passwordHash, contentType]
     );
 
     return result.rows[0].upload_id;

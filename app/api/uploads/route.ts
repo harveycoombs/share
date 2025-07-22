@@ -24,9 +24,9 @@ export async function GET(request: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const search = new URL(request.url).searchParams.get("search") ?? "";
-    const history = await getUploadHistory(user.user_id, search);
+    const uploads = await getUploadHistory(user.user_id, search);
 
-    return NextResponse.json({ history }, { status: 200 });
+    return NextResponse.json({ uploads }, { status: 200 });
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -43,9 +43,11 @@ export async function POST(request: Request): Promise<NextResponse> {
     const user = await authenticate(token ?? "");
 
     const title = (files.length == 1) ? files[0].name : new Date().getTime().toString();
-    const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host");
+    const ip = (request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host")) ?? "";
+    const size = files.map(file => file.size).reduce((a, b) => a + b, 0);
+    const contentType = (files.length > 1) ? "application/zip" : (mime.getType(files[0].name) ?? "application/octet-stream");
 
-    const uploadid = await insertUploadHistory(user?.user_id, title, ip ?? "", files.length, files.map(file => file.size).reduce((a, b) => a + b, 0), password);
+    const uploadid = await insertUploadHistory(user?.user_id, title, ip, files.length, size, password, contentType);
 
     if (!uploadid?.length) return NextResponse.json({ error: "Unable to record upload in database." }, { status: 500 });
 

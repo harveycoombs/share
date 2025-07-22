@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faChain, faCheck, faCircleNotch, faCode, faDownload, faEye, faFile, faFilePdf, faFileZipper, faImage, faListCheck, faMusic, faPenToSquare, faTrashAlt, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faChain, faCheck, faCircleNotch, faCode, faFile, faFilePdf, faFileZipper, faImage, faListCheck, faMusic, faPenToSquare, faTrashAlt, faVideo, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
@@ -31,7 +31,7 @@ export default function UploadHistory({ onClose }: Properties) {
             const response = await fetch(`/api/uploads?search=${search}`);
             const json = await response.json();
 
-            setUploads(json.history ?? []);
+            setUploads(json.uploads ?? []);
             setLoading(false);
 
             if (response.ok) return;
@@ -95,10 +95,10 @@ export default function UploadHistory({ onClose }: Properties) {
     );
 }
 
-function getTypeIcon(type: string) {
-    if (type == "application/zip") return faFileZipper;
+function getTypeIcon(contentType: string) {
+    if (contentType == "application/zip") return faFileZipper;
 
-    switch (type.split("/")[0]) {
+    switch (contentType.split("/")[0]) {
         case "image":
             return faImage;
         case "video":
@@ -114,10 +114,10 @@ function getTypeIcon(type: string) {
     }
 }
 
-function getTypeColors(type: string) {
-    if (type == "application/zip") return { text: "text-pink-400", background: "from-pink-50/70 to-pink-100/70", border: "border-pink-300/75" };
+function getTypeColors(contentType: string) {
+    if (contentType == "application/zip") return { text: "text-pink-400", background: "from-pink-50/70 to-pink-100/70", border: "border-pink-300/75" };
 
-    switch (type.split("/")[0]) {
+    switch (contentType.split("/")[0]) {
         case "image":
             return { text: "text-emerald-600", icon: "text-emerald-500", background: "from-emerald-50/70 to-emerald-100/70", border: "border-emerald-300/75" };
         case "video":
@@ -144,12 +144,12 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 
     const uploadRef = useRef<HTMLDivElement>(null);
     
-    async function deleteUpload() {
+    const deleteUpload = useCallback(async () => {
         setFeedback("");
         setDeleteLoading(true);
 
         const response = await fetch("/api/uploads", {
-            method: "DELETE",
+            method: "DELETE", 
             body: new URLSearchParams({ uploadid: data.upload_id })
         });
 
@@ -164,7 +164,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 
         uploadRef?.current?.nextElementSibling?.remove();
         uploadRef?.current?.remove();
-    }
+    }, [data.upload_id, setFeedback, setDeleteLoading, uploadRef]);
 
     useEffect(() => {
         if (editing || editing == null) return;
@@ -201,9 +201,8 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         })();
     }, [editing]);
 
-    const type = data.types.length > 1 ? "application/zip" : data.types[0];
-
-    const colors = getTypeColors(type);
+    const type = useMemo(() => data.content_type ?? "application/octet-stream", [data.content_type]);
+    const colors = useMemo(() => getTypeColors(type), [type]);
 
     return (
         <AnimatePresence>
