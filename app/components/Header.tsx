@@ -29,7 +29,6 @@ export default function Header() {
         window.location.reload();
     }, []);
 
-    const userAvatar = useMemo(() => `/api/user/avatar?t=${new Date().getTime()}`, []);
     const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
     const logoClassList = useMemo(() => !user ? "max-sm:hidden" : "", [user]);
 
@@ -41,7 +40,7 @@ export default function Header() {
                 {user ? (
                     <nav className="relative">
                         <Image 
-                            src={userAvatar}
+                            src="/api/user/avatar"
                             alt={avatarLabel} 
                             title={avatarLabel}
                             width={32} 

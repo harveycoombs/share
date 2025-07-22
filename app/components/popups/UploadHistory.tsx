@@ -73,16 +73,16 @@ export default function UploadHistory({ onClose }: Properties) {
                 <div className="w-full flex items-center justify-between">
                     <Field type="text" placeholder="Search" onInput={(e: any) => setSearch(e.target.value)} />
 
-                    {
-                        selecting ? <div className="flex items-center gap-1">
+                    {selecting ? (
+                        <div className="flex items-center gap-1">
                             <div className="text-xs font-medium text-slate-400/75 mr-1.5 select-none">{selectedUploads.length} Selected</div>
                             <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
                             <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
-                        </div> : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>
-                    }
+                        </div>
+                    ) : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>}
                 </div>
 
-                {(feedback.length > 0) && <div className="p-1.5 leading-none text-xs font-medium text-center bg-red-400 text-white rounded-md mt-2">{feedback}</div>}
+                {feedback.length > 0 && <div className="p-1.5 leading-none text-xs font-medium text-center bg-red-400 text-white rounded-md mt-2">{feedback}</div>}
             </div>
 
             <div className="h-150">{
