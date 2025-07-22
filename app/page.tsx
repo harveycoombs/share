@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "motion/react";
 
 import Logo from "@/app/components/common/Logo";
@@ -183,7 +183,7 @@ export default function Home() {
     return (
         <main className={`${sessionExists ? "min-h-[calc(100vh-112px)]" : "min-h-[calc(100vh-119px)]"} grid place-items-center`} onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
             <motion.section
-                className="w-115 mx-auto select-none max-sm:w-full max-sm:px-4"
+                className="select-none max-sm:w-full max-sm:px-4"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
@@ -208,15 +208,21 @@ export default function Home() {
                     </div>
                 )}
 
-                {loading && (
-                    <div>
+                {loading && progress < 100 && (
+                    <div className="w-115 mx-auto max-sm:w-full">
                         <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
                         <progress className="block appearance-none w-full h-3 border-none duration-150" max={100} value={Math.round(progress)}></progress>
                     </div>
                 )}
 
+                {loading && progress >= 100 && (
+                    <div className="w-115 mx-auto text-center max-sm:w-full">
+                        <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
+                    </div>
+                )}
+
                 {!loading && !id.length && (
-                    <div>
+                    <div className="w-115 mx-auto max-sm:w-full">
                         <Notice color={error.length ? "red" : "indigo"}>
                             <FontAwesomeIcon icon={error.length ? faExclamationCircle : faInfoCircle} className={error.length ? "mr-1.5" : "mr-1.5 text-base translate-y-0.25"} />
                             {error.length ? error : "Drag or paste files onto this page to upload"}
