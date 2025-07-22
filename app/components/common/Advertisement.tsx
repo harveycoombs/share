@@ -4,17 +4,17 @@ import { useEffect } from "react";
 export default function Advertisement() {
     useEffect(() => {
         (window as any).atOptions = {
-            key : "8ebd9c6e4a6ef00a29109f43bd5d2c32",
+            key : "d1be5247516a9c83605c1b02ccd06b64",
             format : "iframe",
-            height : 60,
-            width : 468,
+            height : 50,
+            width : 320,
             params : {}
         };
 
         const script = document.createElement("script");
 
         script.type = "text/javascript";
-        script.src = "https://www.highperformanceformat.com/8ebd9c6e4a6ef00a29109f43bd5d2c32/invoke.js";
+        script.src = "https://www.highperformanceformat.com/d1be5247516a9c83605c1b02ccd06b64/invoke.js";
         script.async = true;
 
         const container = document.querySelector("#adv");
@@ -26,5 +26,5 @@ export default function Advertisement() {
         }
     }, []);
 
-    return <div id="adv" style={{ width: 468, height: 60 }}></div>;
+    return <div id="adv" style={{ width: 320, height: 50 }}></div>;
 }

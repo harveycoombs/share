@@ -199,7 +199,7 @@ export default function Home() {
                 
                 {id.length > 0 && (
                     <div>
-                        <strong className={`block w-fit mx-auto text-2xl font-semibold${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}uploads/${id}` : ""}</strong>
+                        <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}uploads/${id}` : ""}</strong>
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
