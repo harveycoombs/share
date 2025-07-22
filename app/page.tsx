@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
-import Script from "next/script";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 import { motion } from "motion/react";
@@ -11,6 +10,7 @@ import UploadHistory from "@/app/components/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
+import Advertisement from "@/app/components/common/Advertisement";
 import { formatTime } from "@/lib/utils";
 
 export default function Home() {
@@ -269,8 +269,7 @@ export default function Home() {
                         </div>
 
                         <div className="w-fit mx-auto mt-16">
-                            <Script type="text/javascript" src="/scripts/options.js"></Script>
-                            <Script type="text/javascript" src="//www.highperformanceformat.com/e764adcc0b5e6389c4608bb865f0b9c5/invoke.js"></Script>
+                            <Advertisement />
                         </div>
                     </div>
                 )}
