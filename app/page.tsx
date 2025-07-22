@@ -268,7 +268,7 @@ export default function Home() {
                             <div>750MB upload limit</div>
                         </div>
 
-                        <div className="w-fit mx-auto mt-16">
+                        <div id="advcontainer" className="w-fit mx-auto mt-16">
                             <Advertisement />
                         </div>
                     </div>

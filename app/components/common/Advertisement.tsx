@@ -17,12 +17,14 @@ export default function Advertisement() {
         script.src = "https://www.highperformanceformat.com/e764adcc0b5e6389c4608bb865f0b9c5/invoke.js";
         script.async = true;
 
-        document.body.appendChild(script);
+        const container = document.querySelector("#advcontainer");
+
+        container?.appendChild(script);
 
         return () => {
-            document.body.removeChild(script);
+            container?.removeChild(script);
         }
     }, []);
 
-    return <div id="advcont" style={{ width: 300, height: 250 }}></div>;
+    return <div id="adv" style={{ width: 300, height: 250 }}></div>;
 }
