@@ -38,6 +38,10 @@ export default function AuthenticationForm() {
                 if (!json.success) break;
                 window.location.href = "/";
                 break;
+            case 400:
+                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Invalid token</div>);
+                setWarningExists(true);
+                break;
             default:
                 setFeedback(<div className="text-sm font-medium text-red-500 text-center mt-5">Something went wrong</div>);
                 setErrorExists(true);
