@@ -10,7 +10,6 @@ import UploadHistory from "@/app/components/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
-import Advertisement from "@/app/components/common/Advertisement";
 import { formatTime } from "@/lib/utils";
 
 export default function Home() {
@@ -272,10 +271,6 @@ export default function Home() {
                             <div>Expires after 48 hours</div>
                             <div className="hidden mx-2 max-sm:block">&middot;</div>
                             <div>750MB upload limit</div>
-                        </div>
-
-                        <div id="advcontainer" className="w-fit mx-auto mt-16">
-                            <Advertisement />
                         </div>
                     </div>
                 )}
