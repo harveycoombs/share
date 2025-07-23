@@ -105,6 +105,11 @@ export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
     return result.rows[0]?.totp_secret ?? "";
 }
 
+export async function getUserTOTPState(userid: string): Promise<boolean> {
+    const result = await pool.query("SELECT totp_enabled FROM share.users WHERE user_id = $1", [userid]);
+    return result.rows[0]?.totp_enabled ?? false;
+}
+
 export async function updateUserTOTPSettings(userid: string, secret: string, enabled: boolean): Promise<boolean> {
     const result = await pool.query("UPDATE share.users SET totp_secret = $1, totp_enabled = $2 WHERE user_id = $3", [secret, enabled, userid]);
     return result.rowCount ? result.rowCount > 0 : false;

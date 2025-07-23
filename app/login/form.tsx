@@ -31,18 +31,17 @@ export default function LoginForm() {
             body: new URLSearchParams({ email, password })
         });
 
+        const json = await response.json();
+
         setLoading(false);
     
         switch (response.status) {
             case 200:
-                window.location.href = "/";
+                window.location.href = json.destination;
                 break;
             case 400:
                 setFeedback(<div className="text-sm font-medium text-amber-500 text-center mb-5">Invalid credentials</div>);
                 setWarningExistence(true);
-                break;
-            case 403:
-                window.location.href = `/verify?email=${encodeURIComponent(email)}`;
                 break;
             default:
                 setFeedback(<div className="text-sm font-medium text-red-500 text-center mb-5">Something went wrong</div>);

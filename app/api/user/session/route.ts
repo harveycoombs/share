@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { Resend } from "resend";
 
-import { checkUserVerification, getUserByEmailAddress, updateUserAuthCode, verifyCredentials } from "@/lib/users";
+import { checkUserVerification, getUserByEmailAddress, getUserTOTPState, updateUserAuthCode, verifyCredentials } from "@/lib/users";
 import { authenticate, createJWT } from "@/lib/jwt";
 import { generateCode } from "@/lib/utils";
 
@@ -54,12 +54,26 @@ export async function POST(request: Request): Promise<NextResponse> {
                 console.error(ex);
             }
 
-            return NextResponse.json({ error: "User is unverified." }, { status: 403 });
+            return NextResponse.json({ success: true, destination: `/verify?email=${encodeURIComponent(email)}` }, { status: 200 });
+        }
+
+        const totpEnabled = await getUserTOTPState(user.user_id);
+
+        if (totpEnabled) {
+            const response = NextResponse.json({ success: true, destination: "/authenticate" }, { status: 200 });
+            
+            response.cookies.set("email", email, {
+                httpOnly: true,
+                secure: true,
+                maxAge: 300
+            });
+
+            return response;
         }
 
         const credentials = createJWT(user);
     
-        const response = NextResponse.json({ success: true }, { status: 200 });
+        const response = NextResponse.json({ success: true, destination: "/" }, { status: 200 });
     
         response.cookies.set("token", credentials.token, {
             httpOnly: true,
