@@ -210,7 +210,14 @@ export default function Home() {
                 {loading && progress < 100 && (
                     <div className="w-115 mx-auto max-sm:w-full">
                         <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
-                        <progress className="block appearance-none w-full h-3 border-none duration-150" max={100} value={Math.round(progress)}></progress>
+                        <motion.progress 
+                            className="block appearance-none w-full h-3 border-none origin-center"
+                            max={100}
+                            value={Math.round(progress)}
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                        ></motion.progress>
                     </div>
                 )}
 
