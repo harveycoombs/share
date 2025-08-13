@@ -17,29 +17,15 @@ export function formatNumber(raw: number): string {
 }
 
 export function formatTime(ms: number): string {
-    const units = [
-        { value: 24 * 60 * 60 * 1000, label: "d" },
-        { value: 60 * 60 * 1000, label: "h" },
-        { value: 60 * 1000, label: "m" },
-        { value: 1000, label: "s" },
-        { value: 1, label: "ms" }
-    ];
-
-    let remaining = ms;
-    let result = "";
-    let started = false;
-
-    for (let { value, label } of units) {
-        const count = Math.floor(remaining / value);
-        remaining %= value;
-        
-        if (count > 0 || started) {
-            result += `${count}${label}`;
-
-            if (remaining > 0) result += " ";
-            started = true;
-        }
+    switch (true) {
+        case (ms >= 1000 && ms < 60000):
+            return `${Math.floor(ms / 1000)}s`;
+        case (ms >= 60000 && ms < 3600000):
+            return `${Math.floor(ms / 60000)}m`;
+        case (ms >= 3600000 && ms < 86400000):
+            return `${Math.floor(ms / 3600000)}h`;
+        case (ms >= 86400000):
+        default:
+            return `${ms}ms`;
     }
-
-    return result.trim().length ? result : "0s";
 }
