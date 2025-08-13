@@ -33,16 +33,17 @@ R2_SECRET_ACCESS_KEY=
 ### 2. Install Dependencies
 Run one of the following commands in the terminal to install all necessary dependencies:
 <br/>
-```npm i``` or ```npm install```
+```pnpm i``` or ```pnpm install```
+> Note: Make sure you have pnpm installed before installing dependencies. You can install pnpm globally by running: `npm install -g pnpm`
 
 ### 3. Run Share
 To run Share in development mode, run the following command:
 <br/>
-```npm run dev```
+```pnpm run dev```
 
 To build and deploy Share, run the following commands (in order):
 <br/>
-```npm run build``` and ```npm run start```
+```pnpm run build``` and ```pnpm run start```
 
 > Note: By default, Share in development mode is accessible via port 3000, while Share when deployed is accessible via port 3001.
 
