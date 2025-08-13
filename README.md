@@ -34,6 +34,7 @@ R2_SECRET_ACCESS_KEY=
 Run one of the following commands in the terminal to install all necessary dependencies:
 <br/>
 ```pnpm i``` or ```pnpm install```
+
 > Note: Make sure you have pnpm installed before installing dependencies. You can install pnpm globally by running: `npm install -g pnpm`
 
 ### 3. Run Share
