@@ -44,6 +44,6 @@ To build and deploy Share, run the following commands (in order):
 <br/>
 ```npm run build``` and ```npm run start```
 
-> Note: By default, Share in development mode is accessible via port 3000, while Share when deployed is accessible via port 82.
+> Note: By default, Share in development mode is accessible via port 3000, while Share when deployed is accessible via port 3001.
 
 Thank you for using Share! - [Harvey Coombs](https://harveycoombs.com/)
