@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.864.0",
-    "@fortawesome/fontawesome-svg-core": "^6.7.2",
-    "@fortawesome/free-brands-svg-icons": "^6.7.2",
-    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
+    "@fortawesome/free-brands-svg-icons": "^7.0.0",
+    "@fortawesome/free-regular-svg-icons": "^7.0.0",
+    "@fortawesome/free-solid-svg-icons": "^7.0.0",
     "@fortawesome/react-fontawesome": "^0.2.3",
     "@hcaptcha/react-hcaptcha": "^1.12.1",
     "adm-zip": "^0.5.16",
@@ -31,18 +32,17 @@
     "resend": "^4.8.0"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.11",
+    "@tailwindcss/postcss": "^4.1.12",
     "@types/adm-zip": "^0.5.7",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20.19.10",
+    "@types/node": "^20.19.11",
     "@types/pg": "^8.15.5",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
-    "@types/react-fontawesome": "^1.6.8",
     "postcss": "^8.5.6",
-    "tailwindcss": "^4.1.11",
+    "tailwindcss": "^4.1.12",
     "typescript": "^5.9.2",
-    "wrangler": "^4.28.1"
+    "wrangler": "^4.30.0"
   }
 }
