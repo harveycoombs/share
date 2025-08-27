@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { faDiscord, faGoogle, faMicrosoft } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
@@ -132,10 +132,8 @@ export default function RegistrationForm() {
                 <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center bg-white px-1.5">OR</span>
             </div>
             
-            <div className="grid grid-cols-3 gap-2">
-                <SSOButton icon={faGoogle} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign up with Google" />
+            <div className="grid grid-cols-1 gap-2">
                 <SSOButton icon={faDiscord} classes="hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-500 hover:border-indigo-300" title="Sign up with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fauth%2Fdiscord&scope=identify+email" />
-                <SSOButton icon={faMicrosoft} classes="hover:from-emerald-50 hover:to-emerald-100 hover:text-emerald-500 hover:border-emerald-300" title="Sign up with Microsoft" />
             </div>
         </div>
     );
