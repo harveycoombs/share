@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { faDiscord, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord } from "@fortawesome/free-brands-svg-icons";
 
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
@@ -68,7 +68,6 @@ export default function LoginForm() {
             </div>
             
             <div className="grid grid-cols-2 gap-2">
-                <SSOButton icon={faGoogle} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign in with Google" />
                 <SSOButton icon={faDiscord} classes="hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-500 hover:border-indigo-300" title="Sign in with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fauth%2Fdiscord&scope=identify+email" />
             </div>
         </form>
