@@ -1,42 +1,30 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import fs from "fs/promises";
 import mime from "mime";
+import { getFileMetadata, uploadFile } from "@/lib/files";
 import { authenticate } from "@/lib/jwt";
+import { cookies } from "next/headers";
 
 export async function GET(_: any) {
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
 
+    console.log(token, user);
+
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    let files: string[] = [];
+    const metadata = await getFileMetadata(`avatars/${user?.user_id}`);
 
-    let content: Buffer;
-    let contentType: string;
+    if (!metadata) {
+        const content = await fs.readFile("./public/images/default.jpg");
 
-    try {
-        files = await fs.readdir(`./uploads/avatars/${user.user_id}`);
-        files = files.filter(file => file != "." && file != "..");
-
-        if (files.length) {
-            content = await fs.readFile(`./uploads/avatars/${user.user_id}/${files[0]}`);
-            contentType = mime.getType(`./uploads/avatars/${user.user_id}/${files[0]}`) ?? "application/octet-stream";
-        } else {
-            content = await fs.readFile("./public/images/default.jpg");
-            contentType = "image/jpeg";
-        }
-    } catch {
-        content = await fs.readFile("./public/images/default.jpg");
-        contentType = "image/jpeg";
+        return new NextResponse(new Uint8Array(content), {
+            headers: {
+                "Content-Type": "image/jpeg"
+            }
+        });
     }
-
-    return new NextResponse(new Uint8Array(content), {
-        headers: {
-            "Content-Type": contentType
-        }
-    });
 }
 
 export async function POST(request: any) {
@@ -51,28 +39,14 @@ export async function POST(request: any) {
 
     if (!files || !(files[0] instanceof File)) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
 
-    try {
-        await fs.access(`./uploads/avatars/${user.user_id}`);
-    } catch {
-        await fs.mkdir(`./uploads/avatars/${user.user_id}`);
-    }
+    const file = files[0];
+    const buffer = Buffer.from(await file.arrayBuffer());
 
-    try {
-        const file = files[0];
-        const buffer = Buffer.from(await file.arrayBuffer());
-        
-        const existingFiles = await fs.readdir(`./uploads/avatars/${user.user_id}`);
+    await fs.writeFile(`./temp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
 
-        await Promise.all(
-            existingFiles
-                .filter(existing => existing != "." && existing != "..")
-                .map(existing => fs.unlink(`./uploads/avatars/${user.user_id}/${existing}`))
-        );
+    await uploadFile(`./temp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `avatars/${user.user_id}`);
 
-        await fs.writeFile(`./uploads/avatars/${user.user_id}/${file.name}`, new Uint8Array(buffer));
+    await fs.unlink(`./temp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
 
-        return NextResponse.json({ uploaded: true }, { status: 200 });
-    } catch (ex: any) {
-        return NextResponse.json({ error: ex.message }, { status: 500 });
-    }
+    return NextResponse.json({ uploaded: true }, { status: 200 });
 }
