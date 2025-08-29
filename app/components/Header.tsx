@@ -40,7 +40,7 @@ export default function Header() {
                 {user ? (
                     <nav className="relative">
                         <Image 
-                            src={`${user.avatar}?t=${new Date().getTime()}`}
+                            src={`${user.avatar || "/images/default.jpg"}?t=${new Date().getTime()}`}
                             alt={avatarLabel} 
                             title={avatarLabel}
                             width={32} 
