@@ -14,7 +14,7 @@ export async function GET(_: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const details = await getUserDetails(user.user_id);
-    return NextResponse.json({ details });
+    return NextResponse.json({ ...details, avatar: user.avatar });
 }
 
 export async function POST(request: Request): Promise<NextResponse> {

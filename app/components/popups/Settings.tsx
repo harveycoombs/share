@@ -8,8 +8,8 @@ import Label from "@/app/components/common/Label";
 import Button from "@/app/components/common/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
-import Notice from "../common/Notice";
-import QRCodeViewer from "./QRCodeViewer";
+import Notice from "@/app/components/common/Notice";
+import QRCodeViewer from "@/app/components/popups/QRCodeViewer";
 
 interface Properties {
     onClose: () => void;
@@ -47,7 +47,7 @@ export default function Settings({ onClose }: Properties) {
             const response = await fetch("/api/user");
             const json = await response.json();
 
-            setDetails(json.details);
+            setDetails(json);
         })();
     }, [updating, deleting, updatingTOTP]);
 
@@ -139,7 +139,7 @@ export default function Settings({ onClose }: Properties) {
 
             <div className="flex gap-3.5 items-center w-fit mx-auto my-4 select-none">
                 <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
-                    <Image src={`/api/user/avatar?t=${new Date().getTime()}`} alt="Share" width={58} height={58} className="object-cover aspect-square" draggable={false} />
+                    <Image src={details?.avatar || "/images/default.jpg"} alt={`${details?.name}'s avatar`} width={58} height={58} className="object-cover aspect-square" draggable={false} />
                     <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
                         <FontAwesomeIcon icon={faCamera} className="text-white" />
                     </div>
