@@ -53,8 +53,6 @@ export default async function RootLayout({
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
 
-    console.log(user);
-
     return (
         <html lang="en">
             <head>

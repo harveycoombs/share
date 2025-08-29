@@ -52,6 +52,7 @@ export async function GET(request: NextRequest) {
 
             if (existingid == user.id) {
                 const shareUser = await getUserByEmailAddress(user.email);
+
                 const credentials = createJWT(shareUser);
 
                 response.cookies.set("token", credentials.token, {

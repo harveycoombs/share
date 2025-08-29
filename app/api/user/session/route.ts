@@ -5,6 +5,7 @@ import { Resend } from "resend";
 import { checkUserVerification, getUserByEmailAddress, getUserTOTPState, updateUserAuthCode, verifyCredentials } from "@/lib/users";
 import { authenticate, createJWT } from "@/lib/jwt";
 import { generateCode } from "@/lib/utils";
+import { getFileMetadata } from "@/lib/files";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -29,7 +30,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const valid = await verifyCredentials(email, password);
         if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
     
-        const user = await getUserByEmailAddress(email);
+        let user = await getUserByEmailAddress(email);
     
         if (!user) return NextResponse.json({ success: false }, { status: 500 });
     
@@ -69,6 +70,13 @@ export async function POST(request: Request): Promise<NextResponse> {
             });
 
             return response;
+        }
+
+        try {
+            const metadata = await getFileMetadata(`avatars/${user.user_id}`);
+            user.avatar = metadata ? `https://uploads.share.surf/share/avatars/${user.user_id}` : "/images/default.jpg";
+        } catch {
+            user.avatar = "/images/default.jpg";
         }
 
         const credentials = createJWT(user);
