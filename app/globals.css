@@ -48,4 +48,14 @@
     progress:hover::-moz-progress-bar {
         opacity: 0.9;
     }
+
+    .pride {
+        background-image: linear-gradient(135deg, #e60000 8.33%, #ff8e00 8.33%, #ff8e00 16.67%, #ffef00 16.67%, #ffef00 25%, #00821b 25%, #00821b 33.33%, #004bff 33.33%, #004bff 41.67%, #780089 41.67%, #780089 50%, #e60000 50%, #e60000 58.33%, #ff8e00 58.33%, #ff8e00 66.67%, #ffef00 66.67%, #ffef00 75%, #00821b 75%, #00821b 83.33%, #004bff 83.33%, #004bff 91.67%, #780089 91.67%, #780089 100%);
+        background-size: 90px 90px;
+    }
+
+    .trans {
+        background-image: linear-gradient(135deg, #5bcffa 12.50%, #f5aab9 12.50%, #f5aab9 25%, #ffffff 25%, #ffffff 37.50%, #f5aab9 37.50%, #f5aab9 50%, #5bcffa 50%, #5bcffa 62.50%, #f5aab9 62.50%, #f5aab9 75%, #ffffff 75%, #ffffff 87.50%, #f5aab9 87.50%, #f5aab9 100%);
+        background-size: 90px 90px;
+    }
 }
