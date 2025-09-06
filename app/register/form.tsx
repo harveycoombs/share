@@ -97,13 +97,13 @@ export default function RegistrationForm() {
         <div onInput={() => { setFeedback(null); setErrorExistence(false); setWarningExistence(false); }}>
             {feedback}
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Name</Label>
-            <Field type="text" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setName(e.target.value)} />
+            <Field type="text" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setName(e.target.value.trim())} />
 
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Email Address</Label>
-            <Field type="email" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setEmail(e.target.value)} />
+            <Field type="email" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setEmail(e.target.value.trim())} />
 
             <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Password</Label>
-            <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
+            <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value.trim())} />
 
             <div className="mt-3">
                 <div className="text-[0.8rem] font-medium mb-1">{passwordStrength == 0 ? "Weak" : passwordStrength == 1 ? "Average" : "Strong"} password</div>

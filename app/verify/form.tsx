@@ -22,7 +22,9 @@ export default function VerificationForm({ email }: Properties) {
     const [warningExists, setWarningExists] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
-    async function verify() {
+    async function verify(e: any) {
+        e.preventDefault();
+
         if (!firstDigit?.length || !secondDigit?.length || !thirdDigit?.length || !fourthDigit?.length || !fifthDigit?.length || !sixthDigit?.length) {
             setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Please enter all digits</div>);
             return;
@@ -39,8 +41,11 @@ export default function VerificationForm({ email }: Properties) {
 
         const json = await response.json();
 
+        console.log(json, response.status);
+
         switch (response.status) {
             case 200:
+            case 201:
                 if (!json.success) break;
                 window.location.href = "/";
                 break;

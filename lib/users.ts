@@ -37,8 +37,11 @@ export async function verifyCredentials(emailAddress: string, password: string):
     return valid;
 }
 
-export async function emailExists(emailAddress: string, userid: string|null = null): Promise<boolean> {
-    const result = await pool.query("SELECT COUNT(*) AS total FROM share.users WHERE email_address = $1 AND user_id <> $2 AND deleted = false", [emailAddress, userid]);
+export async function emailExists(emailAddress: string, userid: string = ""): Promise<boolean> {
+    const filter = userid.length ? " AND user_id <> $2" : "";
+    const parameters = userid.length ? [emailAddress, userid] : [emailAddress];
+
+    const result = await pool.query(`SELECT COUNT(*) AS total FROM share.users WHERE email_address = $1 AND deleted = false${filter}`, parameters);
     return parseInt(result.rows[0].total) > 0;
 }
 
