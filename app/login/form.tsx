@@ -28,7 +28,7 @@ export default function LoginForm() {
     
         const response = await fetch("/api/user/session", {
             method: "POST",
-            body: new URLSearchParams({ email, password })
+            body: JSON.stringify({ email, password })
         });
 
         const json = await response.json();

@@ -59,7 +59,7 @@ export default function Settings({ onClose }: Properties) {
 
         const response = await fetch("/api/user", {
             method: "PATCH",
-            body: new URLSearchParams({ name, emailAddress, oldPassword, newPassword })
+            body: JSON.stringify({ name, emailAddress, oldPassword, newPassword })
         });
 
         const json = await response.json();

@@ -5,8 +5,8 @@ import { verifyUserAuthCode, updateUserAuthCode, updateUserVerification } from "
 export async function POST(request: Request): Promise<NextResponse> {
     const data = await request.json();
 
-    const email = data.get("email")?.toString() ?? "";
-    const code = parseInt(data.get("code")?.toString() ?? "0");
+    const email = data.email ?? "";
+    const code = parseInt(data.code || "0");
 
     const verified = await verifyUserAuthCode(email, code);
 

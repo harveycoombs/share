@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: new URLSearchParams({
+            body: JSON.stringify({
                 client_id: process.env.DISCORD_CLIENT_ID ?? "",
                 client_secret: process.env.DISCORD_CLIENT_SECRET ?? "",
                 grant_type: "authorization_code",

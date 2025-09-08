@@ -37,7 +37,7 @@ export default function RegistrationForm() {
 
         const response = await fetch("/api/user", {
             method: "POST",
-            body: new URLSearchParams({
+            body: JSON.stringify({
                 name,
                 email,
                 password,

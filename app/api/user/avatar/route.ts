@@ -11,7 +11,7 @@ export async function POST(request: any) {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const data = await request.json();
+    const data = await request.formData();
     const files: any[] = data.getAll("files");
 
     if (!files || !(files[0] instanceof File)) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });

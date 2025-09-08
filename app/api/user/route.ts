@@ -20,10 +20,10 @@ export async function GET(_: Request): Promise<NextResponse> {
 export async function POST(request: Request): Promise<NextResponse> {
     const data = await request.json();
     
-    const name = data.get("name")?.toString() ?? "";
-    const email = data.get("email")?.toString() ?? "";
-    const password = data.get("password")?.toString() ?? "";
-    const captchaToken = data.get("captchaToken")?.toString() ?? "";
+    const name = data.name ?? "";
+    const email = data.email ?? "";
+    const password = data.password ?? "";
+    const captchaToken = data.captchaToken ?? "";
 
     if (!name.length || !email.length || !password.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
@@ -74,11 +74,11 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
     const data = await request.json();
     
-    const name = data.get("name")?.toString() ?? "";
-    const email = data.get("emailAddress")?.toString() ?? "";
+    const name = data.name ?? "";
+    const email = data.emailAddress ?? "";
 
-    const oldPassword = data.get("oldpassword")?.toString() ?? "";
-    const newPassword = data.get("newpassword")?.toString() ?? "";
+    const oldPassword = data.oldpassword ?? "";
+    const newPassword = data.newpassword ?? "";
 
     if (oldPassword?.length && newPassword?.length) {
         const validExistingPassword = await verifyCredentials(user.email_address, oldPassword);

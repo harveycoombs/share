@@ -21,8 +21,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     try {
         const data = await request.json();
 
-        const email = data.get("email")?.toString();
-        const password = data.get("password")?.toString();
+        const email = data.email ?? "";
+        const password = data.password ?? "";
     
         if (!email?.length) return NextResponse.json({ error: "Email address was not provided." }, { status: 400 });
         if (!password?.length) return NextResponse.json({ error: "Password was not provided." }, { status: 400 });

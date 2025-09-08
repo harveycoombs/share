@@ -36,7 +36,7 @@ export default function IssueForm({ onClose }: Properties) {
 
         const response = await fetch("/api/issue", {
             method: "POST",
-            body: new URLSearchParams({ name, email, description, captchaToken })
+            body: JSON.stringify({ name, email, description, captchaToken })
         });
 
         const json = await response.json();

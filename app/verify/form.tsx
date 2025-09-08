@@ -36,7 +36,7 @@ export default function VerificationForm({ email }: Properties) {
 
         const response = await fetch("/api/user/verify", {
             method: "POST",
-            body: new URLSearchParams({ email, code })
+            body: JSON.stringify({ email, code })
         });
 
         const json = await response.json();
