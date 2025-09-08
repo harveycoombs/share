@@ -5,12 +5,12 @@ import { Resend } from "resend";
 import { authenticate } from "@/lib/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.formData();
+    const data = await request.json();
 
-    const description = data.get("description")?.toString() ?? "";
-    const name = data.get("name")?.toString() ?? "";
-    const emailAddress = data.get("email")?.toString() ?? "";
-    const captchaToken = data.get("captchaToken")?.toString() ?? "";
+    const description = data.description ?? "";
+    const name = data.name ?? "";
+    const emailAddress = data.email ?? "";
+    const captchaToken = data.captchaToken ?? "";
 
     if (!description.length || !name.length || !emailAddress.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 

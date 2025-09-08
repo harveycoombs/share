@@ -18,7 +18,7 @@ export async function GET(_: Request): Promise<NextResponse> {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.formData();
+    const data = await request.json();
     
     const name = data.get("name")?.toString() ?? "";
     const email = data.get("email")?.toString() ?? "";
@@ -72,7 +72,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const data = await request.formData();
+    const data = await request.json();
     
     const name = data.get("name")?.toString() ?? "";
     const email = data.get("emailAddress")?.toString() ?? "";

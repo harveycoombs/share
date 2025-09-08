@@ -94,9 +94,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {
-    const data = await request.formData();
-    const id =data.get("uploadid")?.toString() ?? "0";
-    const title = data.get("name")?.toString() ?? "";
+    const data = await request.json();
+    const id = data.uploadid || "0";
+    const title = data.name ?? "";
 
     if (!id.length) return NextResponse.json({ error: "Invalid upload ID." }, { status: 400 });
     if (!title) return NextResponse.json({ error: "Invalid upload name." }, { status: 400 });
@@ -118,9 +118,9 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const data = await request.formData();
-    const id = data.get("uploadid")?.toString() ?? "0";
-    const uploadids = JSON.parse(data.get("uploads")?.toString() ?? "[]");
+    const data = await request.json();
+    const id = data.uploadid || "0";
+    const uploadids = JSON.parse(data.uploads || "[]");
 
     let success = false;
 

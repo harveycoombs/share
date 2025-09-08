@@ -19,7 +19,7 @@ export async function GET(_: Request): Promise<NextResponse> {
 
 export async function POST(request: Request): Promise<NextResponse> {
     try {
-        const data = await request.formData();
+        const data = await request.json();
 
         const email = data.get("email")?.toString();
         const password = data.get("password")?.toString();
