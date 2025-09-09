@@ -126,8 +126,9 @@ export default function Settings({ onClose }: Properties) {
 
     const disableTOTP = useCallback(async () => {
         setUpdatingTOTP(true);
-        await fetch("/api/totp", { method: "POST" });
+        await fetch("/api/totp", { method: "DELETE" });
         setUpdatingTOTP(false);
+        setQRCode("");
     }, [setQRCode, setDetails, details]);
 
     return (
