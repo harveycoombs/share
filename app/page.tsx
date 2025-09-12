@@ -264,7 +264,9 @@ export default function Home() {
                                             onChange={(e: any) => setPassword(e.target.value)}
                                         />
 
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}><FontAwesomeIcon icon={faXmark} /></div> 
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}>
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </div> 
                                     </div>
                                 ) : (
                                     <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => sessionExists ? setPasswordFieldVisibility(sessionExists) : setAccountPromptVisibility(true)}>
