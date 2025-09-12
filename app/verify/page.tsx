@@ -13,7 +13,7 @@ export default function Verify() {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        let parameter = JSON.stringify(window.location.search)?.get("email") ?? "";
+        let parameter = new URL(window.location.search).searchParams.get("email") ?? "";
 
         if (parameter.length) {
             window.history.replaceState({}, "", "/verify");
