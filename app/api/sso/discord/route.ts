@@ -15,13 +15,13 @@ export async function GET(request: NextRequest) {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: JSON.stringify({
+            body: new URLSearchParams({
                 client_id: process.env.DISCORD_CLIENT_ID ?? "",
                 client_secret: process.env.DISCORD_CLIENT_SECRET ?? "",
                 grant_type: "authorization_code",
                 code,
                 redirect_uri: "https://share.surf/api/sso/discord",
-                scope: "identify"
+                scope: "identify email"
             })
         });
 
