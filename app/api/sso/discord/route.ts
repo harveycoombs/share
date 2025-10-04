@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
+import fs from "fs/promises";
 
 import { createUserFromDiscord, emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
+import { uploadFile } from "@/lib/files";
 
 export async function GET(request: NextRequest) {
     try {
@@ -64,8 +66,21 @@ export async function GET(request: NextRequest) {
         } else {
             const newShareUser = await createUserFromDiscord(user.username, user.email, user.id);
 
-            if (newShareUser) {
-                const credentials = createJWT(newShareUser);
+            if (newShareUser && user?.id?.length) {
+                const createdUser = await getUserByEmailAddress(user.email);
+
+                if (user.avatar?.length) {
+                    const avatarResponse = await fetch(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
+                    const avatarBuffer = await avatarResponse.arrayBuffer();
+
+                    await fs.writeFile(`./temp/avatars/${user.avatar}.png`, new Uint8Array(avatarBuffer));
+                    await uploadFile(`./temp/avatars/${user.avatar}.png`, `avatars/${createdUser.user_id}`);
+                    await fs.unlink(`./temp/avatars/${user.avatar}.png`);
+                }
+
+                const avatar = user.avatar?.length ? `https://uploads.share.surf/share/avatars/${createdUser.user_id}` : "/images/default.jpg";
+
+                const credentials = createJWT({ ...createdUser, avatar });
 
                 response.cookies.set("token", credentials.token, {
                     httpOnly: true,
