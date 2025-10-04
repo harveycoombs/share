@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
             })
         });
 
-        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details: tokenResponse }, { status: 400 });
+        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details: (await tokenResponse.text()) }, { status: 400 });
     
         const details: any = await tokenResponse.json();
     
