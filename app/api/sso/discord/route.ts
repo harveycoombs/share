@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
             body: JSON.stringify({
                 client_id: process.env.DISCORD_CLIENT_ID ?? "",
                 client_secret: process.env.DISCORD_CLIENT_SECRET ?? "",
-                grant_type: "authorization_code",
+                grant_type: "client_credentials",
                 code,
                 redirect_uri: "https://share.surf/api/sso/discord",
                 scope: "identify email"
