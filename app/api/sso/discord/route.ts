@@ -27,7 +27,10 @@ export async function GET(request: NextRequest) {
 
         const details: any = await tokenResponse.json();
 
-        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details }, { status: 400 });
+        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details, credentials: {
+            client_id: process.env.DISCORD_CLIENT_ID ?? "",
+            client_secret: process.env.DISCORD_CLIENT_SECRET ?? ""
+        } }, { status: 400 });
 
         if (!details?.access_token?.length) return NextResponse.json({ error: "Token not found.", details }, { status: 400 });
     
