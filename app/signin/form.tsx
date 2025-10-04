@@ -24,6 +24,18 @@ export default function LoginForm() {
         setSuccess("");
         setError("");
         setWarning("");
+
+        if (!email?.length) {
+            setWarning("Missing email address");
+            setLoading(false);
+            return;
+        }
+
+        if (!password?.length) {
+            setWarning("Missing password");
+            setLoading(false);
+            return;
+        }
     
         const response = await fetch("/api/user/session", {
             method: "POST",
