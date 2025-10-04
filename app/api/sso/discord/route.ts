@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
     
         const details: any = await tokenResponse.json();
     
-        if (!details?.access_token?.length) return NextResponse.json({ error: "Unable to exchange code for access token.", details: details }, { status: 400 });
+        if (!details?.access_token?.length) return NextResponse.json({ error: "Token not found.", details }, { status: 400 });
     
         const userResponse = await fetch("https://discord.com/api/users/@me", {
             headers: {
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
 
         const user: any = await userResponse.json();
     
-        if (!user?.id?.length) return NextResponse.json({ error: "Unable to fetch user details.", details: user }, { status: 400 });
+        if (!user?.id?.length) return NextResponse.json({ error: "User not found.", details: user }, { status: 400 });
     
         const response = NextResponse.redirect("https://share.surf/");
 
