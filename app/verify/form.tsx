@@ -41,8 +41,6 @@ export default function VerificationForm({ email }: Properties) {
 
         const json = await response.json();
 
-        console.log(json, response.status);
-
         switch (response.status) {
             case 200:
             case 201:
