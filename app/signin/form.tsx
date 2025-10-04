@@ -59,8 +59,12 @@ export default function LoginForm() {
             <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
             <Button classes="block w-full mt-2.5" loading={loading}>Continue</Button>
 
-            <div className="text-sm font-medium text-center text-slate-400 select-none my-5">
-                Don&apos;t have an account?<Link href="/register" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign Up</Link>
+            <div className="text-sm font-medium text-center text-slate-400 select-none mt-5">
+                Don&apos;t have an account?<Link href="/signup" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign Up</Link>
+            </div>
+
+            <div className="text-sm font-medium text-center text-slate-400 select-none mt-2.5">
+                Cant&apos;t sign in?<Link href="/recover" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Recover Account</Link>
             </div>
 
             <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">

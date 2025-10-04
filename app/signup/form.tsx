@@ -125,7 +125,7 @@ export default function RegistrationForm() {
             <Button classes="block w-full" loading={loading} disabled={errorExists || warningExists || !captchaToken?.length} onClick={register}>Continue</Button>
             
             <div className="text-sm font-medium text-center text-slate-400 select-none my-5">
-                Already have an account?<Link href="/login" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign In</Link>
+                Already have an account?<Link href="/signin" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign In</Link>
             </div>
 
             <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">

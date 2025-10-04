@@ -15,11 +15,11 @@ export default function Header() {
     const path = usePathname();
     const user = useContext(UserContext);
 
-    if (user && (path == "/login" || path == "/register")) {
+    if (user && (path == "/signin" || path == "/signup")) {
         window.location.href = "/";
     }
 
-    if (path == "/login" || path == "/register" || path.startsWith("/verify")) return null;
+    if (path == "/signin" || path == "/signup" || path.startsWith("/verify")) return null;
 
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
@@ -60,8 +60,8 @@ export default function Header() {
                     </nav>
                 ) : (
                     <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
-                        <Button url="/login" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
-                        <Button url="/register" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
+                        <Button url="/signin" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
+                        <Button url="/signup" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
                     </nav>
                 )}
             </header>
