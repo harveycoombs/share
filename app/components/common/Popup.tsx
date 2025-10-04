@@ -25,7 +25,7 @@ export default function Popup({ title, onClose, children, classes, ...rest }: Pr
                     <strong className="text-sm font-medium text-slate-400/60 select-none">{title}</strong>
 
                     <motion.div 
-                        className="text-slate-400/60 cursor-pointer duration-100 hover:text-red-500 active:text-red-600"
+                        className="text-slate-400/60 text-sm cursor-pointer duration-100 hover:text-red-500 active:text-red-600"
                         onClick={onClose}
                         whileHover={{ 
                             scale: 1.1,

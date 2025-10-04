@@ -11,20 +11,19 @@ import SSOButton from "@/app/components/common/SSOButton";
 export default function LoginForm() {
     const [email, setEmailAddress] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    
-    const [feedback, setFeedback] = useState<React.JSX.Element|null>(null);
+
     const [loading, setLoading] = useState<boolean>(false);
-    const [errorExists, setErrorExistence] = useState<boolean>(false);
-    const [warningExists, setWarningExistence] = useState<boolean>(false);
+    const [success, setSuccess] = useState<string>("");
+    const [error, setError] = useState<string>("");
+    const [warning, setWarning] = useState<string>("");
     
     async function login(e: any) {
         e.preventDefault();
 
         setLoading(true);
-
-        setFeedback(null);
-        setErrorExistence(false);
-        setWarningExistence(false);
+        setSuccess("");
+        setError("");
+        setWarning("");
     
         const response = await fetch("/api/user/session", {
             method: "POST",
@@ -37,34 +36,39 @@ export default function LoginForm() {
     
         switch (response.status) {
             case 200:
+            case 201:
+                setSuccess("Success! You will be redirected shortly");
                 window.location.href = json.destination;
                 break;
             case 400:
-                setFeedback(<div className="text-sm font-medium text-amber-500 text-center mb-5">Invalid credentials</div>);
-                setWarningExistence(true);
+            case 401:
+            case 403:
+                setWarning(json.error);
                 break;
             default:
-                setFeedback(<div className="text-sm font-medium text-red-500 text-center mb-5">Something went wrong</div>);
-                setErrorExistence(true);
+                setError(json.error);
                 break;
         }
     }
 
     return (
         <form onSubmit={login}>
-            {feedback}
-            <Label classes="block" error={errorExists} warning={warningExists}>Email Address</Label>
-            <Field type="email" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setEmailAddress(e.target.value)} />
-            <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Password</Label>
-            <Field type="password" classes="block w-full" error={errorExists} warning={warningExists} onInput={(e: any) => setPassword(e.target.value)} />
+            {success.length > 0 && <div className="text-sm font-medium text-emerald-500 text-center mb-5">{success}</div>}
+            {warning.length > 0 && <div className="text-sm font-medium text-amber-500 text-center mb-5">{warning}</div>}
+            {error.length > 0 && <div className="text-sm font-medium text-red-500 text-center mb-5">{error}</div>}
+
+            <Label classes="block" error={error.length > 0} warning={warning.length > 0}>Email Address</Label>
+            <Field type="email" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setEmailAddress(e.target.value)} />
+            <Label classes="block mt-2.5" error={error.length > 0} warning={warning.length > 0}>Password</Label>
+            <Field type="password" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setPassword(e.target.value)} />
             <Button classes="block w-full mt-2.5" loading={loading}>Continue</Button>
 
-            <div className="text-sm font-medium text-center text-slate-400 select-none mt-5">
+            <div className="text-sm text-center text-slate-400 select-none mt-5">
                 Don&apos;t have an account?<Link href="/signup" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign Up</Link>
             </div>
 
-            <div className="text-sm font-medium text-center text-slate-400 select-none mt-2.5">
-                Cant&apos;t sign in?<Link href="/recover" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Recover Account</Link>
+            <div className="text-sm text-center text-slate-400 select-none mt-2.5">
+                Can&apos;t sign in?<Link href="/recover" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Recover Account</Link>
             </div>
 
             <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
