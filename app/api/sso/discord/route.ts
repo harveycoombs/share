@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     try {
         const code = new URL(request.url).searchParams.get("code") ?? "";
 
-        if (!code) return NextResponse.json({ error: "Missing code" }, { status: 400 });
+        if (!code?.length) return NextResponse.json({ error: "Missing code" }, { status: 400 });
     
         const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
             method: "POST",
@@ -25,10 +25,10 @@ export async function GET(request: NextRequest) {
             })
         });
 
-        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details: (await tokenResponse.text()) }, { status: 400 });
-    
         const details: any = await tokenResponse.json();
-    
+
+        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details }, { status: 400 });
+
         if (!details?.access_token?.length) return NextResponse.json({ error: "Token not found.", details }, { status: 400 });
     
         const userResponse = await fetch("https://discord.com/api/users/@me", {
@@ -36,11 +36,11 @@ export async function GET(request: NextRequest) {
                 Authorization: `Bearer ${details.access_token}`,
             }
         });
-    
-        if (!userResponse.ok) return NextResponse.json({ error: "Unable to fetch user details.", details: userResponse }, { status: 400 });
 
         const user: any = await userResponse.json();
     
+        if (!userResponse.ok) return NextResponse.json({ error: "Unable to fetch user details.", details: user }, { status: 400 });
+
         if (!user?.id?.length) return NextResponse.json({ error: "User not found.", details: user }, { status: 400 });
     
         const response = NextResponse.redirect("https://share.surf/");
