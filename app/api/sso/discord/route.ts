@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
                 grant_type: "authorization_code",
                 code,
                 redirect_uri: "https://share.surf/api/sso/discord",
-                scope: "identify"
+                scope: "identify email"
             })
         });
 
