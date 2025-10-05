@@ -73,6 +73,12 @@ export async function updateUserPassword(userid: string, password: string): Prom
     return result.rowCount ? result.rowCount > 0 : false;
 }
 
+export async function updateUserPasswordByEmail(emailAddress: string, password: string): Promise<boolean> {
+    const passwordHash = await generateHash(password);
+    const result = await pool.query("UPDATE share.users SET password = $1 WHERE email_address = $2", [passwordHash, emailAddress]);
+    return result.rowCount ? result.rowCount > 0 : false;
+}
+
 export async function updateUserAuthCode(emailAddress: string, code: number|null): Promise<boolean> {
     const result = await pool.query("UPDATE share.users SET auth_code = $1 WHERE email_address = $2", [code, emailAddress]);
     return result.rowCount ? result.rowCount > 0 : false;

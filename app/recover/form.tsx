@@ -33,10 +33,17 @@ export default function RecoveryForm() {
             body: JSON.stringify({ email, captchaToken })
         });
 
+        setLoading(false);
+
+        if (!response.ok) {
+            const json = await response.json();
+            setError(json.error);
+        }
+
         setSent(response.ok);
     }
 
-    async function verify(e: any) {
+    async function resetPassword(e: any) {
         e.preventDefault();
 
         if (!firstDigit?.length || !secondDigit?.length || !thirdDigit?.length || !fourthDigit?.length || !fifthDigit?.length || !sixthDigit?.length) {
@@ -48,9 +55,9 @@ export default function RecoveryForm() {
 
         setLoading(true);
 
-        const response = await fetch("/api/user/verify", {
+        const response = await fetch("/api/user/password/reset", {
             method: "POST",
-            body: JSON.stringify({ email, code })
+            body: JSON.stringify({ email, password, code })
         });
 
         setLoading(false);
@@ -61,6 +68,10 @@ export default function RecoveryForm() {
         }
 
         setVerified(response.ok);
+
+        if (response.ok) {
+            window.location.href = "/signin";
+        }
     }
 
     function handleDigitInput(e: any, index: number) {
@@ -132,14 +143,22 @@ export default function RecoveryForm() {
 
     return (
         <form>
-            <Label classes="block mt-2.5" error={error.length > 0} warning={warning.length > 0}>Email Address</Label>
-            <Field type="email" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setEmail(e.target.value.trim())} />
+            {warning.length > 0 && <div className="text-sm font-medium text-amber-500 text-center mb-5">{warning}</div>}
+            {error.length > 0 && <div className="text-sm font-medium text-red-500 text-center mb-5">{error}</div>}
+            {sent && verified && <div className="text-sm font-medium text-emerald-500 text-center mb-5">Success! You will be redirected shortly</div>}
+
+            {!sent && (
+                <>
+                    <Label classes="block mt-2.5" error={error.length > 0} warning={warning.length > 0}>Email Address</Label>
+                    <Field type="email" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setEmail(e.target.value.trim())} />
+                </>
+            )}
 
             {sent && !verified && (
                 <>
                     <Label classes="block" error={error.length > 0} warning={warning.length > 0}>Verification Code</Label>
 
-                    <div className="w-full mt-2.5 grid grid-cols-6 gap-2">
+                    <div className="w-full mt-2.5 grid grid-cols-6 gap-2 mb-2.5">
                         <Field error={error.length > 0} warning={warning.length > 0} classes="text-center" defaultValue={firstDigit} onInput={(e: any) => handleDigitInput(e, 0)} onPaste={handlePaste} />
                         <Field error={error.length > 0} warning={warning.length > 0} classes="text-center" defaultValue={secondDigit} onInput={(e: any) => handleDigitInput(e, 1)} onPaste={handlePaste} />
                         <Field error={error.length > 0} warning={warning.length > 0} classes="text-center" defaultValue={thirdDigit} onInput={(e: any) => handleDigitInput(e, 2)} onPaste={handlePaste} />
@@ -147,13 +166,9 @@ export default function RecoveryForm() {
                         <Field error={error.length > 0} warning={warning.length > 0} classes="text-center" defaultValue={fifthDigit} onInput={(e: any) => handleDigitInput(e, 4)} onPaste={handlePaste} />
                         <Field error={error.length > 0} warning={warning.length > 0} classes="text-center" defaultValue={sixthDigit} onInput={(e: any) => handleDigitInput(e, 5)} onPaste={handlePaste} />
                     </div>
-                </>
-            )}
 
-            {verified && (
-                <>
-                    <Label classes="block" error={error.length > 0} warning={warning.length > 0}>Password</Label>
-                    <Field type="password" classes="block w-full mt-2.5" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setPassword(e.target.value.trim())} />
+                    <Label classes="block" error={error.length > 0} warning={warning.length > 0}>New Password</Label>
+                    <Field type="password" classes="block w-full my-2.5" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setPassword(e.target.value.trim())} />
                 </>
             )}
 
@@ -166,7 +181,7 @@ export default function RecoveryForm() {
                 </div>
             )}
 
-            <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length || !email.length} onClick={sent ? verify : sendEmail}>Send Code</Button>
+            <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length || !email.length} onClick={sent ? resetPassword : sendEmail}>Send Code</Button>
         </form>
     );
 }
