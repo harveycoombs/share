@@ -32,7 +32,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             from: "noreply@share.surf",
             to: email,
             subject: "Share.surf - Reset Password",
-            html: `<b>${code}</b>`
+            html: `<p>Hello, You can reset your password by entering the following code: <b>${code}</b></p>`
         });
 
         return NextResponse.json({ success: result.data ? true : false });
