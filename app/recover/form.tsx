@@ -25,8 +25,18 @@ export default function RecoveryForm() {
     const [sent, setSent] = useState<boolean>(false);
     const [verified, setVerified] = useState<boolean>(false);
     
-    async function sendEmail() {
+    async function sendEmail(e: any) {
+        e.preventDefault();
+
         setLoading(true);
+        setError("");
+        setWarning("");
+
+        if (!email?.length) {
+            setWarning("Missing email address");
+            setLoading(false);
+            return;
+        }
 
         const response = await fetch("/api/user/recover", {
             method: "POST",
@@ -142,7 +152,7 @@ export default function RecoveryForm() {
     }
 
     return (
-        <form>
+        <form onSubmit={sent ? resetPassword : sendEmail}>
             {warning.length > 0 && <div className="text-sm font-medium text-amber-500 text-center mb-5">{warning}</div>}
             {error.length > 0 && <div className="text-sm font-medium text-red-500 text-center mb-5">{error}</div>}
             {sent && verified && <div className="text-sm font-medium text-emerald-500 text-center mb-5">Success! You will be redirected shortly</div>}
@@ -181,7 +191,7 @@ export default function RecoveryForm() {
                 </div>
             )}
 
-            <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length || !email.length} onClick={sent ? resetPassword : sendEmail}>Send Code</Button>
+            <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length || !email.length}>{sent ? "Reset Password" : "Send Code"}</Button>
         </form>
     );
 }
