@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useContext, useMemo } from "react";
+import { useState, useEffect, useCallback, useContext, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -32,6 +32,16 @@ export default function Header() {
     const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
     const logoClassList = useMemo(() => !user ? "max-sm:hidden" : "", [user]);
 
+    useEffect(() => {
+        document.addEventListener("click", closeMenu);
+        return () => document.removeEventListener("click", closeMenu);
+    }, []);
+
+    const closeMenu = useCallback((e: any) => {
+        if (e.target.matches("#menu, #menu *, #menu_button, #menu_button *")) return;
+        setMenuVisibility(false);
+    }, []);
+    
     return (
         <>
             <header className="p-3.5 flex justify-between select-none">
@@ -40,7 +50,7 @@ export default function Header() {
                 {user ? (
                     <nav className="relative">
                         <Image 
-                            src={`${user.avatar || "/images/default.jpg"}?t=${new Date().getTime()}`}
+                            src={user.avatar || "/images/default.jpg"}
                             alt={avatarLabel} 
                             title={avatarLabel}
                             width={32} 
@@ -49,14 +59,16 @@ export default function Header() {
                             draggable={false}
                         />
 
-                        <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                        <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
                             <FontAwesomeIcon icon={faEllipsis} />
                         </div>
 
-                        <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38`}>
-                            <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
-                            <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
-                        </div>
+                        {menuIsVisible && (
+                            <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
+                                <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
+                                <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
+                            </div>
+                        )}
                     </nav>
                 ) : (
                     <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">

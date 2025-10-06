@@ -13,7 +13,7 @@ export async function getUserByEmailAddress(emailAddress: string): Promise<any> 
 }
 
 export async function getUserDetails(userid: string): Promise<any> {
-    const result = await pool.query("SELECT user_id, name, email_address, creation_date, totp_enabled, totp_secret FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
+    const result = await pool.query("SELECT user_id, name, email_address, creation_date, totp_secret, discord_id FROM share.users WHERE user_id = $1 AND deleted = false", [userid]);
     return result.rows[0];
 }
 
@@ -110,16 +110,11 @@ export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<s
 }
 
 export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
-    const result = await pool.query("SELECT totp_secret FROM share.users WHERE email_address = $1 AND totp_enabled = true AND deleted = false", [emailAddress]);
+    const result = await pool.query("SELECT totp_secret FROM share.users WHERE email_address = $1 AND deleted = false", [emailAddress]);
     return result.rows[0]?.totp_secret ?? "";
 }
 
-export async function getUserTOTPState(userid: string): Promise<boolean> {
-    const result = await pool.query("SELECT totp_enabled FROM share.users WHERE user_id = $1", [userid]);
-    return result.rows[0]?.totp_enabled ?? false;
-}
-
-export async function updateUserTOTPSettings(userid: string, secret: string, enabled: boolean): Promise<boolean> {
-    const result = await pool.query("UPDATE share.users SET totp_secret = $1, totp_enabled = $2 WHERE user_id = $3", [secret, enabled, userid]);
+export async function updateUserTOTPSettings(userid: string, secret: string): Promise<boolean> {
+    const result = await pool.query("UPDATE share.users SET totp_secret = $1 WHERE user_id = $2", [secret, userid]);
     return result.rowCount ? result.rowCount > 0 : false;
 }

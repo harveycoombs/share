@@ -46,7 +46,7 @@ export async function POST(_: Request): Promise<NextResponse> {
     const otpauth = authenticator.keyuri(user.email_address, "Share.surf", secret);
     const qr = await qrcode.toDataURL(otpauth);
 
-    await updateUserTOTPSettings(user.user_id, secret, true);
+    await updateUserTOTPSettings(user.user_id, secret);
 
     return NextResponse.json({ qr });
 }
@@ -58,7 +58,7 @@ export async function DELETE(_: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const disabled = await updateUserTOTPSettings(user.user_id, "", false);
+    const disabled = await updateUserTOTPSettings(user.user_id, "");
 
     return NextResponse.json({ disabled });
 }

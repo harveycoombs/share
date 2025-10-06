@@ -161,7 +161,7 @@ export default function Settings({ onClose }: Properties) {
             </div>
 
             {section == "details" && (
-                <div className="flex gap-3.5">
+                <div className="min-h-40 flex gap-3.5">
                     <div className="w-1/2">
                         <Label classes="block w-full">Name</Label>
                         <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
@@ -175,8 +175,20 @@ export default function Settings({ onClose }: Properties) {
             )}
 
             {section == "security" && (
-                <>
-                    <div>
+                <div className="min-h-40">
+                    <div className="flex gap-3.5">
+                        <div className="w-1/2">
+                            <Label classes="block w-full">Old Password</Label>
+                            <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
+                        </div>
+
+                        <div className="w-1/2">
+                            <Label classes="block w-full">New Password</Label>
+                            <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
+                        </div>
+                    </div>
+
+                    <div className="mt-3.5">
                         <Label classes="block w-full">2-Factor Authentication</Label>
 
                         {QRCode.length ? (
@@ -188,21 +200,14 @@ export default function Settings({ onClose }: Properties) {
                                     <div className="text-sm font-medium text-slate-400 mt-1">Scan the QR code with your authenticator app (Google Authenticator, Authy, Duo,etc.)</div>
                                 </div>
                             </div>
-                        ) : details?.totp_enabled ? <Button classes="block w-fit" color="red" onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" onClick={enableTOTP}>Add TOTP</Button>}
+                        ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                     </div>
+                </div>
+            )}
 
-                    <div className="flex gap-3.5 mt-3.5">
-                        <div className="w-1/2">
-                            <Label classes="block w-full">Old Password</Label>
-                            <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
-                        </div>
-
-                        <div className="w-1/2">
-                            <Label classes="block w-full">New Password</Label>
-                            <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
-                        </div>
-                    </div>
-                </>
+            {section == "platform" && (
+                <div className="min-h-40">  
+                </div>
             )}
 
             <div className="flex mt-3.5 gap-3.5">
@@ -217,5 +222,5 @@ export default function Settings({ onClose }: Properties) {
 }
 
 function SettingsSectionTab({ name, selected = false, ...rest }: any) {
-    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-[0.8rem] ${selected ? "border-indigo-500 text-indigo-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-indigo-500`} {...rest}>{name}</div>;
+    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-[0.8rem] select-none ${selected ? "border-indigo-500 text-indigo-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-indigo-500`} {...rest}>{name}</div>;
 }

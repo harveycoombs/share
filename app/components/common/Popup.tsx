@@ -30,9 +30,9 @@ export default function Popup({ title, onClose, children, classes, ...rest }: Pr
                         whileHover={{ 
                             scale: 1.1,
                             rotate: 90,
-                            transition: { duration: 0.15 }
+                            transition: { duration: 0.15, ease: "easeOut" }
                         }}
-                        whileTap={{ scale: 0.9 }}
+                        whileTap={{ scale: 0.9, transition: { duration: 0.15, ease: "easeOut" }}}
                     >
                         <FontAwesomeIcon icon={faXmark} />
                     </motion.div>
