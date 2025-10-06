@@ -58,7 +58,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             return NextResponse.json({ success: true, destination: `/verify?email=${encodeURIComponent(email)}` }, { status: 200 });
         }
 
-        const totpSecret = await getUserTOTPSecret(user.user_id);
+        const totpSecret = await getUserTOTPSecret(email);
 
         if (totpSecret?.length) {
             const response = NextResponse.json({ success: true, destination: "/authenticate" }, { status: 200 });

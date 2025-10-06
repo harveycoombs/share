@@ -17,6 +17,8 @@ export async function GET(request: Request): Promise<NextResponse> {
     const secret = await getUserTOTPSecret(email);
     const valid = totp.verify({ token, secret });
 
+    console.log(email, secret, token, valid);
+
     if (!valid) return NextResponse.json({ error: "Invalid token." }, { status: 400 });
 
     const response = NextResponse.json({ success: true }, { status: 200 });
@@ -35,15 +37,20 @@ export async function GET(request: Request): Promise<NextResponse> {
     return response;
 }
 
-export async function POST(_: Request): Promise<NextResponse> {
+export async function POST(request: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
-    
+
+    const data = await request.json();
+    const email = data.email ?? "";
+
+    if (!email.length) return NextResponse.json({ error: "Missing email address." }, { status: 400 });
+
     const secret = authenticator.generateSecret();
-    const otpauth = authenticator.keyuri(user.email_address, "Share.surf", secret);
+    const otpauth = authenticator.keyuri(email, "Share.surf", secret);
     const qr = await qrcode.toDataURL(otpauth);
 
     await updateUserTOTPSettings(user.user_id, secret);

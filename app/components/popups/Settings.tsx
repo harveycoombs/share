@@ -116,13 +116,16 @@ export default function Settings({ onClose }: Properties) {
     const enableTOTP = useCallback(async () => {
         setUpdatingTOTP(true);
 
-        const response = await fetch("/api/totp", { method: "POST" });
+        const response = await fetch("/api/totp", {
+            method: "POST",
+            body: JSON.stringify({ email: details.email_address })
+        });
         const json = await response.json();
 
         setUpdatingTOTP(false);
 
         setQRCode(json.qr);
-    }, [setQRCode]);
+    }, [setQRCode, details]);
 
     const disableTOTP = useCallback(async () => {
         setUpdatingTOTP(true);
