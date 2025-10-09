@@ -18,7 +18,7 @@ const monaSans = Mona_Sans({
     subsets: ["latin"]
 });
 
-const description = "An easy-to-use file sharing platform.";
+const description = "The no-frills file sharing service.";
 
 export const metadata: Metadata = {
     title: `Share · ${packageJson.version}`,
