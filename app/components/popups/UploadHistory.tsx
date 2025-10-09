@@ -213,7 +213,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                 className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border ${colors.border} bg-gradient-to-b ${colors.background} ${colors.text} relative overflow-hidden`}
                 ref={uploadRef}
             >
-                {feedback.length ? <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div> : null}
+                {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
                 <div>
                     <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded-xl bg-white ${colors.icon} border ${colors.border} max-sm:hidden`}><FontAwesomeIcon icon={getTypeIcon(type)} /></div>
 

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { Resend } from "resend";
 
-import { checkUserVerification, getUserByEmailAddress, getUserTOTPState, updateUserAuthCode, verifyCredentials } from "@/lib/users";
+import { checkUserVerification, getUserByEmailAddress, updateUserAuthCode, verifyCredentials, getUserTOTPSecret } from "@/lib/users";
 import { authenticate, createJWT } from "@/lib/jwt";
 import { generateCode } from "@/lib/utils";
 import { getFileMetadata } from "@/lib/files";
@@ -24,11 +24,10 @@ export async function POST(request: Request): Promise<NextResponse> {
         const email = data.email ?? "";
         const password = data.password ?? "";
     
-        if (!email?.length) return NextResponse.json({ error: "Email address was not provided." }, { status: 400 });
-        if (!password?.length) return NextResponse.json({ error: "Password was not provided." }, { status: 400 });
-    
+        if (!email?.length || !password?.length) return NextResponse.json({ error: "One or more fields were not provided" }, { status: 400 });
+
         const valid = await verifyCredentials(email, password);
-        if (!valid) return NextResponse.json({ error: "Invalid credentials." }, { status: 400 });
+        if (!valid) return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
     
         let user = await getUserByEmailAddress(email);
     
@@ -58,9 +57,9 @@ export async function POST(request: Request): Promise<NextResponse> {
             return NextResponse.json({ success: true, destination: `/verify?email=${encodeURIComponent(email)}` }, { status: 200 });
         }
 
-        const totpEnabled = await getUserTOTPState(user.user_id);
+        const totpSecret = await getUserTOTPSecret(email);
 
-        if (totpEnabled) {
+        if (totpSecret?.length) {
             const response = NextResponse.json({ success: true, destination: "/authenticate" }, { status: 200 });
             
             response.cookies.set("email", email, {

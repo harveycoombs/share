@@ -1,47 +1,49 @@
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
+import fs from "fs/promises";
 
 import { createUserFromDiscord, emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
+import { uploadFile } from "@/lib/files";
 
 export async function GET(request: NextRequest) {
     try {
         const code = new URL(request.url).searchParams.get("code") ?? "";
 
-        if (!code) return NextResponse.json({ error: "Missing code" }, { status: 400 });
+        if (!code?.length) return NextResponse.json({ error: "Missing code" }, { status: 400 });
     
         const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: JSON.stringify({
+            body: new URLSearchParams({
                 client_id: process.env.DISCORD_CLIENT_ID ?? "",
                 client_secret: process.env.DISCORD_CLIENT_SECRET ?? "",
                 grant_type: "authorization_code",
                 code,
                 redirect_uri: "https://share.surf/api/sso/discord",
-                scope: "identify"
+                scope: "identify email"
             })
         });
 
-        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details: tokenResponse }, { status: 400 });
-    
         const details: any = await tokenResponse.json();
-    
-        if (!details?.access_token?.length) return NextResponse.json({ error: "Unable to exchange code for access token.", details: details }, { status: 400 });
+
+        if (!tokenResponse.ok) return NextResponse.json({ error: "Unable to exchange code for access token.", details }, { status: 400 });
+
+        if (!details?.access_token?.length) return NextResponse.json({ error: "Token not found.", details }, { status: 400 });
     
         const userResponse = await fetch("https://discord.com/api/users/@me", {
             headers: {
                 Authorization: `Bearer ${details.access_token}`,
             }
         });
-    
-        if (!userResponse.ok) return NextResponse.json({ error: "Unable to fetch user details.", details: userResponse }, { status: 400 });
 
         const user: any = await userResponse.json();
     
-        if (!user?.id?.length) return NextResponse.json({ error: "Unable to fetch user details.", details: user }, { status: 400 });
+        if (!userResponse.ok) return NextResponse.json({ error: "Unable to fetch user details.", details: user }, { status: 400 });
+
+        if (!user?.id?.length) return NextResponse.json({ error: "User not found.", details: user }, { status: 400 });
     
         const response = NextResponse.redirect("https://share.surf/");
 
@@ -64,8 +66,21 @@ export async function GET(request: NextRequest) {
         } else {
             const newShareUser = await createUserFromDiscord(user.username, user.email, user.id);
 
-            if (newShareUser) {
-                const credentials = createJWT(newShareUser);
+            if (newShareUser && user?.id?.length) {
+                const createdUser = await getUserByEmailAddress(user.email);
+
+                if (user.avatar?.length) {
+                    const avatarResponse = await fetch(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
+                    const avatarBuffer = await avatarResponse.arrayBuffer();
+
+                    await fs.writeFile(`./temp/avatars/${user.avatar}.png`, new Uint8Array(avatarBuffer));
+                    await uploadFile(`./temp/avatars/${user.avatar}.png`, `avatars/${createdUser.user_id}`);
+                    await fs.unlink(`./temp/avatars/${user.avatar}.png`);
+                }
+
+                const avatar = user.avatar?.length ? `https://uploads.share.surf/share/avatars/${createdUser.user_id}` : "/images/default.jpg";
+
+                const credentials = createJWT({ ...createdUser, avatar });
 
                 response.cookies.set("token", credentials.token, {
                     httpOnly: true,

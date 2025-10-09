@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useContext, useMemo } from "react";
+import { useState, useEffect, useCallback, useContext, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -15,11 +15,11 @@ export default function Header() {
     const path = usePathname();
     const user = useContext(UserContext);
 
-    if (user && (path == "/login" || path == "/register")) {
+    if (user && (path == "/signin" || path == "/signup")) {
         window.location.href = "/";
     }
 
-    if (path == "/login" || path == "/register" || path.startsWith("/verify")) return null;
+    if (path == "/signin" || path == "/signup" || path.startsWith("/verify") || path == "/authenticate") return null;
 
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
@@ -30,44 +30,55 @@ export default function Header() {
     }, []);
 
     const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
-    const logoClassList = useMemo(() => !user ? "max-sm:hidden" : "", [user]);
 
+    useEffect(() => {
+        document.addEventListener("click", closeMenu);
+        return () => document.removeEventListener("click", closeMenu);
+    }, []);
+
+    const closeMenu = useCallback((e: any) => {
+        if (e.target.matches("#menu, #menu *, #menu_button, #menu_button *")) return;
+        setMenuVisibility(false);
+    }, []);
+    
     return (
-        <>
-            <header className="p-3.5 flex justify-between select-none">
-                <div className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${logoClassList}`} onClick={() => window.location.href = "/"}><Logo width={30} height={30} className="block" /></div>
+        <header className="p-3.5 flex justify-between select-none">
+            <Link href="/" className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${!user ? "max-sm:hidden" : ""}`} draggable={false}>
+                <Logo width={30} height={30} className="block" />
+            </Link>
 
-                {user ? (
-                    <nav className="relative">
-                        <Image 
-                            src={`${user.avatar || "/images/default.jpg"}?t=${new Date().getTime()}`}
-                            alt={avatarLabel} 
-                            title={avatarLabel}
-                            width={32} 
-                            height={32}
-                            className="inline-block align-middle rounded object-cover aspect-square"
-                            draggable={false}
-                        />
+            {user ? (
+                <nav className="relative">
+                    <Image 
+                        src={user.avatar || "/images/default.jpg"}
+                        alt={avatarLabel} 
+                        title={avatarLabel}
+                        width={32} 
+                        height={32}
+                        className="inline-block align-middle rounded object-cover aspect-square"
+                        draggable={false}
+                    />
 
-                        <div className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
-                            <FontAwesomeIcon icon={faEllipsis} />
-                        </div>
+                    <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                        <FontAwesomeIcon icon={faEllipsis} />
+                    </div>
 
-                        <div className={`${menuIsVisible ? "block" : "hidden"} absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38`}>
+                    {menuIsVisible && (
+                        <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
                             <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
                             <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
                         </div>
-                    </nav>
-                ) : (
-                    <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
-                        <Button url="/login" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
-                        <Button url="/register" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
-                    </nav>
-                )}
-            </header>
+                    )}
+                </nav>
+            ) : (
+                <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
+                    <Button url="/signin" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
+                    <Button url="/signup" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
+                </nav>
+            )}
 
             {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
-        </>
+        </header>
     );
 }
 
