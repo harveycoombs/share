@@ -2,7 +2,7 @@
 import pool from "./database";
 import { generateHash } from "./passwords";
 
-export async function getUploadHistory(userid: string, search: string): Promise<any[]> {
+export async function getUploadHistory(userid: string, search: string = ""): Promise<any[]> {
     const filter = search.length ? " AND title LIKE $2" : "";
     const params = search.length ? [userid, `%${search}%`] : [userid];
 

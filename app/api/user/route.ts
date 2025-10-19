@@ -5,6 +5,8 @@ import { Resend } from "resend";
 
 import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword, updateUserAuthCode } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
+import { deleteUpload, getUploadHistory } from "@/lib/uploads";
+import { deleteFile } from "@/lib/files";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -125,5 +127,15 @@ export async function DELETE(_: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const deleted = await deleteUser(user.user_id);
+
+    if (deleted) {
+        const uploads = await getUploadHistory(user.user_id);
+
+        for (const upload of uploads) {
+            await deleteUpload(user.user_id, upload.upload_id);
+            await deleteFile(`uploads/${upload.upload_id}`);
+        }
+    }
+
     return NextResponse.json({ deleted });
 }

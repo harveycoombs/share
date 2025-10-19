@@ -1,6 +1,2 @@
 onlyBuiltDependencies:
-  - '@tailwindcss/oxide'
-  - argon2
-  - esbuild
-  - sharp
   - workerd
