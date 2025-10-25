@@ -14,6 +14,7 @@ export default function RegistrationForm() {
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [captchaToken, setCaptchaToken] = useState<string>("");
+    const [consent, setConsent] = useState<boolean>(false);
 
     const [passwordStrength, setPasswordStrength] = useState<number>(0);
 
@@ -29,7 +30,7 @@ export default function RegistrationForm() {
         setSuccess("");
         setLoading(true);
 
-        if (!name?.length || !email?.length || !password?.length) {
+        if (!name?.length || !email?.length || !password?.length || !captchaToken?.length || !consent) {
             setWarning("One or more fields were not provided");
             setLoading(false);
             return;
@@ -125,10 +126,20 @@ export default function RegistrationForm() {
                 />
             </div>
 
-            <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length} onClick={register}>Continue</Button>
+            <div className="text-sm text-center text-slate-400 select-none my-5 flex items-center justify-center gap-2">
+                <input type="checkbox" className="w-4 h-4 accent-indigo-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
+
+                <div>
+                    I agree to the
+                    <Link href="/documents/terms-of-service.pdf" className="text-indigo-500 font-semibold ml-1.25 hover:underline">Terms of Service</Link>
+                </div>
+            </div>
+
+            <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length || !consent} onClick={register}>Continue</Button>
             
             <div className="text-sm text-center text-slate-400 select-none my-5">
-                Already have an account?<Link href="/signin" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign In</Link>
+                Already have an account?
+                <Link href="/signin" className="text-indigo-500 font-semibold ml-1.25 hover:underline">Sign In</Link>
             </div>
 
             <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
