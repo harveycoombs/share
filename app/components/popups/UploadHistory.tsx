@@ -209,7 +209,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut" }}
-                className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border ${colors.border} bg-gradient-to-b ${colors.background} ${colors.text} relative overflow-hidden`}
+                className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border ${colors.border} bg-linear-to-b ${colors.background} ${colors.text} relative overflow-hidden`}
                 ref={uploadRef}
             >
                 {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
@@ -239,7 +239,16 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     ); 
 }
 
-function UploadOption({ icon, url, loading, classes = "", ...rest }: any) {
-    const classList = `leading-none p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150${loading ? " pointer-events-none" : ""} hover:bg-slate-200/60 active:bg-slate-200 ${classes?.length ? " " + classes : ""}`;
-    return url?.length ? <Link href={url} className={classList} {...rest}><FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} /></Link> : <div className={classList} {...rest}><FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} /></div>;
+function UploadOption({ icon, url = "", loading = false, classes = "", ...rest }: any) {
+    const classList = `leading-none p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150${loading ? " pointer-events-none" : ""} hover:bg-white/60 active:bg-white/75 ${classes?.length ? " " + classes : ""}`;
+
+    return url.length ? (
+        <Link href={url} className={classList} {...rest}>
+            <FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} />
+        </Link>
+    ) : (
+        <div className={classList} {...rest}>
+            <FontAwesomeIcon icon={loading ? faCircleNotch : icon} className={loading ? "animate-spin" : ""} />
+        </div>
+    );
 }

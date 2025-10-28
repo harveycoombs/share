@@ -202,7 +202,7 @@ export default function Home() {
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
-                            <div className="text-sm font-semibold text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
+                            <div className="text-sm font-medium text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
                         </div>
                     </div>
                 )}
@@ -255,7 +255,7 @@ export default function Home() {
                                 </Button>
 
                                 {passwordFieldIsVisible ? (
-                                    <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow-1" : ""}`}>
+                                    <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow" : ""}`}>
                                         <Field 
                                             type="password"
                                             placeholder="Password"
