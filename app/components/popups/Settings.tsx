@@ -99,7 +99,7 @@ export default function Settings({ onClose }: Properties) {
         data.append("files", file);
 
         const response = await fetch("/api/user/avatar", {
-            method: "POST",
+            method: "PUT",
             body: data
         });
 
