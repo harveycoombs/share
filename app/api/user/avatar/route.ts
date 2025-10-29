@@ -4,7 +4,7 @@ import { uploadFile } from "@/lib/files";
 import { authenticate } from "@/lib/jwt";
 import { cookies } from "next/headers";
 
-export async function POST(request: any) {
+export async function PUT(request: any) {
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
