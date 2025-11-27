@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
+import { cookies } from "next/headers";
 
 import packageJson from "@/package.json";
 
@@ -8,10 +9,8 @@ import "./globals.css";
 
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
-
-import { cookies } from "next/headers";
-import { authenticate } from "@/lib/jwt";
 import UserProvider from "@/app/context/UserContext";
+import { authenticate } from "@/lib/jwt";
 
 const monaSans = Mona_Sans({
     weight: ["400", "500", "600", "700", "800", "900"],
