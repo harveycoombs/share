@@ -1,13 +1,13 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
 import Button from "@/app/components/common/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
 import Notice from "@/app/components/common/Notice";
 import QRCodeViewer from "@/app/components/popups/QRCodeViewer";
 
@@ -74,6 +74,11 @@ export default function Settings({ onClose }: Properties) {
     }, [name, emailAddress, oldPassword, newPassword, setUpdating, setError, setWarning, setSuccess]);
 
     const deleteAccount = useCallback(async () => {
+        if (!deletionIntent) {
+            setDeletionIntent(true);
+            return;
+        }
+
         const response = await fetch("/api/user", {
             method: "DELETE"
         });
@@ -160,7 +165,6 @@ export default function Settings({ onClose }: Properties) {
             <div className="w-full my-3.5 border-b border-slate-300 flex gap-1.5 justify-center">
                 <SettingsSectionTab name="Details" onClick={() => setSection("details")} selected={section == "details"} />
                 <SettingsSectionTab name="Security" onClick={() => setSection("security")} selected={section == "security"} />
-                <SettingsSectionTab name="Platform" onClick={() => setSection("platform")} selected={section == "platform"} />
             </div>
 
             {section == "details" && (
@@ -216,7 +220,7 @@ export default function Settings({ onClose }: Properties) {
             <div className="flex mt-3.5 gap-3.5">
                 <Button classes="w-1/2" onClick={updateDetails}>Save</Button>
                 <Button classes="w-1/2" color="gray" onClick={onClose}>Cancel</Button>
-                {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>Delete Account</Button>}
+                {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
             </div>
 
             {QRCodePopupIsVisible && <QRCodeViewer code={QRCode} onClose={() => setQRCodePopupVisibility(false)} />}
