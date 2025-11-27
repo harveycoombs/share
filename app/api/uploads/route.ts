@@ -83,7 +83,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const buffer = await zip.toBufferPromise();
         await fs.writeFile("./temp/files.zip", new Uint8Array(buffer));
 
-        await uploadFile("./temp/files.zip", `uploads/${uploadid}/files.zip`);
+        await uploadFile("./temp/files.zip", `uploads/${uploadid}`);
 
         await fs.unlink("./temp/files.zip");
 
