@@ -3,6 +3,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
+import { AnimatePresence } from "motion/react";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
@@ -223,7 +224,9 @@ export default function Settings({ onClose }: Properties) {
                 {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
             </div>
 
-            {QRCodePopupIsVisible && <QRCodeViewer code={QRCode} onClose={() => setQRCodePopupVisibility(false)} />}
+            <AnimatePresence>
+                {QRCodePopupIsVisible && <QRCodeViewer code={QRCode} onClose={() => setQRCodePopupVisibility(false)} />}
+            </AnimatePresence>
         </Popup>
     );
 }

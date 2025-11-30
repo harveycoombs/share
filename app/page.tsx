@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -292,9 +292,13 @@ export default function Home() {
                 ref={uploader}
                 onInput={(e: any) => setFiles(e.target.files)}
             />
+            <AnimatePresence>
+                {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
+            </AnimatePresence>
 
-            {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
-            {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
+            <AnimatePresence>
+                {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
+            </AnimatePresence>
         </main>
     );
 }

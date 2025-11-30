@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
+import { AnimatePresence } from "motion/react";
 
 import packageJson from "@/package.json";
 import IssueForm from "@/app/components/popups/IssueForm";
@@ -22,7 +23,9 @@ export default function Footer() {
                 <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
             </div>
 
-            {issueFormVisibility && <IssueForm onClose={() => setIssueFormVisibility(false)} />}
+            <AnimatePresence>
+                {issueFormVisibility && <IssueForm onClose={() => setIssueFormVisibility(false)} />}
+            </AnimatePresence>
         </footer>
     );
 }
