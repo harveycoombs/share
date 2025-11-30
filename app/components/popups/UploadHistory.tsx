@@ -88,7 +88,7 @@ export default function UploadHistory({ onClose }: Properties) {
             <div className="h-150">{
                 error.length ? <div className="w-full h-full pb-16 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
                 : loading ? <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
-                : uploads.length ? <div className="w-full h-full">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
+                : uploads.length ? <div className="w-full h-full">{uploads.map((upload: any, index: number) => <Upload key={upload.upload_id} index={index} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
                 : <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
             }</div>
         </Popup>
@@ -133,7 +133,7 @@ function getTypeColors(contentType: string) {
     }
 }
 
-function Upload({ data, bulkSelect, onSelect }: any) {
+function Upload({ index, data, bulkSelect, onSelect }: any) {
     const [feedback, setFeedback] = useState<string>("");
 
     const [uploadTitle, setUploadTitle] = useState<string>(data.title);
@@ -142,9 +142,16 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     const [editLoading, setEditLoading] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
+    const [deletionIntent, setDeletionIntent] = useState<boolean>(false);
+
     const uploadRef = useRef<HTMLDivElement>(null);
     
-    const deleteUpload = useCallback(async () => {
+    async function deleteUpload() {
+        if (!deletionIntent) {
+            setDeletionIntent(true);
+            return;
+        }
+
         setFeedback("");
         setDeleteLoading(true);
 
@@ -163,7 +170,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         }
 
         uploadRef?.current?.remove();
-    }, [data.upload_id, setFeedback, setDeleteLoading, uploadRef]);
+    }
 
     useEffect(() => {
         if (editing || editing == null) return;
@@ -208,7 +215,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
             <motion.div 
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
+                transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
                 className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border border-slate-300/70 bg-linear-to-t from-slate-100 to-slate-50/50 text-slate-600 relative overflow-hidden`}
                 ref={uploadRef}
             >
@@ -231,7 +238,10 @@ function Upload({ data, bulkSelect, onSelect }: any) {
 
                 <div className="flex items-center gap-1">
                     <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
-                    <UploadOption icon={faTrashAlt} title="Delete" onClick={deleteUpload} loading={deleteLoading} />
+
+                    <UploadOption icon={deletionIntent ? faCheck : faTrashAlt} title={deletionIntent ? "Confirm Deletion" : "Delete"} onClick={deleteUpload} loading={deleteLoading} />
+                    {deletionIntent && !deleteLoading && <UploadOption icon={faXmark} title="Cancel Deletion" onClick={() => setDeletionIntent(false)} />}
+
                     {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                 </div>
             </motion.div>
