@@ -80,7 +80,9 @@ export default function Header() {
                 </nav>
             )}
 
-            {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
+            <AnimatePresence>
+                {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
+            </AnimatePresence>
         </header>
     );
 }
