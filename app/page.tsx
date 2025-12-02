@@ -145,18 +145,23 @@ export default function Home() {
         }
     }, [files, uploader, handleDragLeaveEvent]);
 
-    const handlePaste = useCallback((e: ClipboardEvent) => {
-        if (!e.clipboardData?.files?.length) return;
-
+    function handlePaste(e: ClipboardEvent) {
         const transfer = new DataTransfer();
 
-        for (let pastedFile of e.clipboardData.files) {
-            transfer.items.add(pastedFile);
+        if (e.clipboardData?.files?.length) {
+            for (let pastedFile of e.clipboardData.files) {
+                transfer.items.add(pastedFile);
+            }
+        } else if (e.clipboardData?.getData("text")?.length) {
+            const textFile = new File([e.clipboardData.getData("text")], "pasted.txt", { type: "text/plain" });
+            transfer.items.add(textFile);
         }
+
+        if (!transfer.files.length) return;
 
         setFiles(transfer.files);
         uploader.current?.dispatchEvent(new Event("change"));
-    }, [setFiles, uploader]);
+    }
 
     useEffect(() => {
         window.addEventListener("paste", handlePaste);
