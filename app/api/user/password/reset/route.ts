@@ -16,6 +16,6 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!verified) return NextResponse.json({ error: "Invalid code." }, { status: 400 });
 
     const updated = await updateUserPasswordByEmail(email, password);
-
+    
     return NextResponse.json({ updated });
 }
