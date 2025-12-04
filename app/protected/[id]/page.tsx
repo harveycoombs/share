@@ -35,7 +35,8 @@ export default function Protected({ params }: any) {
 
         const response = await fetch(`/uploads/${id}`, {
             headers: {
-                "Share-Upload-Password": password
+                "Share-Upload-Password": password,
+                
             }
         });
 
@@ -43,6 +44,7 @@ export default function Protected({ params }: any) {
             case 200:
                 const blob = await response.blob();
                 const url = URL.createObjectURL(blob);
+                
                 setURL(url);
                 break;
             case 401:
@@ -54,6 +56,11 @@ export default function Protected({ params }: any) {
 
         setLoading(false);
     }
+
+    useEffect(() => {
+        if (!url.length) return;
+        window.open(url, "_blank");
+    }, [url]);
 
     return (
         <main className="min-h-[calc(100vh-117px)] grid place-items-center max-sm:min-h-[calc(100vh-135px)]">
@@ -80,7 +87,7 @@ export default function Protected({ params }: any) {
                     </Notice>
                 )}
 
-                {url.length ? <Button classes="block w-75.5 mx-auto mt-4" url={url} download={url.substring(url.lastIndexOf("/") + 1)}>Download</Button> : (
+                {!url.length && (
                     <div className="w-75.5 mx-auto mt-4">
                         <Label classes="block w-full text-left mb-1">Password</Label>
                         <Field type="password" placeholder="Password" onChange={(e: any) => setPassword(e.target.value)} classes="block w-full" />
