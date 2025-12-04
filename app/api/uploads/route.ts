@@ -8,13 +8,7 @@ import { insertUploadHistory, getUploadHistory, renameUpload, deleteUpload } fro
 import { authenticate } from "@/lib/jwt";
 import { uploadFile, deleteFile } from "@/lib/files";
 
-export const config = {
-    api: {
-        bodyParser: {
-            sizeLimit: "4gb"
-        }
-    }
-};
+export const maxRequestBodySize = "4gb";
 
 export async function GET(request: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
