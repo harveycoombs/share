@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.940.0",
+    "@aws-sdk/client-s3": "^3.943.0",
     "@fortawesome/fontawesome-svg-core": "^7.1.0",
     "@fortawesome/free-brands-svg-icons": "^7.1.0",
     "@fortawesome/free-regular-svg-icons": "^7.1.0",
@@ -18,17 +18,17 @@
     "@hcaptcha/react-hcaptcha": "^1.16.0",
     "adm-zip": "^0.5.16",
     "argon2": "^0.41.1",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "mime": "^4.1.0",
-    "motion": "^12.23.24",
-    "next": "^15.5.6",
+    "motion": "^12.23.25",
+    "next": "^15.5.7",
     "node-fetch": "^3.3.2",
     "otplib": "^12.0.1",
     "pg": "^8.16.3",
-    "prettier": "^3.7.1",
+    "prettier": "^3.7.4",
     "qrcode": "^1.5.4",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
     "resend": "^4.8.0"
   },
   "devDependencies": {
@@ -43,6 +43,6 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.17",
     "typescript": "^5.9.3",
-    "wrangler": "^4.51.0"
+    "wrangler": "^4.52.1"
   }
 }
