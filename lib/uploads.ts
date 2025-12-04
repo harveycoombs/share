@@ -1,6 +1,6 @@
 "use server";
 import pool from "./database";
-import { generateHash } from "./passwords";
+import { generateHash, verify } from "./passwords";
 
 export async function getUploadHistory(userid: string, search: string = ""): Promise<any[]> {
     const filter = search.length ? " AND title LIKE $2" : "";
@@ -43,5 +43,13 @@ export async function checkUploadProtection(id: string): Promise<boolean> {
 
 export async function getUploadPasswordHash(id: string): Promise<string> {
     const result = await pool.query("SELECT password FROM share.uploads WHERE upload_id = $1", [id]);
-    return result.rows[0]?.password;
+    return result.rows[0]?.password ?? "";
+}
+
+export async function verifyUploadPassword(id: string, password: string): Promise<boolean> {
+    const passwordHash = await getUploadPasswordHash(id);
+
+    if (!passwordHash.length) return true;
+
+    return await verify(password, passwordHash);
 }
