@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCamera, faCheck, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
+import { faCamera, faCheck, faCircleNotch, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
+import { AnimatePresence } from "motion/react";
 
 import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
@@ -17,6 +18,7 @@ interface Properties {
 
 export default function Settings({ onClose }: Properties) {
     const [details, setDetails] = useState<any>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     const [section, setSection] = useState<string>("details");
 
     const [name, setName] = useState<string>("");
@@ -43,11 +45,14 @@ export default function Settings({ onClose }: Properties) {
     useEffect(() => {
         if (updating || deleting || updatingTOTP) return;
 
+        setLoading(true);
+
         (async () => {
             const response = await fetch("/api/user");
             const json = await response.json();
 
             setDetails(json);
+            setLoading(false);
         })();
     }, [updating, deleting, updatingTOTP]);
 
@@ -141,89 +146,102 @@ export default function Settings({ onClose }: Properties) {
 
     return (
         <Popup title="Account Settings" classes="w-120" onClose={onClose}>
-            {(error.length + warning.length + success.length) > 0 && <Notice color={error.length ? "red" : warning.length ? "amber" : "green"}>
-                <FontAwesomeIcon icon={error.length ? faExclamationCircle : warning.length ? faWarning : faCheck} className="mr-1.5" />
-                {error.length ? error : warning.length ? warning : success}
-            </Notice>}
-
-            <div className="flex gap-3.5 items-center w-fit mx-auto my-4 select-none">
-                <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
-                    <Image src={details?.avatar || "/images/default.jpg"} alt={`${details?.name}'s avatar`} width={58} height={58} className="object-cover aspect-square" draggable={false} />
-                    <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
-                        <FontAwesomeIcon icon={faCamera} className="text-white" />
-                    </div>
-
-                    <input type="file" ref={avatarUploader} className="hidden" accept="image/*" onChange={handleAvatarUpload} />
+            {loading ? (<div className="w-full h-89 grid place-items-center">
+                <div className="text-center">
+                    <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-slate-400/60" />
+                    <div className="font-medium text-slate-400/70 mt-1.5">Loading...</div>
                 </div>
+            </div>) : (
+                <>
+                    {(error.length + warning.length + success.length) > 0 && (
+                        <Notice color={error.length ? "red" : warning.length ? "amber" : "green"}>
+                            <FontAwesomeIcon icon={error.length ? faExclamationCircle : warning.length ? faWarning : faCheck} className="mr-1.5" />
+                            {error.length ? error : warning.length ? warning : success}
+                        </Notice>
+                    )}
 
-                <div>
-                    <strong className="block font-bold">{details?.name}</strong>
-                    <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
-                </div>
-            </div>
+                    <div className="flex gap-3.5 items-center w-fit mx-auto my-4 select-none">
+                        <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
+                            <Image src={details?.avatar || "/images/default.jpg"} alt={`${details?.name}'s avatar`} width={58} height={58} className="object-cover aspect-square" draggable={false} />
+                            <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
+                                <FontAwesomeIcon icon={faCamera} className="text-white" />
+                            </div>
 
-            <div className="w-full my-3.5 border-b border-slate-300 flex gap-1.5 justify-center">
-                <SettingsSectionTab name="Details" onClick={() => setSection("details")} selected={section == "details"} />
-                <SettingsSectionTab name="Security" onClick={() => setSection("security")} selected={section == "security"} />
-            </div>
-
-            {section == "details" && (
-                <div className="min-h-40 flex gap-3.5">
-                    <div className="w-1/2">
-                        <Label classes="block w-full">Name</Label>
-                        <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
-                    </div>
-
-                    <div className="w-1/2">
-                        <Label classes="block w-full">Email Address</Label>
-                        <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
-                    </div>
-                </div>
-            )}
-
-            {section == "security" && (
-                <div className="min-h-40">
-                    <div className="flex gap-3.5">
-                        <div className="w-1/2">
-                            <Label classes="block w-full">Old Password</Label>
-                            <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
+                            <input type="file" ref={avatarUploader} className="hidden" accept="image/*" onChange={handleAvatarUpload} />
                         </div>
 
-                        <div className="w-1/2">
-                            <Label classes="block w-full">New Password</Label>
-                            <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
+                        <div>
+                            <strong className="block font-bold">{details?.name}</strong>
+                            <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
                         </div>
                     </div>
 
-                    <div className="mt-3.5">
-                        <Label classes="block w-full">2-Factor Authentication</Label>
+                    <div className="w-full my-3.5 border-b border-slate-300 flex gap-1.5 justify-center">
+                        <SettingsSectionTab name="Details" onClick={() => setSection("details")} selected={section == "details"} />
+                        <SettingsSectionTab name="Security" onClick={() => setSection("security")} selected={section == "security"} />
+                    </div>
 
-                        {QRCode.length ? (
-                            <div className="flex gap-2 items-center">
-                                <Image src={QRCode} alt="QR Code" width={120} height={120} className="block select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
+                    {section == "details" && (
+                        <div className="min-h-40 flex gap-3.5">
+                            <div className="w-1/2">
+                                <Label classes="block w-full">Name</Label>
+                                <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
+                            </div>
 
-                                <div>
-                                    <strong className="font-semibold">TOTP Authentication</strong>
-                                    <div className="text-sm font-medium text-slate-400 mt-1">Scan the QR code with your authenticator app (Google Authenticator, Authy, Duo,etc.)</div>
+                            <div className="w-1/2">
+                                <Label classes="block w-full">Email Address</Label>
+                                <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
+                            </div>
+                        </div>
+                    )}
+
+                    {section == "security" && (
+                        <div className="min-h-40">
+                            <div className="flex gap-3.5">
+                                <div className="w-1/2">
+                                    <Label classes="block w-full">Old Password</Label>
+                                    <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
+                                </div>
+
+                                <div className="w-1/2">
+                                    <Label classes="block w-full">New Password</Label>
+                                    <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
                                 </div>
                             </div>
-                        ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
+
+                            <div className="mt-3.5">
+                                <Label classes="block w-full">2-Factor Authentication</Label>
+
+                                {QRCode.length ? (
+                                    <div className="flex gap-2 items-center">
+                                        <Image src={QRCode} alt="QR Code" width={120} height={120} className="block select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
+
+                                        <div>
+                                            <strong className="font-semibold">TOTP Authentication</strong>
+                                            <div className="text-sm font-medium text-slate-400 mt-1">Scan the QR code with your authenticator app (Google Authenticator, Authy, Duo,etc.)</div>
+                                        </div>
+                                    </div>
+                                ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
+                            </div>
+                        </div>
+                    )}
+
+                    {section == "platform" && (
+                        <div className="min-h-40">
+                        </div>
+                    )}
+
+                    <div className="flex mt-3.5 gap-3.5">
+                        <Button classes="w-1/2" onClick={updateDetails}>Save</Button>
+                        <Button classes="w-1/2" color="gray" onClick={onClose}>Cancel</Button>
+                        {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
                     </div>
-                </div>
+
+                    <AnimatePresence>
+                        {QRCodePopupIsVisible && <QRCodeViewer code={QRCode} onClose={() => setQRCodePopupVisibility(false)} />}
+                    </AnimatePresence>
+                </>
             )}
-
-            {section == "platform" && (
-                <div className="min-h-40">  
-                </div>
-            )}
-
-            <div className="flex mt-3.5 gap-3.5">
-                <Button classes="w-1/2" onClick={updateDetails}>Save</Button>
-                <Button classes="w-1/2" color="gray" onClick={onClose}>Cancel</Button>
-                {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
-            </div>
-
-            {QRCodePopupIsVisible && <QRCodeViewer code={QRCode} onClose={() => setQRCodePopupVisibility(false)} />}
         </Popup>
     );
 }

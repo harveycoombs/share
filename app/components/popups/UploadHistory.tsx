@@ -88,7 +88,7 @@ export default function UploadHistory({ onClose }: Properties) {
             <div className="h-150">{
                 error.length ? <div className="w-full h-full pb-16 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
                 : loading ? <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
-                : uploads.length ? <div className="w-full h-full">{uploads.map(upload => <Upload key={upload.upload_id} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
+                : uploads.length ? <div className="w-full h-full">{uploads.map((upload: any, index: number) => <Upload key={upload.upload_id} index={index} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
                 : <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
             }</div>
         </Popup>
@@ -115,25 +115,25 @@ function getTypeIcon(contentType: string) {
 }
 
 function getTypeColors(contentType: string) {
-    if (contentType == "application/zip") return { text: "text-pink-400", background: "from-pink-50/70 to-pink-100/70", border: "border-pink-300/75" };
+    if (contentType == "application/zip") return { icon: "text-pink-400", background: "from-pink-50/70 to-pink-100/70", border: "border-pink-300/75" };
 
     switch (contentType.split("/")[0]) {
         case "image":
-            return { text: "text-emerald-600", icon: "text-emerald-500", background: "from-emerald-50/70 to-emerald-100/70", border: "border-emerald-300/75" };
+            return { icon: "text-emerald-400", background: "from-emerald-50/70 to-emerald-100/70", border: "border-emerald-300/65" };
         case "video":
-            return { text: "text-rose-600", icon: "text-rose-500", background: "from-rose-50/70 to-rose-100/70", border: "border-rose-300/75" };
+            return { icon: "text-rose-400", background: "from-rose-50/70 to-rose-100/70", border: "border-rose-300/65" };
         case "audio":
-            return { text: "text-purple-600", icon: "text-purple-500", background: "from-purple-50/70 to-purple-100/70", border: "border-purple-300/75" };
+            return { icon: "text-purple-400", background: "from-purple-50/70 to-purple-100/70", border: "border-purple-300/65" };
         case "text":
-            return { text: "text-orange-600", icon: "text-orange-500", background: "from-orange-50/70 to-orange-100/70", border: "border-orange-300/75" };
+            return { icon: "text-orange-400", background: "from-orange-50/70 to-orange-100/70", border: "border-orange-300/65" };
         case "application":
-            return { text: "text-amber-600", icon: "text-amber-500", background: "from-amber-50/70 to-amber-100/70", border: "border-amber-300/75" };
+            return { icon: "text-amber-400", background: "from-amber-50/70 to-amber-100/70", border: "border-amber-300/65" };
         default:
-            return { text: "text-indigo-600", icon: "text-indigo-500", background: "from-indigo-50/70 to-indigo-100/70", border: "border-indigo-300/75" };
+            return { icon: "text-indigo-400", background: "from-indigo-50/70 to-indigo-100/70", border: "border-indigo-300/65" };
     }
 }
 
-function Upload({ data, bulkSelect, onSelect }: any) {
+function Upload({ index, data, bulkSelect, onSelect }: any) {
     const [feedback, setFeedback] = useState<string>("");
 
     const [uploadTitle, setUploadTitle] = useState<string>(data.title);
@@ -142,9 +142,16 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     const [editLoading, setEditLoading] = useState<boolean>(false);
     const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
+    const [deletionIntent, setDeletionIntent] = useState<boolean>(false);
+
     const uploadRef = useRef<HTMLDivElement>(null);
     
-    const deleteUpload = useCallback(async () => {
+    async function deleteUpload() {
+        if (!deletionIntent) {
+            setDeletionIntent(true);
+            return;
+        }
+
         setFeedback("");
         setDeleteLoading(true);
 
@@ -163,7 +170,7 @@ function Upload({ data, bulkSelect, onSelect }: any) {
         }
 
         uploadRef?.current?.remove();
-    }, [data.upload_id, setFeedback, setDeleteLoading, uploadRef]);
+    }
 
     useEffect(() => {
         if (editing || editing == null) return;
@@ -208,30 +215,33 @@ function Upload({ data, bulkSelect, onSelect }: any) {
             <motion.div 
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-                className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border ${colors.border} bg-linear-to-b ${colors.background} ${colors.text} relative overflow-hidden`}
+                transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
+                className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border border-slate-300/70 bg-linear-to-t from-slate-100 to-slate-50/50 text-slate-600 relative overflow-hidden`}
                 ref={uploadRef}
             >
                 {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
                 <div>
-                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded-xl bg-white ${colors.icon} border ${colors.border} max-sm:hidden`}><FontAwesomeIcon icon={getTypeIcon(type)} /></div>
+                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded-md border ${colors.border} bg-linear-to-b ${colors.background} ${colors.icon} max-sm:hidden`}><FontAwesomeIcon icon={getTypeIcon(type)} /></div>
 
                     <div className="inline-block align-middle">
                         <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
                             {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-semibold bg-transparent outline-hidden" autoFocus /> : <div className="font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
 
-                            <div className={`ml-1 cursor-pointer duration-150 ${colors.icon}`} title="Edit Name" onClick={() => setEditing(!editing)}>
+                            <div className={`ml-1 cursor-pointer duration-150`} title="Edit Name" onClick={() => setEditing(!editing)}>
                                 {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
                             </div>
                         </strong>
 
-                        <div className={`text-xs font-medium ${colors.text} opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)}</div>
+                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</div>
                     </div>
                 </div>
 
                 <div className="flex items-center gap-1">
-                    <UploadOption icon={faChain} classes={colors.icon} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
-                    <UploadOption icon={faTrashAlt} classes={colors.icon} title="Delete" onClick={deleteUpload} loading={deleteLoading} />
+                    <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
+
+                    <UploadOption icon={deletionIntent ? faCheck : faTrashAlt} title={deletionIntent ? "Confirm Deletion" : "Delete"} onClick={deleteUpload} loading={deleteLoading} />
+                    {deletionIntent && !deleteLoading && <UploadOption icon={faXmark} title="Cancel Deletion" onClick={() => setDeletionIntent(false)} />}
+
                     {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                 </div>
             </motion.div>
@@ -239,8 +249,8 @@ function Upload({ data, bulkSelect, onSelect }: any) {
     ); 
 }
 
-function UploadOption({ icon, url = "", loading = false, classes = "", ...rest }: any) {
-    const classList = `leading-none p-1.5 rounded-md aspect-square cursor-pointer inline-grid place-items-center duration-150${loading ? " pointer-events-none" : ""} hover:bg-white/60 active:bg-white/75 ${classes?.length ? " " + classes : ""}`;
+function UploadOption({ icon, url = "", loading = false, ...rest }: any) {
+    const classList = `leading-none p-1.25 rounded-md border border-transparent bg-transparent text-slate-400 aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/70 hover:text-slate-500 active:scale-95 ${loading ? "pointer-events-none" : ""}`;
 
     return url.length ? (
         <Link href={url} className={classList} {...rest}>

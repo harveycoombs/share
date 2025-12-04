@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -145,18 +145,23 @@ export default function Home() {
         }
     }, [files, uploader, handleDragLeaveEvent]);
 
-    const handlePaste = useCallback((e: ClipboardEvent) => {
-        if (!e.clipboardData?.files?.length) return;
-
+    function handlePaste(e: ClipboardEvent) {
         const transfer = new DataTransfer();
 
-        for (let pastedFile of e.clipboardData.files) {
-            transfer.items.add(pastedFile);
+        if (e.clipboardData?.files?.length) {
+            for (let pastedFile of e.clipboardData.files) {
+                transfer.items.add(pastedFile);
+            }
+        } else if (e.clipboardData?.getData("text")?.length) {
+            const textFile = new File([e.clipboardData.getData("text")], "pasted.txt", { type: "text/plain" });
+            transfer.items.add(textFile);
         }
+
+        if (!transfer.files.length) return;
 
         setFiles(transfer.files);
         uploader.current?.dispatchEvent(new Event("change"));
-    }, [setFiles, uploader]);
+    }
 
     useEffect(() => {
         window.addEventListener("paste", handlePaste);
@@ -292,9 +297,13 @@ export default function Home() {
                 ref={uploader}
                 onInput={(e: any) => setFiles(e.target.files)}
             />
+            <AnimatePresence>
+                {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
+            </AnimatePresence>
 
-            {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
-            {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
+            <AnimatePresence>
+                {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
+            </AnimatePresence>
         </main>
     );
 }

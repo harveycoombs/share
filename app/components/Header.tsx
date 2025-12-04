@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { AnimatePresence } from "motion/react";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -63,12 +64,14 @@ export default function Header() {
                         <FontAwesomeIcon icon={faEllipsis} />
                     </div>
 
-                    {menuIsVisible && (
-                        <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
-                            <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
-                            <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
-                        </div>
-                    )}
+                    <AnimatePresence>
+                        {menuIsVisible && (
+                            <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
+                                <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
+                                <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
+                            </div>
+                        )}
+                    </AnimatePresence>
                 </nav>
             ) : (
                 <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
@@ -77,7 +80,9 @@ export default function Header() {
                 </nav>
             )}
 
-            {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
+            <AnimatePresence>
+                {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
+            </AnimatePresence>
         </header>
     );
 }
