@@ -68,8 +68,8 @@ export default function UploadHistory({ onClose }: Properties) {
     }
 
     return (
-        <Popup title="Upload History" onClose={onClose} classes="w-125 max-[532px]:w-15/16">
-            <div className="sticky top-0 z-10 bg-white pt-1">
+        <Popup title="Upload History" onClose={onClose} classes="w-125 max-sm:w-15/16">
+            <div className="sticky top-0 z-10 bg-white pt-1 pb-2.5">
                 <div className="w-full flex items-center justify-between">
                     <Field type="text" placeholder="Search" onInput={(e: any) => setSearch(e.target.value)} />
 
@@ -216,7 +216,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
-                className={`flex justify-between items-center p-2 mt-2.5 rounded-lg border border-slate-300/70 bg-linear-to-t from-slate-100 to-slate-50/50 text-slate-600 relative overflow-hidden`}
+                className={`flex justify-between items-center p-2 rounded-lg border border-slate-300/70 bg-linear-to-t from-slate-100 to-slate-50/50 text-slate-600 relative overflow-hidden ${index ? "mt-2.5" : ""}`}
                 ref={uploadRef}
             >
                 {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
@@ -232,7 +232,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                             </div>
                         </strong>
 
-                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}</div>
+                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })} &middot; {data.views} View{data.views != 1 ? "s" : ""}</div>
                     </div>
                 </div>
 

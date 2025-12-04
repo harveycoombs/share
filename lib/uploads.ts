@@ -53,3 +53,8 @@ export async function verifyUploadPassword(id: string, password: string): Promis
 
     return await verify(password, passwordHash);
 }
+
+export async function incrementUploadViews(id: string): Promise<boolean> {
+    const result = await pool.query("UPDATE share.uploads SET views = views + 1 WHERE upload_id = $1", [id]);
+    return result.rowCount ? result.rowCount > 0 : false;
+}
