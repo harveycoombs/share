@@ -73,9 +73,9 @@ export async function GET(request: NextRequest) {
                     const avatarResponse = await fetch(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
                     const avatarBuffer = await avatarResponse.arrayBuffer();
 
-                    await fs.writeFile(`./temp/avatars/${user.avatar}.png`, new Uint8Array(avatarBuffer));
-                    await uploadFile(`./temp/avatars/${user.avatar}.png`, `avatars/${createdUser.user_id}`);
-                    await fs.unlink(`./temp/avatars/${user.avatar}.png`);
+                    await fs.writeFile(`/tmp/avatars/${user.avatar}.png`, new Uint8Array(avatarBuffer));
+                    await uploadFile(`/tmp/avatars/${user.avatar}.png`, `avatars/${createdUser.user_id}`);
+                    await fs.unlink(`/tmp/avatars/${user.avatar}.png`);
                 }
 
                 const avatar = user.avatar?.length ? `https://uploads.share.surf/share/avatars/${createdUser.user_id}` : "/images/default.jpg";

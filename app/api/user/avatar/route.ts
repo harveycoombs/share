@@ -19,11 +19,11 @@ export async function PUT(request: any) {
     const file = files[0];
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    await fs.writeFile(`./temp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
+    await fs.writeFile(`/tmp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
 
-    await uploadFile(`./temp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `avatars/${user.user_id}`);
+    await uploadFile(`/tmp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `avatars/${user.user_id}`);
 
-    await fs.unlink(`./temp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
+    await fs.unlink(`/tmp/avatars/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
 
     return NextResponse.json({ uploaded: true }, { status: 200 });
 }

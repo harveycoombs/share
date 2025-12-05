@@ -46,23 +46,17 @@ export async function POST(request: Request): Promise<NextResponse> {
     if (!uploadid?.length) return NextResponse.json({ error: "Unable to record upload in database." }, { status: 500 });
 
     try {
-        await fs.access("./temp");
-    } catch {
-        await fs.mkdir("./temp");
-    }
-
-    try {
         if (files.length == 1) {
             const file = files[0];
 
             if (!(file instanceof File)) return NextResponse.json({ error: "Invalid file." }, { status: 400 });
 
             const buffer = Buffer.from(await file.arrayBuffer());
-            await fs.writeFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
+            await fs.writeFile(`/tmp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
 
-            await uploadFile(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `uploads/${uploadid}`);
+            await uploadFile(`/tmp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `uploads/${uploadid}`);
 
-            await fs.unlink(`./temp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
+            await fs.unlink(`/tmp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
 
             return NextResponse.json({ id: uploadid }, { status: 200 });
         }
@@ -81,11 +75,11 @@ export async function POST(request: Request): Promise<NextResponse> {
         }
 
         const buffer = await zip.toBufferPromise();
-        await fs.writeFile("./temp/files.zip", new Uint8Array(buffer));
+        await fs.writeFile("/tmp/files.zip", new Uint8Array(buffer));
 
-        await uploadFile("./temp/files.zip", `uploads/${uploadid}`);
+        await uploadFile("/tmp/files.zip", `uploads/${uploadid}`);
 
-        await fs.unlink("./temp/files.zip");
+        await fs.unlink("/tmp/files.zip");
 
         return NextResponse.json({ id: uploadid }, { status: 200 });
     } catch (ex: any) {
