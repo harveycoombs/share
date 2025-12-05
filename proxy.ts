@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-import { verifyUploadPassword, incrementUploadViews } from "@/lib/uploads";
+import { verifyUploadPassword, incrementUploadViews, checkPasswordIsSet } from "@/lib/uploads";
 
 export async function proxy(request: NextRequest) {
     const url = request.nextUrl;
@@ -12,7 +12,9 @@ export async function proxy(request: NextRequest) {
     const id = pathname.slice(9);
     const password = request.headers.get("Share-Upload-Password");
 
-    if (!password) return NextResponse.redirect(`https://share.surf/protected/${id}`);
+    const passwordSet = await checkPasswordIsSet(id);
+
+    if (!password && passwordSet) return NextResponse.redirect(`https://share.surf/protected/${id}`);
 
     const valid = await verifyUploadPassword(id, password ?? "");
     if (!valid) return NextResponse.json({ error: "Invalid password." }, { status: 401 });

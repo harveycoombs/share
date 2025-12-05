@@ -58,3 +58,8 @@ export async function incrementUploadViews(id: string): Promise<boolean> {
     const result = await pool.query("UPDATE share.uploads SET views = views + 1 WHERE upload_id = $1", [id]);
     return result.rowCount ? result.rowCount > 0 : false;
 }
+
+export async function checkPasswordIsSet(id: string): Promise<boolean> {
+    const passwordHash = await getUploadPasswordHash(id);
+    return passwordHash.length > 0;
+}
