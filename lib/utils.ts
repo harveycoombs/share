@@ -1,3 +1,5 @@
+import fs from "fs/promises";
+
 export function formatBytes(bytes: number): string {
     if (!bytes) return "0 B";
 
@@ -27,5 +29,16 @@ export function formatTime(ms: number): string {
         case (ms >= 86400000):
         default:
             return `${ms}ms`;
+    }
+}
+
+export async function checkDirectoryExists(path: string): Promise<boolean> {
+    if (!path.length) return false;
+
+    try {
+        await fs.access(path);
+        return true;
+    } catch {
+        return false;
     }
 }
