@@ -7,7 +7,6 @@ import mime from "mime";
 import { insertUploadHistory, getUploadHistory, renameUpload, deleteUpload } from "@/lib/uploads";
 import { authenticate } from "@/lib/jwt";
 import { uploadFile, deleteFile } from "@/lib/files";
-import { checkDirectoryExists } from "@/lib/utils";
 
 export const maxRequestBodySize = "4gb";
 
@@ -46,7 +45,9 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!uploadid?.length) return NextResponse.json({ error: "Unable to record upload in database." }, { status: 500 });
 
-    if (!await checkDirectoryExists("./temp")) {
+    try {
+        await fs.access("./temp");
+    } catch {
         await fs.mkdir("./temp");
     }
 
