@@ -1,4 +1,4 @@
-import fs from "fs/promises";
+import * as fs from "fs/promises";
 
 export function formatBytes(bytes: number): string {
     if (!bytes) return "0 B";
