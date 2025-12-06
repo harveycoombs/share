@@ -12,7 +12,7 @@ export async function getUploadHistory(userid: string, search: string = ""): Pro
 
     const { data, error } = await query;
 
-    if (error?.message?.length) throw new Error(error.message);
+    if (error) throw error;
 
     return (data ?? []).map(row => ({ ...row, available: 0 }));
 }
@@ -32,7 +32,7 @@ export async function insertUploadHistory(userid: string, title: string, ip: str
         content_type: contentType,
     }).select("upload_id").single();
 
-    if (error?.message?.length) throw new Error(error.message);
+    if (error) throw error;
 
     return data?.upload_id ?? "";
 }
@@ -50,7 +50,7 @@ export async function renameUpload(userid: string, id: string, name: string): Pr
 export async function checkUploadProtection(id: string): Promise<boolean> {
     const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).single();
 
-    if (error?.message?.length) throw new Error(error.message);
+    if (error) throw error;
 
     return (data?.password?.length ?? 0) > 0;
 }
@@ -58,7 +58,7 @@ export async function checkUploadProtection(id: string): Promise<boolean> {
 export async function getUploadPasswordHash(id: string): Promise<string> {
     const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).single();
 
-    if (error?.message?.length) throw new Error(error.message);
+    if (error) throw error;
 
     return data?.password ?? "";
 }
