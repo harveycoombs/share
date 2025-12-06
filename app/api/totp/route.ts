@@ -17,8 +17,6 @@ export async function GET(request: Request): Promise<NextResponse> {
     const secret = await getUserTOTPSecret(email);
     const valid = totp.verify({ token, secret });
 
-    console.log(email, secret, token, valid);
-
     if (!valid) return NextResponse.json({ error: "Invalid token." }, { status: 400 });
 
     const response = NextResponse.json({ success: true }, { status: 200 });
