@@ -56,7 +56,7 @@ export default function Home() {
 
             if (!uploadid.length) return;
 
-            const url = await getUploadURL(`uploads/${uploadid}/${title}`);
+            const url = await getUploadURL(`uploads/${uploadid}`);
 
             if (!url.length) return;
     
