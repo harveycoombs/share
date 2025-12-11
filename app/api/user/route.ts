@@ -6,7 +6,7 @@ import { Resend } from "resend";
 import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword, updateUserAuthCode } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
 import { deleteUpload, getUploadHistory } from "@/lib/uploads";
-import { deleteFile } from "@/lib/files";
+import { deleteFile } from "@/lib/storage";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -32,7 +32,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY}`,
+        body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY!}`,
     });
 
     if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
@@ -48,7 +48,7 @@ export async function POST(request: Request): Promise<NextResponse> {
             const updated = await updateUserAuthCode(email, code);
 
             if (updated) {
-                const resend = new Resend(process.env.RESEND_API_KEY);
+                const resend = new Resend(process.env.RESEND_API_KEY!);
 
                 resend.emails.send({
                     from: "noreply@share.surf",
@@ -102,7 +102,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
             const updated = await updateUserAuthCode(email, code);
 
             if (updated) {
-                const resend = new Resend(process.env.RESEND_API_KEY);
+                const resend = new Resend(process.env.RESEND_API_KEY!);
 
                 resend.emails.send({
                     from: "noreply@share.surf",

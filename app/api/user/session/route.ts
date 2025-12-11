@@ -5,7 +5,7 @@ import { Resend } from "resend";
 import { checkUserVerification, getUserByEmailAddress, updateUserAuthCode, verifyCredentials, getUserTOTPSecret } from "@/lib/users";
 import { authenticate, createJWT } from "@/lib/jwt";
 import { generateCode } from "@/lib/utils";
-import { getFileMetadata } from "@/lib/files";
+import { getFileMetadata } from "@/lib/storage";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -41,7 +41,7 @@ export async function POST(request: Request): Promise<NextResponse> {
                 const updated = await updateUserAuthCode(email, code);
     
                 if (updated) {
-                    const resend = new Resend(process.env.RESEND_API_KEY);
+                    const resend = new Resend(process.env.RESEND_API_KEY!);
 
                     resend.emails.send({
                         from: "noreply@share.surf",

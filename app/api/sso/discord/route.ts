@@ -4,7 +4,6 @@ import fs from "fs/promises";
 
 import { createUserFromDiscord, emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
-import { uploadFile } from "@/lib/files";
 
 export async function GET(request: NextRequest) {
     try {
@@ -18,8 +17,8 @@ export async function GET(request: NextRequest) {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({
-                client_id: process.env.DISCORD_CLIENT_ID ?? "",
-                client_secret: process.env.DISCORD_CLIENT_SECRET ?? "",
+                client_id: process.env.DISCORD_CLIENT_ID!,
+                client_secret: process.env.DISCORD_CLIENT_SECRET!,
                 grant_type: "authorization_code",
                 code,
                 redirect_uri: "https://share.surf/api/sso/discord",
@@ -74,7 +73,7 @@ export async function GET(request: NextRequest) {
                     const avatarBuffer = await avatarResponse.arrayBuffer();
 
                     await fs.writeFile(`/tmp/avatars/${user.avatar}.png`, new Uint8Array(avatarBuffer));
-                    await uploadFile(`/tmp/avatars/${user.avatar}.png`, `avatars/${createdUser.user_id}`);
+                    //await uploadFile(`/tmp/avatars/${user.avatar}.png`, `avatars/${createdUser.user_id}`);
                     await fs.unlink(`/tmp/avatars/${user.avatar}.png`);
                 }
 

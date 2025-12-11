@@ -17,7 +17,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY}`,
+        body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY!}`,
     });
 
     if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
@@ -30,7 +30,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const user = await authenticate(token ?? "");
     
     try {
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = new Resend(process.env.RESEND_API_KEY!);
 
         resend.emails.send({
             from: "noreply@share.surf",

@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
+import JSZip from "jszip";
 
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
@@ -48,47 +49,114 @@ export default function Home() {
 
         const start = new Date().getTime();
 
-        const data = new FormData();
+        const title = (files.length > 1) ? "files.zip" : files[0].name;
 
-        data.append("password", password);
-        for (let file of files) data.append("files", file);
+        (async () => {
+            const uploadid = await insertUpload(title);
 
-        const request = new XMLHttpRequest();
+            if (!uploadid.length) return;
 
-        request.open("POST", "/api/uploads", true);
-        request.responseType = "json";
+            const url = await getUploadURL(`${uploadid}/${title}`);
 
-        request.upload.addEventListener("progress", (e: ProgressEvent) => {
-            if (!e.lengthComputable) return;
-            setProgress((e.loaded / e.total) * 100);
-        });
+            if (!url.length) return;
+    
+            const request = new XMLHttpRequest();
+            request.open("PUT", url, true);
 
-        request.addEventListener("readystatechange", (e: any) => {
-            if (e.target.readyState != 4) return;
+            const data = new FormData();
 
-            setLoading(false);
+            if (files.length > 1) {
+                const zip = new JSZip();
 
-            const end = new Date().getTime();
+                for (const file of files) zip.file(file.name, await file.arrayBuffer());
+                const content = await zip.generateAsync({ type: "blob" });
 
-            switch (e.target.status) {
-                case 200:
-                    setID(e.target.response.id);
-                    setUploadTime(formatTime(end - start));
-                    break;
-                case 413:
-                    setError("File is too large");
-                    break;
-                case 408:
-                    setError("Server timed out");
-                    break;
-                default:
-                    setError("Something went wrong");
-                    break;
+                data.append("file", content, title);
+            } else {
+                data.append("files", files[0]);
             }
+
+            request.upload.addEventListener("progress", (e: ProgressEvent) => {
+                if (!e.lengthComputable) return;
+                setProgress((e.loaded / e.total) * 100);
+            });
+    
+            request.addEventListener("readystatechange", (e: any) => {
+                if (e.target.readyState != 4) return;
+    
+                setLoading(false);
+    
+                const end = new Date().getTime();
+                setUploadTime(formatTime(end - start));
+    
+                switch (e.target.status) {
+                    case 200:
+                    case 201:
+                        setID(uploadid);
+                        break;
+                    case 413:
+                        setError("File is too large");
+                        break;
+                    case 408:
+                        setError("Server timed out");
+                        break;
+                    default:
+                        setError("Something went wrong");
+                        break;
+                }
+            });
+
+            request.send(data);
+        })();
+    }, [files]);
+
+    useEffect(() => {
+        window.addEventListener("paste", handlePaste);
+        return () => window.removeEventListener("paste", handlePaste);
+    }, []);
+
+    useEffect(() => setPassword(""), [passwordFieldIsVisible]);
+    
+    async function insertUpload(title: string): Promise<string> {
+        if (!files?.length) return "";
+
+        const size = Array.from(files).reduce((total: number, file: File) => total + file.size, 0);
+        const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
+
+        const response = await fetch("/api/uploads", {
+            method: "POST",
+            body: JSON.stringify({ title, size, contentType, password, total: files.length })
         });
 
-        request.send(data);
-    }, [files]);
+        const data = await response.json();
+
+        switch (response.status) {
+            case 413:
+                setError("File is too large");
+                break;
+            case 408:
+                setError("Server timed out");
+                break;
+            case 500:
+                setError("Something went wrong");
+                break;
+        }
+
+        return data.uploadid ?? "";
+    }
+
+    async function getUploadURL(path: string) {
+        const response = await fetch(`/api/uploads/url?filename=${path}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            setError("An internal server error occurred");
+            setLoading(false);
+            return "";
+        }
+
+        return data.url ?? "";
+    }
 
     const resetUploader = useCallback(() => {
         setID("");
@@ -162,13 +230,6 @@ export default function Home() {
         setFiles(transfer.files);
         uploader.current?.dispatchEvent(new Event("change"));
     }
-
-    useEffect(() => {
-        window.addEventListener("paste", handlePaste);
-        return () => window.removeEventListener("paste", handlePaste);
-    }, []);
-
-    useEffect(() => setPassword(""), [passwordFieldIsVisible]);
 
     const browseFiles = useCallback(() => {
         uploader.current?.removeAttribute("webkitdirectory");

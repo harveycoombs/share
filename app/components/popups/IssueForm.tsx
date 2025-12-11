@@ -81,7 +81,7 @@ export default function IssueForm({ onClose }: Properties) {
 
                 <div className="mt-5 mb-4.5 w-fit relative left-1/2 -translate-x-1/2">
                     <HCaptcha
-                        sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
+                        sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY!}
                         onVerify={(token, _) => setCaptchaToken(token)}
                     />
                 </div>

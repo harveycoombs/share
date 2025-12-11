@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import * as fs from "fs/promises";
-import AdmZip from "adm-zip";
 import mime from "mime";
 
 import { insertUploadHistory, getUploadHistory, renameUpload, deleteUpload } from "@/lib/uploads";
 import { authenticate } from "@/lib/jwt";
-import { uploadFile, deleteFile } from "@/lib/files";
+import { deleteFile } from "@/lib/storage";
 
 export const maxRequestBodySize = "4gb";
 
@@ -24,67 +22,26 @@ export async function GET(request: Request): Promise<NextResponse> {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.formData();
-    const files: any[] = data.getAll("files");
-    const password = data.get("password")?.toString() ?? "";
+    const data = await request.json();
 
-    if (!files.length) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
+    const total = data.total ?? 0;
+    const size = data.size ?? 0;
 
-    if (files.reduce((total: number, file: any) => total + file.size, 0) > 750000000) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
+    if (!total) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
+    if (size > 750000000) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
+
+    const title = data.title ?? "";
+    const contentType = data.contentType ?? "";
+    const password = data.password ?? "";
+    
+    const ip = (request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host")) ?? "";
 
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
 
-    const title = (files.length == 1) ? files[0].name : new Date().getTime().toString();
-    const ip = (request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host")) ?? "";
-    const size = files.map(file => file.size).reduce((a, b) => a + b, 0);
-    const contentType = (files.length > 1) ? "application/zip" : (mime.getType(files[0].name) ?? "application/octet-stream");
-
-    const uploadid = await insertUploadHistory(user?.user_id, title, ip, files.length, size, password, contentType);
-
-    if (!uploadid?.length) return NextResponse.json({ error: "Unable to record upload in database." }, { status: 500 });
-
-    try {
-        if (files.length == 1) {
-            const file = files[0];
-
-            if (!(file instanceof File)) return NextResponse.json({ error: "Invalid file." }, { status: 400 });
-
-            const buffer = Buffer.from(await file.arrayBuffer());
-            await fs.writeFile(`/tmp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, new Uint8Array(buffer));
-
-            await uploadFile(`/tmp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`, `uploads/${uploadid}`);
-
-            await fs.unlink(`/tmp/${file.name.substring(file.name.lastIndexOf("/") + 1)}`);
-
-            return NextResponse.json({ id: uploadid }, { status: 200 });
-        }
-    } catch (ex: any) {
-        return NextResponse.json({ error: `Unable to upload file: ${ex.message}` }, { status: 500 });
-    }
-
-    try {
-        const zip = new AdmZip();
-
-        for (const file of files) {
-            if (!(file instanceof File)) continue;
-            
-            const buffer = Buffer.from(await file.arrayBuffer());
-            zip.addFile(file.name.substring(file.name.lastIndexOf("/") + 1), buffer);
-        }
-
-        const buffer = await zip.toBufferPromise();
-        await fs.writeFile("/tmp/files.zip", new Uint8Array(buffer));
-
-        await uploadFile("/tmp/files.zip", `uploads/${uploadid}`);
-
-        await fs.unlink("/tmp/files.zip");
-
-        return NextResponse.json({ id: uploadid }, { status: 200 });
-    } catch (ex: any) {
-        return NextResponse.json({ error: `Unable to upload files: ${ex.message}` }, { status: 500 });
-    }
+    const uploadid = await insertUploadHistory(user?.user_id, title, ip, total, size, password, contentType);
+    return NextResponse.json({ uploadid }, { status: 200 });
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {
