@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
-import { uploadFile } from "@/lib/files";
+import { uploadFile } from "@/lib/storage";
 import { authenticate } from "@/lib/jwt";
 import { cookies } from "next/headers";
 
