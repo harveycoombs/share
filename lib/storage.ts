@@ -15,7 +15,8 @@ const client = new S3Client({
 export async function getSignedURL(key: string): Promise<string> {
     const command = new PutObjectCommand({
         Bucket: process.env.R2_BUCKET!,
-        Key: key
+        Key: key,
+        ContentType: mime.getType(key) || "application/octet-stream"
     });
     
     return await getSignedUrl(client, command, { expiresIn: 120 });

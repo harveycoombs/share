@@ -50,9 +50,10 @@ export default function Home() {
         const start = new Date().getTime();
 
         const title = (files.length > 1) ? "files.zip" : files[0].name;
+        const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
 
         (async () => {
-            const uploadid = await insertUpload(title);
+            const uploadid = await insertUpload(title, contentType);
 
             if (!uploadid.length) return;
 
@@ -61,9 +62,11 @@ export default function Home() {
             if (!url.length) return;
     
             const request = new XMLHttpRequest();
-            request.open("PUT", url, true);
 
-            const data = new FormData();
+            request.open("PUT", url, true);
+            request.setRequestHeader("Content-Type", contentType);
+
+            let file;
 
             if (files.length > 1) {
                 const zip = new JSZip();
@@ -71,9 +74,9 @@ export default function Home() {
                 for (const file of files) zip.file(file.name, await file.arrayBuffer());
                 const content = await zip.generateAsync({ type: "blob" });
 
-                data.append("file", content, title);
+                file = new File([content], title, { type: contentType });
             } else {
-                data.append("files", files[0]);
+                file = files[0];
             }
 
             request.upload.addEventListener("progress", (e: ProgressEvent) => {
@@ -106,7 +109,7 @@ export default function Home() {
                 }
             });
 
-            request.send(data);
+            request.send(file);
         })();
     }, [files]);
 
@@ -117,11 +120,10 @@ export default function Home() {
 
     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
     
-    async function insertUpload(title: string): Promise<string> {
+    async function insertUpload(title: string, contentType: string): Promise<string> {
         if (!files?.length) return "";
 
         const size = Array.from(files).reduce((total: number, file: File) => total + file.size, 0);
-        const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
 
         const response = await fetch("/api/uploads", {
             method: "POST",
