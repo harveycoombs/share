@@ -61,7 +61,7 @@ export default async function RootLayout({
                 <link rel="canonical" href="https://share.surf" />
             </head>
 
-            <body className={`${monaSans.className} h-screen bg-white text-slate-800 overflow-x-hidden`}>
+            <body className={`${monaSans.className} h-screen bg-white text-slate-800 overflow-hidden dark:bg-zinc-950 dark:text-white`}>
                 <UserProvider user={user}>
                     <Header />
                     {children}

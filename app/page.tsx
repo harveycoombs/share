@@ -248,20 +248,11 @@ export default function Home() {
     }, [uploader]);
 
     return (
-        <main className={`${sessionExists ? "min-h-[calc(100vh-112px)]" : "min-h-[calc(100vh-119px)]"} grid place-items-center`} onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-            <motion.section
-                className="select-none max-sm:w-full max-sm:px-4"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-            >
+        <main className="min-h-[calc(100vh-202px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <section className="select-none max-sm:w-full max-sm:px-4">
                 <div className="mb-16">
-                    <div className="w-fit mx-auto flex items-center gap-4">
-                        <Logo width={56} height={56} className="" />
-                        <h1 className="text-5xl font-bold leading-none">share.surf</h1>
-                    </div>
-
-                    <h2 className="block font-medium text-slate-400 mt-4 text-center">The no-frills file sharing service</h2>
+                    <Logo width={173} height={76} className="block w-fit mx-auto flex items-center gap-4" />
+                    <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-500">The no-frills file sharing service</h2>
                 </div>
                 
                 {id.length > 0 && (
@@ -270,7 +261,7 @@ export default function Home() {
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
-                            <div className="text-sm font-medium text-slate-400 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
+                            <div className="text-sm font-medium text-slate-400 leading-none dark:text-zinc-500"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
                         </div>
                     </div>
                 )}
@@ -291,18 +282,15 @@ export default function Home() {
 
                 {loading && progress >= 100 && (
                     <div className="w-115 mx-auto text-center max-sm:w-full">
-                        <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
+                        <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60 dark:text-zinc-500"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
                     </div>
                 )}
 
                 {!loading && !id.length && (
                     <div className="w-115 mx-auto max-sm:w-full">
-                        <Notice color={error.length ? "red" : "indigo"}>
-                            <FontAwesomeIcon icon={error.length ? faExclamationCircle : faInfoCircle} className={error.length ? "mr-1.5" : "mr-1.5 text-base translate-y-0.25"} />
-                            {error.length ? error : "Drag or paste files onto this page to upload"}
-                        </Notice>
+                        <Notice color={error.length ? "red" : "blue"}>{error.length ? error : "Drag or paste files onto this page to upload"}</Notice>
 
-                        <div className={`flex justify-between items-center p-2.5 rounded-xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
+                        <div className={`flex justify-between items-center p-2.5 rounded-2xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
                             <div>
                                 <Button onClick={browseFiles} classes={`inline-block align-middle${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>Browse Files</Button>
                                 
@@ -344,14 +332,14 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:justify-center">
+                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:justify-center dark:text-zinc-500">
                             <div>Expires after 48 hours</div>
                             <div className="hidden mx-2 max-sm:block">&middot;</div>
                             <div>750MB upload limit</div>
                         </div>
                     </div>
                 )}
-            </motion.section>
+            </section>
 
             <input 
                 type="file"

@@ -127,11 +127,11 @@ export default function RegistrationForm() {
             </div>
 
             <div className="text-sm text-center text-slate-400 select-none my-5 flex items-center justify-center gap-2">
-                <input type="checkbox" className="w-4 h-4 accent-indigo-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
+                <input type="checkbox" className="w-4 h-4 accent-blue-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
 
                 <div>
                     I agree to the
-                    <Link href="/documents/terms-of-service.pdf" className="text-indigo-500 font-semibold ml-1.25 hover:underline">Terms of Service</Link>
+                    <Link href="/documents/terms-of-service.pdf" className="text-blue-500 font-semibold ml-1.25 hover:underline">Terms of Service</Link>
                 </div>
             </div>
 
@@ -139,7 +139,7 @@ export default function RegistrationForm() {
             
             <div className="text-sm text-center text-slate-400 select-none my-5">
                 Already have an account?
-                <Link href="/signin" className="text-indigo-500 font-semibold ml-1.25 hover:underline">Sign In</Link>
+                <Link href="/signin" className="text-blue-500 font-semibold ml-1.25 hover:underline">Sign In</Link>
             </div>
 
             <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
@@ -148,7 +148,7 @@ export default function RegistrationForm() {
             
             <div className="grid grid-cols-3 gap-2">
                 <div></div>
-                <SSOButton icon={faDiscord} classes="hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-500 hover:border-indigo-300" title="Sign up with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fsso%2Fdiscord&scope=identify+email" />
+                <SSOButton icon={faDiscord} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign up with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fsso%2Fdiscord&scope=identify+email" />
                 <div></div>
             </div>
         </div>

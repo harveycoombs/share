@@ -129,7 +129,7 @@ function getTypeColors(contentType: string) {
         case "application":
             return { icon: "text-amber-400", background: "from-amber-50/70 to-amber-100/70", border: "border-amber-300/65" };
         default:
-            return { icon: "text-indigo-400", background: "from-indigo-50/70 to-indigo-100/70", border: "border-indigo-300/65" };
+            return { icon: "text-blue-400", background: "from-blue-50/70 to-blue-100/70", border: "border-blue-300/65" };
     }
 }
 
@@ -242,7 +242,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                     <UploadOption icon={deletionIntent ? faCheck : faTrashAlt} title={deletionIntent ? "Confirm Deletion" : "Delete"} onClick={deleteUpload} loading={deleteLoading} />
                     {deletionIntent && !deleteLoading && <UploadOption icon={faXmark} title="Cancel Deletion" onClick={() => setDeletionIntent(false)} />}
 
-                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-indigo-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
+                    {bulkSelect && <input type="checkbox" className="w-4 h-4 ml-1 accent-blue-500" onInput={(e: any) => onSelect(e, data.upload_id)} />}
                 </div>
             </motion.div>
         </AnimatePresence>

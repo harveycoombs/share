@@ -9,7 +9,7 @@ export default function NotFound() {
                 <FontAwesomeIcon icon={faCircleQuestion} className="block text-6xl text-red-500" />
 
                 <h1 className="block font-semibold text-2xl mt-4">Page Not Found</h1>
-                <p className="block font-medium mt-3 text-slate-400">The page you are looking for was does not exist or no longer exists.</p>
+                <p className="block font-medium mt-3 text-slate-400 dark:text-zinc-500">The page you are looking for was does not exist or no longer exists.</p>
 
                 <Button classes="block w-fit mx-auto mt-5.5" url="/">Take Me Home</Button>
             </section>

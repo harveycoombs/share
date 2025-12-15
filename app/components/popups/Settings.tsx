@@ -247,5 +247,5 @@ export default function Settings({ onClose }: Properties) {
 }
 
 function SettingsSectionTab({ name, selected = false, ...rest }: any) {
-    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-[0.8rem] select-none ${selected ? "border-indigo-500 text-indigo-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-indigo-500 hover:text-indigo-500`} {...rest}>{name}</div>;
+    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-[0.8rem] select-none ${selected ? "border-blue-500 text-blue-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-blue-500 hover:text-blue-500`} {...rest}>{name}</div>;
 }

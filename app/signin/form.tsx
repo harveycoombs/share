@@ -76,11 +76,11 @@ export default function LoginForm() {
             <Button classes="block w-full mt-2.5" loading={loading}>Continue</Button>
 
             <div className="text-sm text-center text-slate-400 select-none mt-5">
-                Don&apos;t have an account?<Link href="/signup" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Sign Up</Link>
+                Don&apos;t have an account?<Link href="/signup" className="text-blue-500 font-semibold ml-1.5 hover:underline">Sign Up</Link>
             </div>
 
             <div className="text-sm text-center text-slate-400 select-none mt-2.5">
-                Can&apos;t sign in?<Link href="/recover" className="text-indigo-500 font-semibold ml-1.5 hover:underline">Recover Account</Link>
+                Can&apos;t sign in?<Link href="/recover" className="text-blue-500 font-semibold ml-1.5 hover:underline">Recover Account</Link>
             </div>
 
             <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
@@ -89,7 +89,7 @@ export default function LoginForm() {
             
             <div className="grid grid-cols-3 gap-2">
                 <div></div>
-                <SSOButton icon={faDiscord} classes="hover:from-indigo-50 hover:to-indigo-100 hover:text-indigo-500 hover:border-indigo-300" title="Sign in with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fsso%2Fdiscord&scope=identify+email" />
+                <SSOButton icon={faDiscord} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign in with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fsso%2Fdiscord&scope=identify+email" />
                 <div></div>
             </div>
         </form>

@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useContext, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
@@ -43,47 +44,57 @@ export default function Header() {
     }, []);
     
     return (
-        <header className="p-3.5 flex justify-between select-none">
-            <Link href="/" className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${!user ? "max-sm:hidden" : ""}`} draggable={false}>
-                <Logo width={30} height={30} className="block" />
-            </Link>
+        <motion.header
+            initial={{ opacity: 0, y: -100 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -100 }}
+            transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
+            className="p-5 select-none"
+        >
+            <div className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center">
+                <Link href="/" className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${!user ? "max-sm:hidden" : ""}`} draggable={false}>
+                    <Logo width={68} height={30} className="block" />
+                </Link>
 
-            {user ? (
-                <nav className="relative">
-                    <Image 
-                        src={user.avatar || "/images/default.jpg"}
-                        alt={avatarLabel} 
-                        title={avatarLabel}
-                        width={32} 
-                        height={32}
-                        className="inline-block align-middle rounded object-cover aspect-square"
-                        draggable={false}
-                    />
+                <nav className="flex items-center gap-2.5 relative">
+                    {user ? (
+                        <>
+                            <Image 
+                                src={user.avatar || "/images/default.jpg"}
+                                alt={avatarLabel} 
+                                title={avatarLabel}
+                                width={39} 
+                                height={39}
+                                className="inline-block align-middle rounded-xl object-cover aspect-square"
+                                draggable={false}
+                            />
 
-                    <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px ml-5 cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
-                        <FontAwesomeIcon icon={faEllipsis} />
-                    </div>
-
-                    <AnimatePresence>
-                        {menuIsVisible && (
-                            <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
-                                <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
-                                <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
+                            <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                                <FontAwesomeIcon icon={faEllipsis} />
                             </div>
-                        )}
-                    </AnimatePresence>
+
+                            <AnimatePresence>
+                                {menuIsVisible && (
+                                    <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
+                                        <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
+                                        <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
+                                    </div>
+                                )}
+                            </AnimatePresence>                        
+                        </>
+                    ) : (
+                        <>
+                            <Button url="/signin" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
+                            <Button url="/signup" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
+                        </>
+                    )}
                 </nav>
-            ) : (
-                <nav className="max-sm:flex max-sm:w-full max-sm:gap-1">
-                    <Button url="/signin" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
-                    <Button url="/signup" classes="inline-block align-middle ml-2.5 max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
-                </nav>
-            )}
+            </div>
 
             <AnimatePresence>
                 {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
             </AnimatePresence>
-        </header>
+        </motion.header>
     );
 }
 
