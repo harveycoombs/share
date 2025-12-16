@@ -22,7 +22,7 @@ export default function Button({ children, url, square, classes = "", color = ""
             appearance = "bg-red-500 text-white font-semibold hover:bg-red-600 active:bg-red-700 active:scale-97";
             break;
         case "gray":
-            appearance = "bg-slate-100 text-slate-500 font-semibold hover:bg-slate-200 active:bg-slate-300/80 active:scale-97";
+            appearance = "bg-slate-100 text-slate-500 font-semibold hover:bg-slate-200 active:bg-slate-300/80 active:scale-97 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700/80 dark:active:bg-zinc-700";
             break;
         default:
             appearance = "bg-blue-500 text-white font-medium hover:bg-blue-600 active:bg-blue-700 active:scale-97";

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence } from "motion/react";
 
-import Logo from "@/app/components/common/Logo";
+import Icon from "@/app/components/common/Icon";
 import Button from "@/app/components/common/Button";
 import Settings from "@/app/components/popups/Settings";
 import { UserContext } from "@/app/context/UserContext";
@@ -51,9 +51,9 @@ export default function Header() {
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
             className="p-5 select-none"
         >
-            <div className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center">
+            <div className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center dark:border-zinc-700">
                 <Link href="/" className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${!user ? "max-sm:hidden" : ""}`} draggable={false}>
-                    <Logo width={68} height={30} className="block" />
+                    <Icon width={39} height={39} className="block" />
                 </Link>
 
                 <nav className="flex items-center gap-2.5 relative">
