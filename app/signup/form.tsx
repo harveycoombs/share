@@ -2,12 +2,12 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
-import { faDiscord } from "@fortawesome/free-brands-svg-icons";
+import { faDiscord, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
-import SSOButton from "@/app/components/common/SSOButton";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function RegistrationForm() {
     const [name, setName] = useState<string>("");
@@ -126,7 +126,7 @@ export default function RegistrationForm() {
                 />
             </div>
 
-            <div className="text-sm text-center text-slate-400 select-none my-5 flex items-center justify-center gap-2">
+            <div className="text-sm text-center text-slate-400 select-none my-5 flex items-center justify-center gap-2 dark:text-zinc-500">
                 <input type="checkbox" className="w-4 h-4 accent-blue-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
 
                 <div>
@@ -137,19 +137,23 @@ export default function RegistrationForm() {
 
             <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length || !consent} onClick={register}>Continue</Button>
             
-            <div className="text-sm text-center text-slate-400 select-none my-5">
+            <div className="text-sm text-center text-slate-400 select-none my-5 dark:text-zinc-500">
                 Already have an account?
                 <Link href="/signin" className="text-blue-500 font-semibold ml-1.25 hover:underline">Sign In</Link>
             </div>
 
             <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
-                <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center bg-white px-1.5">OR</span>
+                <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center bg-white px-1.5 dark:bg-zinc-950">OR</span>
             </div>
             
-            <div className="grid grid-cols-3 gap-2">
-                <div></div>
-                <SSOButton icon={faDiscord} classes="hover:from-blue-50 hover:to-blue-100 hover:text-blue-500 hover:border-blue-300" title="Sign up with Discord" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fsso%2Fdiscord&scope=identify+email" />
-                <div></div>
+            <div className="grid grid-cols-2 gap-2">
+                <Button color="gray" url="https://discord.com/oauth2/authorize?client_id=1394762759232819400&response_type=code&redirect_uri=https%3A%2F%2Fshare.surf%2Fapi%2Fsso%2Fdiscord&scope=identify+email">
+                    <FontAwesomeIcon icon={faDiscord} />
+                </Button>
+                
+                <Button color="gray" title="Currently Unavailable" disabled={true}>
+                    <FontAwesomeIcon icon={faGoogle} />
+                </Button>
             </div>
         </div>
     );

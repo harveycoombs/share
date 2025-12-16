@@ -25,14 +25,14 @@ export default function Popup({ title, onClose, children, classes, ...rest }: Pr
                 initial={{ scale: 0, opacity: 0 }} 
                 animate={{ scale: 1, opacity: 1, transition: { duration: 0.15, ease: "easeOut" }}} 
                 exit={{ scale: 0, opacity: 0, transition: { duration: 0.15, ease: "easeOut" }}}
-                className={`bg-white p-3 rounded-lg${classes?.length ? " " + classes : ""}`} 
+                className={`bg-white p-3 rounded-lg dark:bg-zinc-900 ${classes}`} 
                 {...rest}
             >
                 <div className="flex justify-between items-center leading-none pb-1.5">
-                    <strong className="text-sm font-medium text-slate-400/60 select-none">{title}</strong>
+                    <strong className="text-sm font-medium text-slate-400/60 select-none dark:text-zinc-500">{title}</strong>
 
                     <motion.div 
-                        className="text-slate-400/60 text-sm cursor-pointer duration-100 hover:text-red-500 active:text-red-600"
+                        className="text-slate-400/60 text-sm cursor-pointer duration-100 hover:text-red-500 active:text-red-600 dark:text-zinc-500"
                         onClick={onClose}
                         whileHover={{ 
                             scale: 1.1,

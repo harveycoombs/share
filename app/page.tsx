@@ -251,7 +251,7 @@ export default function Home() {
         <main className="min-h-[calc(100vh-202px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
             <section className="select-none max-sm:w-full max-sm:px-4">
                 <div className="mb-16">
-                    <Logo width={173} height={76} className="block w-fit mx-auto flex items-center gap-4" />
+                    <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto" />
                     <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-500">The no-frills file sharing service</h2>
                 </div>
                 

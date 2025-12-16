@@ -63,7 +63,7 @@ export default function Protected({ params }: any) {
     }, [url]);
 
     return (
-        <main className="min-h-[calc(100vh-117px)] grid place-items-center max-sm:min-h-[calc(100vh-135px)]">
+        <main className="min-h-[calc(100vh-101px)] grid place-items-center max-sm:min-h-[calc(100vh-135px)]">
             <section className="w-fit select-none">
                 <div className="w-fit mx-auto">
                     <div className="w-fit mx-auto max-sm:scale-90"><Logo width={288} height={56} className="dark:fill-white" /></div>
