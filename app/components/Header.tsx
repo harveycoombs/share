@@ -56,7 +56,7 @@ export default function Header() {
                     <Icon width={39} height={39} className="block" />
                 </Link>
 
-                <nav className="flex items-center gap-2.5 relative">
+                <nav className="flex items-center gap-2.5 relative max-sm:w-full">
                     {user ? (
                         <>
                             <Image 
@@ -84,8 +84,8 @@ export default function Header() {
                         </>
                     ) : (
                         <>
-                            <Button url="/signin" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2">Sign In</Button>
-                            <Button url="/signup" classes="inline-block align-middle max-sm:px-4 max-sm:py-2.75 max-sm:text-xs max-sm:w-1/2" color="gray">Sign Up</Button>
+                            <Button url="/signin" classes="inline-block align-middle max-sm:w-full">Sign In</Button>
+                            <Button url="/signup" classes="inline-block align-middle max-sm:w-full" color="gray">Sign Up</Button>
                         </>
                     )}
                 </nav>

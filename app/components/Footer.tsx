@@ -19,11 +19,11 @@ export default function Footer() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 100 }}
                 transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100, delay: 0.15 }}
-                className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center text-slate-400 text-sm font-medium dark:text-zinc-500 dark:border-zinc-700"
+                className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center text-slate-400 text-sm font-medium dark:text-zinc-500 dark:border-zinc-700 max-lg:flex-col max-lg:gap-2"
             >
                 <div>2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline" draggable={false}>Harvey Coombs</Link></div>
 
-                <div className="h-9.75"></div>
+                <div className="h-9.75 max-lg:hidden"></div>
 
                 <div className="flex items-center gap-4 max-sm:gap-3">
                     <Link href="https://www.paypal.com/donate/?hosted_button_id=228EPXK88WT9W" target="_blank" rel="noopener" draggable={false} className="text-amber-500 text-shadow-md text-shadow-amber-200 hover:underline dark:text-shadow-none">Donate</Link>
