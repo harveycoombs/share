@@ -119,17 +119,17 @@ function getTypeColors(contentType: string) {
 
     switch (contentType.split("/")[0]) {
         case "image":
-            return { icon: "text-emerald-400", background: "from-emerald-50/70 to-emerald-100/70", border: "border-emerald-300/65" };
+            return { icon: "text-emerald-400", background: "bg-emerald-100" };
         case "video":
-            return { icon: "text-rose-400", background: "from-rose-50/70 to-rose-100/70", border: "border-rose-300/65" };
+            return { icon: "text-rose-400", background: "bg-rose-100" };
         case "audio":
-            return { icon: "text-purple-400", background: "from-purple-50/70 to-purple-100/70", border: "border-purple-300/65" };
+            return { icon: "text-purple-400", background: "bg-purple-100" };
         case "text":
-            return { icon: "text-orange-400", background: "from-orange-50/70 to-orange-100/70", border: "border-orange-300/65" };
+            return { icon: "text-orange-400", background: "bg-orange-100" };
         case "application":
-            return { icon: "text-amber-400", background: "from-amber-50/70 to-amber-100/70", border: "border-amber-300/65" };
+            return { icon: "text-amber-400", background: "bg-amber-100" };
         default:
-            return { icon: "text-blue-400", background: "from-blue-50/70 to-blue-100/70", border: "border-blue-300/65" };
+            return { icon: "text-blue-400", background: "bg-blue-100" };
     }
 }
 
@@ -216,12 +216,12 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
-                className={`flex justify-between items-center p-2 rounded-lg border border-slate-300/70 bg-linear-to-t from-slate-100 to-slate-50/50 text-slate-600 relative overflow-hidden ${index ? "mt-2.5" : ""}`}
+                className={`flex justify-between items-center p-2 rounded-lg bg-slate-100 text-slate-600 relative overflow-hidden ${index ? "mt-2.5" : ""}`}
                 ref={uploadRef}
             >
                 {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
                 <div>
-                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded-md border ${colors.border} bg-linear-to-b ${colors.background} ${colors.icon} max-sm:hidden`}><FontAwesomeIcon icon={getTypeIcon(type)} /></div>
+                    <div className={`inline-grid place-items-center align-middle w-9.5 h-9.5 aspect-square mr-2.5 rounded-md ${colors.background} ${colors.icon} max-sm:hidden`}><FontAwesomeIcon icon={getTypeIcon(type)} /></div>
 
                     <div className="inline-block align-middle">
                         <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
