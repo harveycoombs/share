@@ -216,7 +216,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
-                className={`flex justify-between items-center p-2 rounded-lg bg-slate-100 text-slate-600 relative overflow-hidden ${index ? "mt-2.5" : ""}`}
+                className={`flex justify-between items-center p-2 rounded-lg bg-slate-50 text-slate-600 relative overflow-hidden ${index ? "mt-2.5" : ""}`}
                 ref={uploadRef}
             >
                 {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
