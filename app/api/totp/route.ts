@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { totp, authenticator } from "otplib";
+import { authenticator } from "otplib";
 import qrcode from "qrcode";
 
 import { authenticate, createJWT } from "@/lib/jwt";
@@ -15,7 +15,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     if (!email.length) return NextResponse.json({ error: "Missing email address." }, { status: 400 });
 
     const secret = await getUserTOTPSecret(email);
-    const valid = totp.verify({ token, secret });
+    const valid = authenticator.verify({ token, secret });
 
     if (!valid) return NextResponse.json({ error: "Invalid token." }, { status: 400 });
 
