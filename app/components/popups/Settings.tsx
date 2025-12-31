@@ -145,7 +145,7 @@ export default function Settings({ onClose }: Properties) {
     }, [setQRCode, setDetails, details]);
 
     return (
-        <Popup title="Account Settings" classes="w-120" onClose={onClose}>
+        <Popup title="Account Settings" classes="w-120 max-sm:w-full" onClose={onClose}>
             {loading ? (<div className="w-full h-89 grid place-items-center">
                 <div className="text-center">
                     <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-slate-400/60" />
@@ -182,35 +182,31 @@ export default function Settings({ onClose }: Properties) {
                     </div>
 
                     {section == "details" && (
-                        <div className="min-h-40 flex gap-3.5">
-                            <div className="w-1/2">
+                        <SettingsSection>
+                            <SettingsFieldContainer>
                                 <Label classes="block w-full">Name</Label>
                                 <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
-                            </div>
+                            </SettingsFieldContainer>
 
-                            <div className="w-1/2">
+                            <SettingsFieldContainer>
                                 <Label classes="block w-full">Email Address</Label>
                                 <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
-                            </div>
-                        </div>
+                            </SettingsFieldContainer>
+                        </SettingsSection>
                     )}
 
                     {section == "security" && (
-                        <div className="min-h-40">
-                            <div className="flex gap-3.5">
-                                <div className="w-1/2">
-                                    <Label classes="block w-full">Old Password</Label>
-                                    <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
-                                </div>
+                        <SettingsSection>
+                            <SettingsFieldContainer>
+                                <Label classes="block w-full">Old Password</Label>
+                                <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
 
-                                <div className="w-1/2">
-                                    <Label classes="block w-full">New Password</Label>
-                                    <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
-                                </div>
-                            </div>
+                                <Label classes="block w-full">New Password</Label>
+                                <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
+                            </SettingsFieldContainer>
 
-                            <div className="mt-3.5">
-                                <Label classes="block w-full">2-Factor Authentication</Label>
+                            <SettingsFieldContainer>
+                                <Label classes="block w-full">Multi-Factor Authentication</Label>
 
                                 {QRCode.length ? (
                                     <div className="flex gap-2 items-center">
@@ -222,13 +218,13 @@ export default function Settings({ onClose }: Properties) {
                                         </div>
                                     </div>
                                 ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
-                            </div>
-                        </div>
+                            </SettingsFieldContainer>
+                        </SettingsSection>
                     )}
 
                     {section == "platform" && (
-                        <div className="min-h-40">
-                        </div>
+                        <SettingsSection>
+                        </SettingsSection>
                     )}
 
                     <div className="flex mt-3.5 gap-3.5">
@@ -243,6 +239,22 @@ export default function Settings({ onClose }: Properties) {
                 </>
             )}
         </Popup>
+    );
+}
+
+function SettingsSection({ children }: any) {
+    return (
+        <div className="min-h-40 flex gap-3.5 max-sm:flex-col max-sm:min-h-0">
+            {children}
+        </div>
+    );
+}
+
+function SettingsFieldContainer({ children }: any) {
+    return (
+        <div className="w-1/2 max-sm:w-full">
+            {children}
+        </div>
     );
 }
 

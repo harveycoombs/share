@@ -68,7 +68,7 @@ export default function UploadHistory({ onClose }: Properties) {
     }
 
     return (
-        <Popup title="Upload History" onClose={onClose} classes="w-125 max-sm:w-15/16">
+        <Popup title="Upload History" onClose={onClose} classes="w-125 max-sm:w-full">
             <div className="sticky top-0 z-10 bg-white pt-1 pb-2.5">
                 <div className="w-full flex items-center justify-between">
                     <Field type="text" placeholder="Search" onInput={(e: any) => setSearch(e.target.value)} />

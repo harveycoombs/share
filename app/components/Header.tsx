@@ -56,7 +56,7 @@ export default function Header() {
                     <Icon width={39} height={39} className="block" />
                 </Link>
 
-                <nav className="flex items-center gap-2.5 relative max-sm:w-full">
+                <nav className={`flex items-center gap-2.5 relative ${!user ? "max-sm:w-full" : ""}`}>
                     {user ? (
                         <>
                             <Image 
