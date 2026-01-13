@@ -61,7 +61,7 @@ export default function Header() {
                             <AnimatePresence>
                                 {menuIsVisible && (
                                     <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
-                                        <HeaderSubMenuItem url={`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/   authorize`} first={true}>Settings</HeaderSubMenuItem>
+                                        <HeaderSubMenuItem url={`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/manage`} first={true}>Settings</HeaderSubMenuItem>
                                         <HeaderSubMenuItem url="/auth/logout" red={true}>Log out</HeaderSubMenuItem>
                                     </div>
                                 )}
