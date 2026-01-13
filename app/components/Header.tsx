@@ -1,9 +1,9 @@
 "use client";
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
+import { useState, useEffect, useCallback, useContext, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence } from "motion/react";
@@ -11,12 +11,27 @@ import { AnimatePresence } from "motion/react";
 import Icon from "@/app/components/common/Icon";
 import Button from "@/app/components/common/Button";
 import Settings from "@/app/components/popups/Settings";
+import { UserContext } from "@/app/context/UserContext";
 
 export default function Header() {
-    const { user } = useUser();
+    const path = usePathname();
+    const user = useContext(UserContext);
+
+    if (user && (path == "/signin" || path == "/signup")) {
+        window.location.href = "/";
+    }
+
+    if (path == "/signin" || path == "/signup" || path.startsWith("/verify") || path == "/authenticate") return null;
 
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
+
+    const logout = useCallback(async () => {
+        await fetch("/api/user/session", { method: "DELETE" });
+        window.location.reload();
+    }, []);
+
+    const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
 
     useEffect(() => {
         document.addEventListener("click", closeMenu);
@@ -45,9 +60,9 @@ export default function Header() {
                     {user ? (
                         <>
                             <Image 
-                                src={user.picture || "/images/default.jpg"}
-                                alt={`${user?.nickname} (You)`} 
-                                title={`${user?.nickname} (You)`}
+                                src={user.avatar || "/images/default.jpg"}
+                                alt={avatarLabel} 
+                                title={avatarLabel}
                                 width={39} 
                                 height={39}
                                 className="inline-block align-middle rounded-xl object-cover aspect-square"
@@ -61,18 +76,23 @@ export default function Header() {
                             <AnimatePresence>
                                 {menuIsVisible && (
                                     <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
-                                        <HeaderSubMenuItem url={`${process.env.NEXT_PUBLIC_AUTH0_DOMAIN}/manage`} first={true}>Settings</HeaderSubMenuItem>
-                                        <HeaderSubMenuItem url="/auth/logout" red={true}>Log out</HeaderSubMenuItem>
+                                        <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
+                                        <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
                                     </div>
                                 )}
-                            </AnimatePresence>
+                            </AnimatePresence>                        
                         </>
-                    ) : <Button url="/auth/login" classes="inline-block align-middle max-sm:w-full">Sign In</Button>}
+                    ) : (
+                        <>
+                            <Button url="/signin" classes="inline-block align-middle max-sm:w-full">Sign In</Button>
+                            <Button url="/signup" classes="inline-block align-middle max-sm:w-full" color="gray">Sign Up</Button>
+                        </>
+                    )}
                 </nav>
             </div>
 
             <AnimatePresence>
-                {settingsAreVisible && <Settings user={user} onClose={() => setSettingsVisibility(false)} />}
+                {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
             </AnimatePresence>
         </motion.header>
     );

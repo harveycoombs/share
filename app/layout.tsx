@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
+import { cookies } from "next/headers";
 
 import packageJson from "@/package.json";
 
@@ -8,6 +9,8 @@ import "./globals.css";
 
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
+import UserProvider from "@/app/context/UserContext";
+import { authenticate } from "@/lib/jwt";
 
 const monaSans = Mona_Sans({
     weight: ["400", "500", "600", "700", "800", "900"],
@@ -40,11 +43,15 @@ export const metadata: Metadata = {
     }
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children
 }: Readonly<{
     children: React.ReactNode;
 }>) {
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
+
     return (
         <html lang="en">
             <head>
@@ -55,9 +62,11 @@ export default function RootLayout({
             </head>
 
             <body className={`${monaSans.className} antialiased h-screen bg-white text-slate-800 overflow-x-hidden dark:bg-zinc-950 dark:text-white`}>
-                <Header />
-                {children}
-                <Footer />
+                <UserProvider user={user}>
+                    <Header />
+                    {children}
+                    <Footer />
+                </UserProvider>
             </body>
         </html>
     );

@@ -1,8 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useUser } from "@auth0/nextjs-auth0/client";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faStopwatch, faKey, faXmark, faFolderPlus, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import JSZip from "jszip";
 
@@ -14,10 +13,7 @@ import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
 import { formatTime } from "@/lib/utils";
 
-
 export default function Home() {
-    const { user } = useUser();
-    
     const [files, setFiles] = useState<FileList|null>(null);
     const [id, setID] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -28,10 +24,17 @@ export default function Home() {
     const [passwordFieldIsVisible, setPasswordFieldVisibility] = useState<boolean>(false);
     const [uploadTime, setUploadTime] = useState<string>("");
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
-
+    const [sessionExists, setSessionExistence] = useState<boolean>(false);
     const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
 
     const uploader = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch("/api/user/session");
+            setSessionExistence(response.ok);
+        })();
+    }, []);
 
     useEffect(() => {
         if (!files?.length) return;
@@ -303,7 +306,7 @@ export default function Home() {
                             </div>
 
                             <div className={`flex items-center gap-2.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
-                                <Button color="gray" square={true} title={user ? "View Upload History" : "Sign In To View Upload History"} onClick={() => user ? setHistoryVisibility(true) : setAccountPromptVisibility(true)}>
+                                <Button color="gray" square={true} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => sessionExists ? setHistoryVisibility(true) : setAccountPromptVisibility(true)}>
                                     <FontAwesomeIcon icon={faClockRotateLeft} />
                                 </Button>
 
@@ -313,7 +316,7 @@ export default function Home() {
                                             type="password"
                                             placeholder="Password"
                                             classes={passwordFieldIsVisible ? "max-sm:w-full max-sm:grow-1" : ""}
-                                            readOnly={!user}
+                                            readOnly={!sessionExists}
                                             onChange={(e: any) => setPassword(e.target.value)}
                                         />
 
@@ -322,7 +325,7 @@ export default function Home() {
                                         </div> 
                                     </div>
                                 ) : (
-                                    <Button color="gray" square={true} title={user ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => user ? setPasswordFieldVisibility(!!user) : setAccountPromptVisibility(true)}>
+                                    <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => sessionExists ? setPasswordFieldVisibility(sessionExists) : setAccountPromptVisibility(true)}>
                                         <FontAwesomeIcon icon={faKey} />
                                     </Button>
                                 )}
@@ -346,7 +349,7 @@ export default function Home() {
                 onInput={(e: any) => setFiles(e.target.files)}
             />
             <AnimatePresence>
-                {historyIsVisible && user && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
+                {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
             </AnimatePresence>
 
             <AnimatePresence>

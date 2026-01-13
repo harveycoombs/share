@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCamera, faCheck, faCircleNotch, faExclamationCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
@@ -13,13 +13,11 @@ import Notice from "@/app/components/common/Notice";
 import QRCodeViewer from "@/app/components/popups/QRCodeViewer";
 
 interface Properties {
-    user: any;
     onClose: () => void;
 }
 
-export default function Settings({ user, onClose }: Properties) {
-    if (!user) return null;
-
+export default function Settings({ onClose }: Properties) {
+    const [details, setDetails] = useState<any>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [section, setSection] = useState<string>("details");
 
@@ -43,6 +41,20 @@ export default function Settings({ user, onClose }: Properties) {
     const [updatingTOTP, setUpdatingTOTP] = useState<boolean>(false);
 
     const avatarUploader = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (updating || deleting || updatingTOTP) return;
+
+        setLoading(true);
+
+        (async () => {
+            const response = await fetch("/api/user");
+            const json = await response.json();
+
+            setDetails(json);
+            setLoading(false);
+        })();
+    }, [updating, deleting, updatingTOTP]);
 
     const updateDetails = useCallback(async () => {
         setUpdating(true);
@@ -108,28 +120,29 @@ export default function Settings({ user, onClose }: Properties) {
             return;
         }
 
-    }, [setError, user]);
+        setDetails(details);
+    }, [setError, setDetails, details]);
 
     const enableTOTP = useCallback(async () => {
         setUpdatingTOTP(true);
 
         const response = await fetch("/api/totp", {
             method: "POST",
-            body: JSON.stringify({ email: user.email })
+            body: JSON.stringify({ email: details.email_address })
         });
         const json = await response.json();
 
         setUpdatingTOTP(false);
 
         setQRCode(json.qr);
-    }, [setQRCode, user]);
+    }, [setQRCode, details]);
 
     const disableTOTP = useCallback(async () => {
         setUpdatingTOTP(true);
         await fetch("/api/totp", { method: "DELETE" });
         setUpdatingTOTP(false);
         setQRCode("");
-    }, [setQRCode, user]);
+    }, [setQRCode, setDetails, details]);
 
     return (
         <Popup title="Account Settings" classes="w-120 max-sm:w-full" onClose={onClose}>
@@ -149,7 +162,7 @@ export default function Settings({ user, onClose }: Properties) {
 
                     <div className="flex gap-3.5 items-center w-fit mx-auto my-4 select-none">
                         <div className="relative rounded-md overflow-hidden cursor-pointer group" onClick={() => avatarUploader.current?.click()}>
-                            <Image src={user.picture || "/images/default.jpg"} alt={`${user.nickname}'s avatar`} width={58} height={58} className="object-cover aspect-square" draggable={false} />
+                            <Image src={details?.avatar || "/images/default.jpg"} alt={`${details?.name}'s avatar`} width={58} height={58} className="object-cover aspect-square" draggable={false} />
                             <div className="absolute inset-0 bg-black/60 place-items-center hidden pointer-events-none group-hover:grid">
                                 <FontAwesomeIcon icon={faCamera} className="text-white" />
                             </div>
@@ -158,8 +171,8 @@ export default function Settings({ user, onClose }: Properties) {
                         </div>
 
                         <div>
-                            <strong className="block font-bold">{user.nickname}</strong>
-                            <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(user.created_at).toLocaleDateString()}</div>
+                            <strong className="block font-bold">{details?.name}</strong>
+                            <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
                         </div>
                     </div>
 
@@ -172,12 +185,12 @@ export default function Settings({ user, onClose }: Properties) {
                         <SettingsSection>
                             <SettingsFieldContainer>
                                 <Label classes="block w-full">Name</Label>
-                                <Field classes="block w-full" defaultValue={user.nickname ?? ""} onChange={(e: any) => setName(e.target.value)} />
+                                <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
                             </SettingsFieldContainer>
 
                             <SettingsFieldContainer>
                                 <Label classes="block w-full">Email Address</Label>
-                                <Field classes="block w-full" defaultValue={user.email ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
+                                <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                             </SettingsFieldContainer>
                         </SettingsSection>
                     )}
@@ -204,7 +217,7 @@ export default function Settings({ user, onClose }: Properties) {
                                             <div className="text-sm font-medium text-slate-400 mt-1">Scan the QR code with your authenticator app (Google Authenticator, Authy, Duo,etc.)</div>
                                         </div>
                                     </div>
-                                ) : user.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
+                                ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                             </SettingsFieldContainer>
                         </SettingsSection>
                     )}
