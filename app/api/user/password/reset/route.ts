@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { verifyUserAuthCode, updateUserAuthCode, updateUserPasswordByEmail } from "@/lib/users";
+import { Resend } from "resend";
 
 export async function POST(request: Request): Promise<NextResponse> {
     const data = await request.json();
@@ -17,5 +18,16 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const updated = await updateUserPasswordByEmail(email, password);
     
+    if (updated) {
+        const resend = new Resend(process.env.RESEND_API_KEY!);
+
+        resend.emails.send({
+            from: "noreply@share.surf",
+            to: email,
+            subject: "Share.surf - Password Reset",
+            html: "Your password was just reset. If you did not request this, please <a href='mailto:contact@harveycoombs.com'>click here</a> to receive support."
+        });
+    }
+
     return NextResponse.json({ updated });
 }
