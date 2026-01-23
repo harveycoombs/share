@@ -59,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
         resend.emails.send({
             from: "noreply@share.surf",
-            to: user.email_address,
+            to: email,
             subject: "Share.surf - 2FA Enabled",
             html: "TOTP 2-factor authentication has been enabled on your account. If you did not request this, please <a href='mailto:contact@harveycoombs.com'>click here</a> to receive support."
         });

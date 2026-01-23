@@ -11,7 +11,7 @@ export async function getUserByID(userid: string): Promise<any> {
 }
 
 export async function getUserByEmailAddress(emailAddress: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, name").eq("email_address", emailAddress).eq("deleted", false).single();
+    const { data, error } = await supabase.from("users").select("user_id, name, email_address").eq("email_address", emailAddress).eq("deleted", false).single();
 
     if (error) throw error;
 

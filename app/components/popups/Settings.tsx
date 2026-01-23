@@ -231,13 +231,10 @@ export default function Settings({ onClose }: Properties) {
                                 <Label classes="block w-full">Multi-Factor Authentication</Label>
 
                                 {QRCode.length ? (
-                                    <div className="flex gap-2 items-center">
-                                        <Image src={QRCode} alt="QR Code" width={120} height={120} className="block select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
+                                    <div className="flex flex-col">
+                                        <Image src={QRCode} alt="QR Code" width={160} height={160} className="block mx-auto select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
 
-                                        <div>
-                                            <strong className="font-semibold">TOTP Authentication</strong>
-                                            <div className="text-sm font-medium text-slate-400 mt-1">Scan the QR code with your authenticator app (Google Authenticator, Authy, Duo,etc.)</div>
-                                        </div>
+                                        <div className="text-xs font-medium text-center text-slate-500">Scan the QR code with your TOTP authenticator app (Google Authenticator, Authy, Duo, etc.)</div>
                                     </div>
                                 ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
 
