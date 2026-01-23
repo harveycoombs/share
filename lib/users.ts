@@ -26,6 +26,14 @@ export async function getUserDetails(userid: string): Promise<any> {
     return data;
 }
 
+export async function getUserData(userid: string): Promise<any> {
+    const { data, error } = await supabase.from("users").select("user_id, creation_date, email_address, name, discord_id, verified, deleted").eq("user_id", userid).single();
+
+    if (error) throw error;
+
+    return data;
+}
+
 export async function getPasswordHash(identifier: string | number): Promise<string> {
     const field = typeof identifier == "number" ? "user_id" : "email_address";
     const { data, error } = await supabase.from("users").select("password").eq(field, String(identifier)).eq("deleted", false).single();

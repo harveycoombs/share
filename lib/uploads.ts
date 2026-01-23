@@ -4,7 +4,7 @@ import { generateHash, verify } from "./passwords";
 import { randomUUID } from "crypto";
 
 export async function getUploadHistory(userid: string, search: string = ""): Promise<any[]> {
-    let query = supabase.from("uploads").select("*").eq("user_id", userid).order("upload_date", { ascending: false });
+    let query = supabase.from("uploads").select("upload_id, upload_date, ip_address, user_id, title, files, size, content_type, views").eq("user_id", userid).order("upload_date", { ascending: false });
 
     if (search.length) {
         query = query.ilike("title", `%${search}%`);

@@ -40,6 +40,8 @@ export default function Settings({ onClose }: Properties) {
     const [deleting, setDeleting] = useState<boolean>(false);
     const [updatingTOTP, setUpdatingTOTP] = useState<boolean>(false);
 
+    const [dataRequestLoading, setDataRequestLoading] = useState<boolean>(false);
+
     const avatarUploader = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -144,6 +146,26 @@ export default function Settings({ onClose }: Properties) {
         setQRCode("");
     }, [setQRCode, setDetails, details]);
 
+    const requestData = useCallback(async () => {
+        setDataRequestLoading(true);
+
+        const response = await fetch("/api/user/data");
+        const json = await response.json();
+        
+        setDataRequestLoading(false);
+
+        if (!response.ok) {
+            setError(json.error);
+            return;
+        }
+
+        setSuccess("Personal data request sent. Please check your email.");
+        
+        setTimeout(() => {
+            setSuccess("");
+        }, 4000);
+    }, []);
+
     return (
         <Popup title="Account Settings" classes="w-120 max-sm:w-full" onClose={onClose}>
             {loading ? (<div className="w-full h-89 grid place-items-center">
@@ -178,7 +200,7 @@ export default function Settings({ onClose }: Properties) {
 
                     <div className="w-full my-3.5 border-b border-slate-300 flex gap-1.5 justify-center">
                         <SettingsSectionTab name="Details" onClick={() => setSection("details")} selected={section == "details"} />
-                        <SettingsSectionTab name="Security" onClick={() => setSection("security")} selected={section == "security"} />
+                        <SettingsSectionTab name="Privacy & Security" onClick={() => setSection("security")} selected={section == "security"} />
                     </div>
 
                     {section == "details" && (
@@ -201,7 +223,7 @@ export default function Settings({ onClose }: Properties) {
                                 <Label classes="block w-full">Old Password</Label>
                                 <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
 
-                                <Label classes="block w-full">New Password</Label>
+                                <Label classes="block w-full mt-2.5">New Password</Label>
                                 <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
                             </SettingsFieldContainer>
 
@@ -218,12 +240,10 @@ export default function Settings({ onClose }: Properties) {
                                         </div>
                                     </div>
                                 ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
-                            </SettingsFieldContainer>
-                        </SettingsSection>
-                    )}
 
-                    {section == "platform" && (
-                        <SettingsSection>
+                                <Label classes="block w-full mt-2.5">Data &amp; GDPR</Label>
+                                <Button color="gray" classes="block w-fit min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Personal Data</Button>
+                            </SettingsFieldContainer>
                         </SettingsSection>
                     )}
 
