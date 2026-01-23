@@ -28,17 +28,18 @@ export async function POST(request: Request): Promise<NextResponse> {
     const size = data.size ?? 0;
 
     if (!total) return NextResponse.json({ error: "No files were uploaded." }, { status: 400 });
-    if (size > 750000000) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
+
+    const cookieJar = await cookies();
+    const token = cookieJar.get("token")?.value;
+    const user = await authenticate(token ?? "");
+
+    if (size > (user ? 750000000 : 250000000)) return NextResponse.json({ error: "Uploaded files are too large." }, { status: 413 });
 
     const title = data.title ?? "";
     const contentType = data.contentType ?? "";
     const password = data.password ?? "";
     
     const ip = (request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host")) ?? "";
-
-    const cookieJar = await cookies();
-    const token = cookieJar.get("token")?.value;
-    const user = await authenticate(token ?? "");
 
     const uploadid = await insertUploadHistory(user?.user_id, title, ip, total, size, password, contentType);
     return NextResponse.json({ uploadid }, { status: 200 });

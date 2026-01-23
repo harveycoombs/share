@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
@@ -12,8 +12,11 @@ import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
 import { formatTime } from "@/lib/utils";
+import { UserContext } from "./context/UserContext";
 
 export default function Home() {
+    const user = useContext(UserContext);
+
     const [files, setFiles] = useState<FileList|null>(null);
     const [id, setID] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
@@ -39,7 +42,7 @@ export default function Home() {
     useEffect(() => {
         if (!files?.length) return;
 
-        if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > 2147483648) {
+        if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > (user ? 750000000 : 250000000)) {
             setError("File is too large");
             setLoading(false);
             return;
@@ -332,10 +335,10 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <div className="text-sm font-medium leading-none text-slate-400 flex justify-between max-sm:justify-center dark:text-zinc-500">
-                            <div>Expires after 48 hours</div>
+                        <div className={`text-sm font-medium leading-none text-slate-400 flex ${user ? "justify-between max-sm:justify-center" : "flex-col items-center gap-2.75"} dark:text-zinc-500`}>
+                            <div>Expires after {user ? "48" : "24"} hours{!user && " (48 hours for registered users)"}</div>
                             <div className="hidden mx-2 max-sm:block">&middot;</div>
-                            <div>750MB upload limit</div>
+                            <div>{user ? "750MB" : "250MB"} upload limit{!user && " (750MB for registered users)"}</div>
                         </div>
                     </div>
                 )}
