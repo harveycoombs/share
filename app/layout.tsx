@@ -28,7 +28,7 @@ export const metadata: Metadata = {
         description: description,
         url: "https://share.surf",
         images: [{
-            url: "https://share.surf/images/splash.jpg",
+            url: "https://share.surf/images/splash.jpg?v=1",
             width: 1200,
             height: 630,
             alt: "Share splash image"
