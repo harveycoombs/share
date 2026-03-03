@@ -55,7 +55,7 @@ export default async function RootLayout({
     return (
         <html lang="en">
             <head>
-                <meta name="theme-color" content="#615FFF" />
+                <meta name="theme-color" content="#2B7FFF" />
 
                 <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
                 <link rel="canonical" href="https://share.surf" />
