@@ -3,7 +3,7 @@ import { supabase } from "@/lib/database";
 import { generateHash, verify } from "./passwords";
 
 export async function getUserByID(userid: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, name").eq("user_id", userid).eq("deleted", false).single();
+    const { data, error } = await supabase.from("users").select("user_id, name").eq("user_id", userid).eq("deleted", false).maybeSingle();
 
     if (error) throw error;
 
@@ -11,7 +11,7 @@ export async function getUserByID(userid: string): Promise<any> {
 }
 
 export async function getUserByEmailAddress(emailAddress: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, name, email_address").eq("email_address", emailAddress).eq("deleted", false).single();
+    const { data, error } = await supabase.from("users").select("user_id, name, email_address").eq("email_address", emailAddress).eq("deleted", false).maybeSingle();
 
     if (error) throw error;
 
@@ -19,7 +19,7 @@ export async function getUserByEmailAddress(emailAddress: string): Promise<any> 
 }
 
 export async function getUserDetails(userid: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, name, email_address, creation_date, totp_secret, discord_id").eq("user_id", userid).eq("deleted", false).single();
+    const { data, error } = await supabase.from("users").select("user_id, name, email_address, creation_date, totp_secret, discord_id").eq("user_id", userid).eq("deleted", false).maybeSingle();
 
     if (error) throw error;
 
@@ -27,7 +27,7 @@ export async function getUserDetails(userid: string): Promise<any> {
 }
 
 export async function getUserData(userid: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, creation_date, email_address, name, discord_id, verified, deleted").eq("user_id", userid).single();
+    const { data, error } = await supabase.from("users").select("user_id, creation_date, email_address, name, discord_id, verified, deleted").eq("user_id", userid).maybeSingle();
 
     if (error) throw error;
 
@@ -36,7 +36,7 @@ export async function getUserData(userid: string): Promise<any> {
 
 export async function getPasswordHash(identifier: string | number): Promise<string> {
     const field = typeof identifier == "number" ? "user_id" : "email_address";
-    const { data, error } = await supabase.from("users").select("password").eq(field, String(identifier)).eq("deleted", false).single();
+    const { data, error } = await supabase.from("users").select("password").eq(field, String(identifier)).eq("deleted", false).maybeSingle();
     
     if (error) throw error;
 
@@ -127,7 +127,7 @@ export async function verifyUserAuthCode(emailAddress: string, code: number): Pr
 }
 
 export async function checkUserVerification(userid: string): Promise<boolean> {
-    const { data, error } = await supabase.from("users").select("verified").eq("user_id", userid).single();
+    const { data, error } = await supabase.from("users").select("verified").eq("user_id", userid).maybeSingle();
     
     if (error) throw error;
 
@@ -140,7 +140,7 @@ export async function updateUserVerification(emailAddress: string, verified: boo
 }
 
 export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<string> {
-    const { data, error } = await supabase.from("users").select("discord_id").eq("email_address", emailAddress).single();
+    const { data, error } = await supabase.from("users").select("discord_id").eq("email_address", emailAddress).maybeSingle();
     
     if (error) throw error;
 
@@ -148,7 +148,7 @@ export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<s
 }
 
 export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
-    const { data, error } = await supabase.from("users").select("totp_secret").eq("email_address", emailAddress).eq("deleted", false).single();
+    const { data, error } = await supabase.from("users").select("totp_secret").eq("email_address", emailAddress).eq("deleted", false).maybeSingle();
     
     if (error) throw error;
 

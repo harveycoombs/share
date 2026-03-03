@@ -15,16 +15,16 @@ export default function Notice({ children, classes = "", color = "blue", icon = 
 
     switch (color) {
         case "red":
-            colors = "bg-red-100 text-red-500";
+            colors = "bg-red-100/60 text-red-500";
             break;
         case "green":
-            colors = "bg-green-100 text-green-500";
+            colors = "bg-green-100/60 text-green-500";
             break;
         case "amber":
-            colors = "bg-amber-100 text-amber-500";
+            colors = "bg-amber-100/60 text-amber-500";
             break;
         case "blue":
-            colors = "bg-blue-100 text-blue-500";
+            colors = "bg-blue-100/60 text-blue-500";
             break;
     }
 

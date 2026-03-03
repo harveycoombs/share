@@ -4,6 +4,7 @@ import { useState } from "react";
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
+import Notice from "@/app/components/common/Notice";
 
 interface Properties {
     email: string;
@@ -17,16 +18,16 @@ export default function VerificationForm({ email }: Properties) {
     const [fifthDigit, setFifthDigit] = useState<string>("");
     const [sixthDigit, setSixthDigit] = useState<string>("");
 
-    const [feedback, setFeedback] = useState<any>(null);
-    const [errorExists, setErrorExists] = useState<boolean>(false);
-    const [warningExists, setWarningExists] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    const [warning, setWarning] = useState<string>("");
+    const [success, setSuccess] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
 
     async function verify(e: any) {
         e.preventDefault();
 
         if (!firstDigit?.length || !secondDigit?.length || !thirdDigit?.length || !fourthDigit?.length || !fifthDigit?.length || !sixthDigit?.length) {
-            setFeedback(<div className="text-sm font-medium text-amber-500 text-center mt-5">Please enter all digits</div>);
+            setWarning("Please enter all digits");
             return;
         }
 
@@ -44,12 +45,15 @@ export default function VerificationForm({ email }: Properties) {
         switch (response.status) {
             case 200:
             case 201:
-                if (!json.success) break;
+                if (!json.verified) {
+                    setError("Unable to verify account");
+                    break;
+                }
+
                 window.location.href = "/";
                 break;
             default:
-                setFeedback(<div className="text-sm font-medium text-red-500 text-center mt-5">Something went wrong</div>);
-                setErrorExists(true);
+                setError("Something went wrong");
                 break;
         }
 
@@ -124,23 +128,25 @@ export default function VerificationForm({ email }: Properties) {
     }
 
     return (
-        <form className="w-full" onSubmit={verify} onInput={() => { setFeedback(null); setErrorExists(false); setWarningExists(false); }}>
-            {feedback}
+        <form className="w-full" onSubmit={verify} onInput={() => { setError(""); setWarning(""); setSuccess(""); }}>
+            {error.length > 0 && <Notice color="red">{error}</Notice>}
+            {warning.length > 0 && <Notice color="amber">{warning}</Notice>}
+            {success.length > 0 && <Notice color="green">{success}</Notice>}
 
             <Label classes="block mt-5">Email Address</Label>
             <Field classes="block w-full mt-2.5 pointer-events-none select-none" defaultValue={email} readOnly={true} />
 
-            <Label classes="block mt-2.5" error={errorExists} warning={warningExists}>Verification Code</Label>
+            <Label classes="block mt-2.5" error={error.length > 0}>Verification Code</Label>
             <div className="w-full mt-2.5 grid grid-cols-6 gap-2">
-                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={firstDigit} onInput={(e: any) => handleDigitInput(e, 0)} onPaste={handlePaste} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={secondDigit} onInput={(e: any) => handleDigitInput(e, 1)} onPaste={handlePaste} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={thirdDigit} onInput={(e: any) => handleDigitInput(e, 2)} onPaste={handlePaste} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={fourthDigit} onInput={(e: any) => handleDigitInput(e, 3)} onPaste={handlePaste} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={fifthDigit} onInput={(e: any) => handleDigitInput(e, 4)} onPaste={handlePaste} />
-                <Field error={errorExists} warning={warningExists} classes="text-center" defaultValue={sixthDigit} onInput={(e: any) => handleDigitInput(e, 5)} onPaste={handlePaste} />
+                <Field error={error.length > 0} classes="text-center" defaultValue={firstDigit} onInput={(e: any) => handleDigitInput(e, 0)} onPaste={handlePaste} />
+                <Field error={error.length > 0} classes="text-center" defaultValue={secondDigit} onInput={(e: any) => handleDigitInput(e, 1)} onPaste={handlePaste} />
+                <Field error={error.length > 0} classes="text-center" defaultValue={thirdDigit} onInput={(e: any) => handleDigitInput(e, 2)} onPaste={handlePaste} />
+                <Field error={error.length > 0} classes="text-center" defaultValue={fourthDigit} onInput={(e: any) => handleDigitInput(e, 3)} onPaste={handlePaste} />
+                <Field error={error.length > 0} classes="text-center" defaultValue={fifthDigit} onInput={(e: any) => handleDigitInput(e, 4)} onPaste={handlePaste} />
+                <Field error={error.length > 0} classes="text-center" defaultValue={sixthDigit} onInput={(e: any) => handleDigitInput(e, 5)} onPaste={handlePaste} />
             </div>
 
-            <Button classes="block w-full mt-5" loading={loading} disabled={errorExists || warningExists}>Verify</Button>
+            <Button classes="block w-full mt-5" loading={loading} disabled={error.length > 0 || warning.length > 0}>Verify</Button>
         </form>
     )
 }

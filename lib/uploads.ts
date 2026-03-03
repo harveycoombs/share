@@ -30,7 +30,7 @@ export async function insertUploadHistory(userid: string, title: string, ip: str
         size,
         password: passwordHash,
         content_type: contentType,
-    }).select("upload_id").single();
+    }).select("upload_id").maybeSingle();
 
     if (error) throw error;
 
@@ -48,7 +48,7 @@ export async function renameUpload(userid: string, id: string, name: string): Pr
 }
 
 export async function checkUploadProtection(id: string): Promise<boolean> {
-    const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).single();
+    const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).maybeSingle();
 
     if (error) throw error;
 
@@ -56,7 +56,7 @@ export async function checkUploadProtection(id: string): Promise<boolean> {
 }
 
 export async function getUploadPasswordHash(id: string): Promise<string> {
-    const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).single();
+    const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).maybeSingle();
 
     if (error) throw error;
 
@@ -72,7 +72,7 @@ export async function verifyUploadPassword(id: string, password: string): Promis
 }
 
 export async function incrementUploadViews(id: string): Promise<boolean> {
-    const { data: currentData, error: fetchError } = await supabase.from("uploads").select("views").eq("upload_id", id).single();
+    const { data: currentData, error: fetchError } = await supabase.from("uploads").select("views").eq("upload_id", id).maybeSingle();
 
     if (fetchError?.message?.length) throw new Error(fetchError.message);
 

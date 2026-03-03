@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import VerificationForm from "./form";
 import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
+import Notice from "@/app/components/common/Notice";
 
 export default function Verify() {
     const searchParams = useSearchParams();
@@ -27,7 +28,7 @@ export default function Verify() {
 
                 {email.length ? <VerificationForm email={email} /> : (
                     <div>
-                        <strong className="block mx-auto text-center font-semibold text-red-500">Missing Email Address</strong>
+                        <Notice color="red">Missing Email Address</Notice>
                         <Button classes="block w-full mt-5" url="/">Home</Button>
                     </div>
                 )}

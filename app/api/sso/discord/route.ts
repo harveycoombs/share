@@ -73,7 +73,6 @@ export async function GET(request: NextRequest) {
                     const avatarBuffer = await avatarResponse.arrayBuffer();
 
                     await fs.writeFile(`/tmp/avatars/${user.avatar}.png`, new Uint8Array(avatarBuffer));
-                    //await uploadFile(`/tmp/avatars/${user.avatar}.png`, `avatars/${createdUser.user_id}`);
                     await fs.unlink(`/tmp/avatars/${user.avatar}.png`);
                 }
 
