@@ -8,8 +8,11 @@ import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function RegistrationForm() {
+    const [proceed, setProceed] = useState<boolean>(false);
+    
     const [name, setName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [password, setPassword] = useState<string>("");
@@ -106,36 +109,48 @@ export default function RegistrationForm() {
             <Label classes="block mt-2.5" error={error.length > 0} warning={warning.length > 0}>Email Address</Label>
             <Field type="email" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setEmail(e.target.value.trim())} />
 
-            <Label classes="block mt-2.5" error={error.length > 0} warning={warning.length > 0}>Password</Label>
-            <Field type="password" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setPassword(e.target.value.trim())} />
+            <AnimatePresence>
+                {proceed && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                    >
+                        <Label classes="block mt-2.5" error={error.length > 0} warning={warning.length > 0}>Password</Label>
+                        <Field type="password" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setPassword(e.target.value.trim())} />
 
-            <div className="mt-3">
-                <div className="text-[0.8rem] font-medium mb-1">{passwordStrength == 0 ? "Weak" : passwordStrength == 1 ? "Average" : "Strong"} password</div>
+                        <div className="mt-3">
+                            <div className="text-[0.8rem] font-medium mb-1">{passwordStrength == 0 ? "Weak" : passwordStrength == 1 ? "Average" : "Strong"} password</div>
 
-                <div className="flex gap-1.5">
-                    <div className={`w-1/3 h-1.25 rounded-l-full ${passwordStrength == 0 ? "bg-red-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-green-500"}`}></div>
-                    <div className={`w-1/3 h-1.25 ${passwordStrength == 2 ? "bg-green-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-gray-200"}`}></div>
-                    <div className={`w-1/3 h-1.25 rounded-r-full ${passwordStrength == 2 ? "bg-green-500" : "bg-gray-200"}`}></div>
-                </div>
-            </div>
+                            <div className="flex gap-1.5">
+                                <div className={`w-1/3 h-1.25 rounded-l-full ${passwordStrength == 0 ? "bg-red-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-green-500"}`}></div>
+                                <div className={`w-1/3 h-1.25 ${passwordStrength == 2 ? "bg-green-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-gray-200"}`}></div>
+                                <div className={`w-1/3 h-1.25 rounded-r-full ${passwordStrength == 2 ? "bg-green-500" : "bg-gray-200"}`}></div>
+                            </div>
+                        </div>
 
-            <div className="mt-5 mb-4.5 w-fit relative left-1/2 -translate-x-1/2">
-                <HCaptcha
-                    sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
-                    onVerify={(token: string, _: any) => setCaptchaToken(token)}
-                />
-            </div>
+                        <div className="mt-5 mb-4.5 w-fit relative left-1/2 -translate-x-1/2">
+                            <HCaptcha
+                                sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
+                                onVerify={(token: string, _: any) => setCaptchaToken(token)}
+                            />
+                        </div>
 
-            <div className="text-sm text-center text-slate-400 select-none my-5 flex items-center justify-center gap-2 dark:text-zinc-500">
-                <input type="checkbox" className="w-4 h-4 accent-blue-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
+                        <div className="text-sm text-center text-slate-400 select-none mt-5 mb-1 flex items-center justify-center gap-2 dark:text-zinc-500">
+                            <input type="checkbox" className="w-4 h-4 accent-blue-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
 
-                <div>
-                    I agree to the
-                    <Link href="/documents/terms-of-service.pdf" className="text-blue-500 font-semibold ml-1.25 hover:underline">Terms of Service</Link>
-                </div>
-            </div>
+                            <div>
+                                I agree to the
+                                <Link href="/documents/terms-of-service.pdf" className="text-blue-500 font-semibold ml-1.25 hover:underline">Terms of Service</Link>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            <Button classes="block w-full" loading={loading} disabled={error.length > 0 || warning.length > 0 || !captchaToken?.length || !consent} onClick={register}>Continue</Button>
+            <Button classes="block w-full my-4" loading={loading} disabled={error.length > 0 || warning.length > 0 || (proceed && (!captchaToken?.length || !consent))} onClick={proceed ? register : () => setProceed(true)}>{proceed ? "Continue" : "Next"}</Button>
             
             <div className="text-sm text-center text-slate-400 select-none my-5 dark:text-zinc-500">
                 Already have an account?
