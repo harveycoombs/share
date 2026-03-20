@@ -26,6 +26,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     
         if (!email?.length || !password?.length) return NextResponse.json({ error: "One or more fields were not provided" }, { status: 400 });
 
+        if (password.length < 16) return NextResponse.json({ error: "Password is too short" }, { status: 400 });
+        
         const valid = await verifyCredentials(email, password);
         if (!valid) return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
     

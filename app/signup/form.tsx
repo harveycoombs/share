@@ -9,6 +9,7 @@ import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion, AnimatePresence } from "motion/react";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 export default function RegistrationForm() {
     const [proceed, setProceed] = useState<boolean>(false);
@@ -121,24 +122,19 @@ export default function RegistrationForm() {
                         <Label classes="block mt-2.5" error={error.length > 0} warning={warning.length > 0}>Password</Label>
                         <Field type="password" classes="block w-full" error={error.length > 0} warning={warning.length > 0} onInput={(e: any) => setPassword(e.target.value.trim())} />
 
-                        <div className="mt-3">
-                            <div className="text-[0.8rem] font-medium mb-1">{passwordStrength == 0 ? "Weak" : passwordStrength == 1 ? "Average" : "Strong"} password</div>
-
-                            <div className="flex gap-1.5">
-                                <div className={`w-1/3 h-1.25 rounded-l-full ${passwordStrength == 0 ? "bg-red-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-green-500"}`}></div>
-                                <div className={`w-1/3 h-1.25 ${passwordStrength == 2 ? "bg-green-500" : passwordStrength == 1 ? "bg-amber-500" : "bg-gray-200"}`}></div>
-                                <div className={`w-1/3 h-1.25 rounded-r-full ${passwordStrength == 2 ? "bg-green-500" : "bg-gray-200"}`}></div>
-                            </div>
+                        <div className={`mt-4 flex items-center justify-center text-sm font-semibold gap-0.5 select-none ${password.length >= 16 ? "text-green-500" : "text-red-500"}`}>
+                            <FontAwesomeIcon icon={password.length >= 16 ? faCheck : faXmark} className={password.length >= 16 ? "" : "translate-y-px"} />
+                            <div>Contains at least 16 characters</div>
                         </div>
 
-                        <div className="mt-5 mb-4.5 w-fit relative left-1/2 -translate-x-1/2">
+                        <div className="my-4 w-fit relative left-1/2 -translate-x-1/2">
                             <HCaptcha
                                 sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
                                 onVerify={(token: string, _: any) => setCaptchaToken(token)}
                             />
                         </div>
 
-                        <div className="text-sm text-center text-slate-400 select-none mt-5 mb-1 flex items-center justify-center gap-2 dark:text-zinc-500">
+                        <div className="text-sm text-center text-slate-400 select-none flex items-center justify-center gap-2 dark:text-zinc-500">
                             <input type="checkbox" className="w-4 h-4 accent-blue-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
 
                             <div>
@@ -150,7 +146,7 @@ export default function RegistrationForm() {
                 )}
             </AnimatePresence>
 
-            <Button classes="block w-full my-4" loading={loading} disabled={error.length > 0 || warning.length > 0 || (proceed && (!captchaToken?.length || !consent))} onClick={proceed ? register : () => setProceed(true)}>{proceed ? "Continue" : "Next"}</Button>
+            <Button classes="block w-full my-4" loading={loading} disabled={error.length > 0 || warning.length > 0 || (proceed && (!captchaToken?.length || !consent || password.length < 16))} onClick={proceed ? register : () => setProceed(true)}>{proceed ? "Continue" : "Next"}</Button>
             
             <div className="text-sm text-center text-slate-400 select-none my-5 dark:text-zinc-500">
                 Already have an account?
