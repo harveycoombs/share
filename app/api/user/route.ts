@@ -29,6 +29,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!name.length || !email.length || !password.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
+    if (password.length < 16) return NextResponse.json({ error: "Password is too short." }, { status: 400 });
+
     const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },

@@ -50,7 +50,7 @@ export default function VerificationForm({ email }: Properties) {
                     break;
                 }
 
-                window.location.href = "/";
+                window.location.href = "/signup";
                 break;
             default:
                 setError("Something went wrong");

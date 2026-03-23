@@ -25,8 +25,6 @@ export async function POST(request: Request): Promise<NextResponse> {
         const password = data.password ?? "";
     
         if (!email?.length || !password?.length) return NextResponse.json({ error: "One or more fields were not provided" }, { status: 400 });
-
-        if (password.length < 16) return NextResponse.json({ error: "Password is too short" }, { status: 400 });
         
         const valid = await verifyCredentials(email, password);
         if (!valid) return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
@@ -49,7 +47,7 @@ export async function POST(request: Request): Promise<NextResponse> {
                         from: "noreply@share.surf",
                         to: email,
                         subject: "Share.surf - Verification",
-                        html: `<p>Hello ${user.name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code: <b>${code}</b></p>`
+                        html: `<p>Hello ${user.name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<br/><b style="font-size: 1.5rem;">${code}</b></p>`
                     });
                 }
             } catch (ex: any) {

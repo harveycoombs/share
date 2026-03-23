@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { faDiscord, faGoogle } from "@fortawesome/free-brands-svg-icons";
@@ -19,8 +19,6 @@ export default function RegistrationForm() {
     const [password, setPassword] = useState<string>("");
     const [captchaToken, setCaptchaToken] = useState<string>("");
     const [consent, setConsent] = useState<boolean>(false);
-
-    const [passwordStrength, setPasswordStrength] = useState<number>(0);
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -68,29 +66,6 @@ export default function RegistrationForm() {
 
         setLoading(false);
     }
-
-    useEffect(() => {
-        const symbolsExpr = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
-        const numbersExpr = /[0-9]/;
-        const uppercaseExpr = /[A-Z]/;
-        const lowercaseExpr = /[a-z]/;
-
-        const hasSymbols = symbolsExpr.test(password);
-        const hasNumbers = numbersExpr.test(password);
-        const hasUppercaseChars = uppercaseExpr.test(password);
-        const hasLowercaseChars = lowercaseExpr.test(password);
-
-        switch (true) {
-            case (hasSymbols || hasNumbers) && (hasUppercaseChars || hasLowercaseChars) && password.length >= 12:
-                setPasswordStrength(2);
-                break;
-            case (hasSymbols || hasNumbers) && (hasUppercaseChars || hasLowercaseChars) && password.length >= 6:
-                setPasswordStrength(1);
-                break;
-            default:
-                setPasswordStrength(0);
-        }
-    }, [password])
 
     const resetFeedback = useCallback(() => {
         setError("");

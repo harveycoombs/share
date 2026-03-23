@@ -29,7 +29,7 @@ export default function Button({ children, url, square, classes = "", color = ""
             break;
     }
 
-    const classList = `${square ? "p-3" : "px-4.5 py-3.25"} rounded-xl text-[0.8rem] leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none ${classes}`;
+    const classList = `${square ? "p-3" : "px-4.5 py-3.25"} rounded-xl text-sm leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none ${classes}`;
 
     return url?.length ? (
         <Link href={url} className={classList} {...rest} draggable={false}>
