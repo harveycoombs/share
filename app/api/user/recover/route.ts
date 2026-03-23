@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
-import { updateUserAuthCode } from "@/lib/users";
+import { updateUserAccessCode } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
 
 export async function POST(request: Request): Promise<NextResponse> {
@@ -22,7 +22,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     try {
         const code = generateCode();
-        const updated = await updateUserAuthCode(email, code);
+        const updated = false;//await updateUserAccessCode(email, code);
 
         if (!updated) return NextResponse.json({ error: "Failed to generate authentication code." }, { status: 500 });
 

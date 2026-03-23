@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { Resend } from "resend";
 
-import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword, updateUserAuthCode } from "@/lib/users";
+import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
 import { deleteUpload, getUploadHistory } from "@/lib/uploads";
 import { deleteFile } from "@/lib/storage";
@@ -24,12 +24,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     
     const name = data.name ?? "";
     const email = data.email ?? "";
-    const password = data.password ?? "";
     const captchaToken = data.captchaToken ?? "";
 
-    if (!name.length || !email.length || !password.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
-
-    if (password.length < 16) return NextResponse.json({ error: "Password is too short." }, { status: 400 });
+    if (!name.length || !email.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
     const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
@@ -42,34 +39,27 @@ export async function POST(request: Request): Promise<NextResponse> {
     const exists = await emailExists(email);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
-    const created = await createUser(name, email, password);
+    const { success, code } = await createUser(name, email);
 
-    if (created) {
+    if (success) {
         try {
-            const code = generateCode();
-            const updated = await updateUserAuthCode(email, code);
+            const resend = new Resend(process.env.RESEND_API_KEY!);
 
-            if (updated) {
-                const resend = new Resend(process.env.RESEND_API_KEY!);
-
-                resend.emails.send({
-                    from: "noreply@share.surf",
-                    to: email,
-                    subject: "Share.surf - Verification",
-                    html: `<p>Hello ${name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by entering the following code:<b>${code}</b></p>`
-                });
-            }
+            resend.emails.send({
+                from: "noreply@share.surf",
+                to: email,
+                subject: "Share.surf - Verification",
+                html: `<p>Hello ${name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by <a href="https://share.surf/verify?email=${encodeURIComponent(email)}&code=${code}" style="font-weight: bold;">clicking here</a>.</p>`
+            });
         } catch (ex: any) {
             console.error(ex);
         }
     }
 
-    return NextResponse.json({ success: created });
+    return NextResponse.json({ success });
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {
-    let passwordUpdated = false;
-
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
     const user = await authenticate(token ?? "");
@@ -81,17 +71,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
     const name = data.name ?? "";
     const email = data.emailAddress ?? "";
 
-    const oldPassword = data.oldpassword ?? "";
-    const newPassword = data.newpassword ?? "";
-
-    if (oldPassword?.length && newPassword?.length) {
-        const validExistingPassword = await verifyCredentials(user.email_address, oldPassword);
-        if (!validExistingPassword) return NextResponse.json({ error: "Invalid existing password." }, { status: 401 });
-
-        passwordUpdated = await updateUserPassword(user.user_id, newPassword);
-    }
-
-    if ((!name?.length || !email?.length) && (!oldPassword?.length || !newPassword?.length)) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    if (!name?.length || !email?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
     const exists = await emailExists(email, user.user_id);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
@@ -101,7 +81,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
     if (updated && user.email_address != email) {
         try {
             const code = generateCode();
-            const updated = await updateUserAuthCode(email, code);
+            const updated = false;
 
             if (updated) {
                 const resend = new Resend(process.env.RESEND_API_KEY!);
@@ -118,7 +98,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
         }
     }
 
-    return NextResponse.json({ updated, passwordUpdated });
+    return NextResponse.json({ updated });
 }
 
 export async function DELETE(_: Request): Promise<NextResponse> {

@@ -194,7 +194,7 @@ export default function Settings({ onClose }: Properties) {
 
                         <div>
                             <strong className="block font-bold">{details?.name}</strong>
-                            <div className="text-xs text-slate-400/75 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
+                            <div className="text-xs text-slate-400 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
                         </div>
                     </div>
 
@@ -220,14 +220,6 @@ export default function Settings({ onClose }: Properties) {
                     {section == "security" && (
                         <SettingsSection>
                             <SettingsFieldContainer>
-                                <Label classes="block w-full">Old Password</Label>
-                                <Field classes="block w-full" type="password" defaultValue={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />
-
-                                <Label classes="block w-full mt-2.5">New Password</Label>
-                                <Field classes="block w-full" type="password" defaultValue={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
-                            </SettingsFieldContainer>
-
-                            <SettingsFieldContainer>
                                 <Label classes="block w-full">Multi-Factor Authentication</Label>
 
                                 {QRCode.length ? (
@@ -236,10 +228,12 @@ export default function Settings({ onClose }: Properties) {
 
                                         <div className="text-xs font-medium text-center text-slate-500">Scan the QR code with your TOTP authenticator app (Google Authenticator, Authy, Duo, etc.)</div>
                                     </div>
-                                ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-fit" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
+                                ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
+                            </SettingsFieldContainer>
 
-                                <Label classes="block w-full mt-2.5">Data &amp; GDPR</Label>
-                                <Button color="gray" classes="block w-fit min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Personal Data</Button>
+                            <SettingsFieldContainer>
+                                <Label classes="block w-full">Data &amp; GDPR</Label>
+                                <Button color="gray" classes="block w-full min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Personal Data</Button>
                             </SettingsFieldContainer>
                         </SettingsSection>
                     )}

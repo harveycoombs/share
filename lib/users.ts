@@ -66,16 +66,17 @@ export async function emailExists(emailAddress: string, userid: string = ""): Pr
     return (count ?? 0) > 0;
 }
 
-export async function createUser(name: string, emailAddress: string, password: string): Promise<boolean> {
-    const passwordHash = await generateHash(password);
+export async function createUser(name: string, emailAddress: string): Promise<any> {
+    const code = crypto.randomUUID();
+
     const { error } = await supabase.from("users").insert({
         name,
         email_address: emailAddress,
-        password: passwordHash,
+        access_code: code,
         creation_date: new Date().toISOString()
     });
 
-    return !error;
+    return { success: !error, code };
 }
 
 export async function createUserFromDiscord(name: string, emailAddress: string, discordid: string): Promise<boolean> {
@@ -108,43 +109,35 @@ export async function updateUserPasswordByEmail(emailAddress: string, password: 
     return !error;
 }
 
-export async function updateUserAuthCode(emailAddress: string, code: number|null): Promise<boolean> {
-    const result = await supabase.from("users").update({ auth_code: code }).eq("email_address", emailAddress);
-    return !result.error;
-}
-
 export async function deleteUser(userid: string): Promise<boolean> {
     const { error } = await supabase.from("users").update({ deleted: true }).eq("user_id", userid);
     return !error;
 }
 
-export async function verifyUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
-    const { count, error } = await supabase.from("users").select("user_id", { count: "exact", head: true }).eq("email_address", emailAddress).eq("auth_code", code);
+export async function verifyUserAccessCode(emailAddress: string, code: string): Promise<boolean> {
+    const { count, error } = await supabase.from("users").select("user_id", { count: "exact", head: true }).eq("email_address", emailAddress).eq("access_code", code);
 
     if (error) throw error;
 
     return (count ?? 0) > 0;
 }
 
-export async function checkUserVerification(userid: string): Promise<boolean> {
-    const { data, error } = await supabase.from("users").select("verified").eq("user_id", userid).maybeSingle();
-    
-    if (error) throw error;
-
-    return data?.verified ?? false;
-}
-
-export async function updateUserVerification(emailAddress: string, verified: boolean): Promise<boolean> {
-    const { error } = await supabase.from("users").update({ verified }).eq("email_address", emailAddress);
+export async function updateUserAccessDate(emailAddress: string): Promise<boolean> {
+    const { error } = await supabase.from("users").update({ accessed_at: new Date().toISOString() }).eq("email_address", emailAddress);
     return !error;
 }
 
-export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<string> {
-    const { data, error } = await supabase.from("users").select("discord_id").eq("email_address", emailAddress).maybeSingle();
+export async function updateUserAccessCode(emailAddress: string, code: string|null): Promise<boolean> {
+    const result = await supabase.from("users").update({ access_code: code }).eq("email_address", emailAddress);
+    return !result.error;
+}
+
+export async function checkUserVerification(userid: string): Promise<boolean> {
+    const { data, error } = await supabase.from("users").select("accessed_at").eq("user_id", userid).maybeSingle();
     
     if (error) throw error;
 
-    return data?.discord_id ?? "";
+    return !!data?.accessed_at;
 }
 
 export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
@@ -158,4 +151,12 @@ export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
 export async function updateUserTOTPSettings(userid: string, secret: string): Promise<boolean> {
     const { error } = await supabase.from("users").update({ totp_secret: secret }).eq("user_id", userid);
     return !error;
+}
+
+export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<string> {
+    const { data, error } = await supabase.from("users").select("discord_id").eq("email_address", emailAddress).maybeSingle();
+    
+    if (error) throw error;
+
+    return data?.discord_id ?? "";
 }
