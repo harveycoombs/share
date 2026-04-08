@@ -5,13 +5,14 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence } from "motion/react";
 
-import Icon from "@/app/components/common/Icon";
+import { UserContext } from "@/app/context/UserContext";
 import Button from "@/app/components/common/Button";
 import Settings from "@/app/components/popups/Settings";
-import { UserContext } from "@/app/context/UserContext";
+import Panel from "@/app/components/common/Panel";
+import Field from "@/app/components/common/Field";
 
 export default function Header() {
     const path = usePathname();
@@ -49,9 +50,13 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -100 }}
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
-            className="p-5 flex justify-end items-center select-none"
+            className="p-5 flex justify-between items-center select-none"
         >
-            <div className="p-2.5 border border-slate-300 rounded-2xl dark:text-zinc-500 dark:border-zinc-700">
+            <Panel>
+                <Field placeholder="Search uploads" classes="w-60" />
+            </Panel>
+
+            <Panel>
                 <nav className={`flex items-center gap-2.5 relative ${!user ? "max-sm:w-full" : ""}`}>
                     {user ? (
                         <>
@@ -85,7 +90,7 @@ export default function Header() {
                         </>
                     )}
                 </nav>
-            </div>
+            </Panel>
 
             <AnimatePresence>
                 {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
