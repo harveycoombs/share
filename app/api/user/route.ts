@@ -1,12 +1,12 @@
 import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { Resend } from "resend";
 
-import { createUser, deleteUser, emailExists, getUserDetails, updateUser, verifyCredentials, updateUserPassword } from "@/lib/users";
+import { createUser, deleteUser, emailExists, getUserDetails, updateUser } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
 import { deleteUpload, getUploadHistory } from "@/lib/uploads";
 import { deleteFile } from "@/lib/storage";
+import sendEmail from "@/lib/email";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -42,14 +42,13 @@ export async function POST(request: Request): Promise<NextResponse> {
     const { success, code } = await createUser(name, email);
 
     if (success) {
-        try {
-            const resend = new Resend(process.env.RESEND_API_KEY!);
+        const baseUrl = new URL(request.url).origin;
 
-            resend.emails.send({
-                from: "noreply@share.surf",
+        try {
+            await sendEmail({
                 to: email,
                 subject: "Share.surf - Verification",
-                html: `<p>Hello ${name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Verify your email address by <a href="https://share.surf/verify?email=${encodeURIComponent(email)}&code=${code}" style="font-weight: bold;">clicking here</a>.</p>`
+                html: `<p>Hello ${name},</p> <p>Thank you for signing up to <i>Share.surf</i>. Log into your new account by <a href="${baseUrl}/signin/confirm?email=${encodeURIComponent(email)}&code=${code}" style="font-weight: bold;">clicking here</a>.</p>`
             });
         } catch (ex: any) {
             console.error(ex);
@@ -84,10 +83,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
             const updated = false;
 
             if (updated) {
-                const resend = new Resend(process.env.RESEND_API_KEY!);
-
-                resend.emails.send({
-                    from: "noreply@share.surf",
+                await sendEmail({
                     to: email,
                     subject: "Share.surf - Verification",
                     html: `<p>Hello ${user.name},</p> <p>Your email address has been updated on <i>Share.surf</i>. Verify your new email address by entering the following code: <b>${code}</b></p>`

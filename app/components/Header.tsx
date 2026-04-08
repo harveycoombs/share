@@ -21,7 +21,7 @@ export default function Header() {
         window.location.href = "/";
     }
 
-    if (path == "/signin" || path == "/signup" || path == "/verify" || path == "/authenticate") return null;
+    if (path.startsWith("/signin") || path.startsWith("/signup") || path == "/authenticate") return null;
 
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);

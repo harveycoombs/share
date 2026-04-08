@@ -36,10 +36,12 @@ export async function POST(request: Request): Promise<NextResponse> {
 
         await updateUserAccessCode(email, code);
 
+        const baseUrl = new URL(request.url).origin;
+
         await sendEmail({ 
             to: email, 
             subject: "Share.surf - Sign In", 
-            html: `<p>Hello,</p> <p>To continue signing in to <i>Share.surf</i>, <a href="https://share.surf/verify?email=${encodeURIComponent(email)}&code=${code}" style="font-weight: bold;">click here</a>.</p>` 
+            html: `<p>Hello,</p> <p>To continue signing in to <i>Share.surf</i>, <a href="${baseUrl}/signin/confirm?email=${encodeURIComponent(email)}&code=${code}" style="font-weight: bold;">click here</a>.</p>` 
         });
 
         return NextResponse.json({ success: true }, { status: 200 });
