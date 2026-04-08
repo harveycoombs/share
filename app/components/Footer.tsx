@@ -19,19 +19,21 @@ export default function Footer() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 100 }}
                 transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100, delay: 0.15 }}
-                className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center text-slate-400 text-sm font-medium dark:text-zinc-500 dark:border-zinc-700 max-lg:flex-col max-lg:gap-2"
+                className="flex justify-between items-center text-slate-400 text-sm font-medium max-lg:flex-col max-lg:gap-2"
             >
-                <div>2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline" draggable={false}>Harvey Coombs</Link></div>
+                <FooterPanel>
+                    <div className="h-9.75 flex items-center">2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline" draggable={false}>Harvey Coombs</Link></div>
+                </FooterPanel>
 
-                <div className="h-9.75 max-lg:hidden"></div>
-
-                <div className="flex items-center gap-4 max-sm:gap-3">
-                    <Link href="https://buymeacoffee.com/harveycoombs" target="_blank" rel="noopener" draggable={false} className="text-amber-500 text-shadow-md text-shadow-amber-200 hover:underline dark:text-shadow-none">Donate</Link>
-                    <Link href="/documents/privacy-policy.pdf" className="hover:underline" draggable={false}>Privacy Policy</Link>
-                    <Link href="/documents/terms-of-service.pdf" className="hover:underline" draggable={false}>Terms of Service</Link>
-                    <div className="hover:underline cursor-pointer" onClick={() => setIssueFormVisibility(true)} draggable={false}>Report an Issue</div>
-                    <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
-                </div>
+                <FooterPanel>
+                    <div className="h-9.75 flex items-center gap-4 max-sm:gap-3">
+                        <Link href="https://buymeacoffee.com/harveycoombs" target="_blank" rel="noopener" draggable={false} className="text-amber-500 text-shadow-md text-shadow-amber-200 hover:underline dark:text-shadow-none">Donate</Link>
+                        <Link href="/documents/privacy-policy.pdf" className="hover:underline" draggable={false}>Privacy Policy</Link>
+                        <Link href="/documents/terms-of-service.pdf" className="hover:underline" draggable={false}>Terms of Service</Link>
+                        <div className="hover:underline cursor-pointer" onClick={() => setIssueFormVisibility(true)} draggable={false}>Report an Issue</div>
+                        <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
+                    </div>
+                </FooterPanel>
             </motion.div>
 
             <AnimatePresence>
@@ -39,6 +41,10 @@ export default function Footer() {
             </AnimatePresence>
         </footer>
     );
+}
+
+function FooterPanel({ children }: any) {
+    return <div className="py-2.5 px-4.5 border border-slate-300 rounded-2xl dark:text-zinc-500 dark:border-zinc-700">{children}</div>;
 }
 
 function FooterIcon({ icon, title, url, classes }: any) {

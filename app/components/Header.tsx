@@ -17,11 +17,11 @@ export default function Header() {
     const path = usePathname();
     const user = useContext(UserContext);
 
-    if (user && (path == "/signin" || path == "/signup")) {
+    if (user && (path.startsWith("/signin") || path == "/signup")) {
         window.location.href = "/";
     }
 
-    if (path.startsWith("/signin") || path.startsWith("/signup") || path == "/authenticate") return null;
+    if (path.startsWith("/signin") || path == "/signup" || path == "/authenticate") return null;
 
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
@@ -49,13 +49,9 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -100 }}
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
-            className="p-5 select-none"
+            className="p-5 flex justify-end items-center select-none"
         >
-            <div className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center dark:border-zinc-700">
-                <Link href="/" className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${!user ? "max-sm:hidden" : ""}`} draggable={false}>
-                    <Icon width={39} height={39} className="block" />
-                </Link>
-
+            <div className="p-2.5 border border-slate-300 rounded-2xl dark:text-zinc-500 dark:border-zinc-700">
                 <nav className={`flex items-center gap-2.5 relative ${!user ? "max-sm:w-full" : ""}`}>
                     {user ? (
                         <>
