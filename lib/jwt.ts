@@ -22,6 +22,6 @@ export function createJWT(user: any) {
 
     return {
 		token: jwt.sign(JSON.stringify(user), process.env.JWT_SECRET!),
-		timestamp: now.getTime(),
+		timestamp: now.getTime()
 	};
 }
