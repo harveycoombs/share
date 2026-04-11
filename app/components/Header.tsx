@@ -5,23 +5,24 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence } from "motion/react";
 
-import Icon from "@/app/components/common/Icon";
+import { UserContext } from "@/app/context/UserContext";
 import Button from "@/app/components/common/Button";
 import Settings from "@/app/components/popups/Settings";
-import { UserContext } from "@/app/context/UserContext";
+import Panel from "@/app/components/common/Panel";
+import Field from "@/app/components/common/Field";
 
 export default function Header() {
     const path = usePathname();
     const user = useContext(UserContext);
 
-    if (user && (path == "/signin" || path == "/signup")) {
+    if (user && (path.startsWith("/signin") || path == "/signup")) {
         window.location.href = "/";
     }
 
-    if (path == "/signin" || path == "/signup" || path.startsWith("/verify") || path == "/authenticate") return null;
+    if (path.startsWith("/signin") || path == "/signup" || path == "/authenticate") return null;
 
     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
@@ -49,13 +50,13 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -100 }}
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
-            className="p-5 select-none"
+            className="p-5 flex justify-between items-center select-none"
         >
-            <div className="p-2.5 border border-slate-300 rounded-2xl flex justify-between items-center dark:border-zinc-700">
-                <Link href="/" className={`cursor-pointer duration-150 hover:opacity-80 active:opacity-60 ${!user ? "max-sm:hidden" : ""}`} draggable={false}>
-                    <Icon width={39} height={39} className="block" />
-                </Link>
+            <Panel>
+                <Field placeholder="Search uploads" classes="w-60" />
+            </Panel>
 
+            <Panel>
                 <nav className={`flex items-center gap-2.5 relative ${!user ? "max-sm:w-full" : ""}`}>
                     {user ? (
                         <>
@@ -89,7 +90,7 @@ export default function Header() {
                         </>
                     )}
                 </nav>
-            </div>
+            </Panel>
 
             <AnimatePresence>
                 {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}

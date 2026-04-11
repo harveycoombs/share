@@ -19,17 +19,18 @@ export default function Button({ children, url, square, classes = "", color = ""
 
     switch (color) {
         case "red":
-            appearance = "bg-red-500 text-white font-semibold hover:bg-red-600 active:bg-red-700 active:scale-97";
+            appearance = "bg-red-500 text-white text-shadow-red-700 font-semibold hover:bg-red-600 active:bg-red-700";
             break;
         case "gray":
-            appearance = "bg-slate-100 text-slate-500 font-semibold hover:bg-slate-200 active:bg-slate-300/80 active:scale-97 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700/80 dark:active:bg-zinc-700";
+            appearance = "bg-slate-100 text-slate-500 text-shadow-slate-200 font-semibold hover:bg-slate-200 active:bg-slate-300/80  dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700/80 dark:active:bg-zinc-700";
             break;
         default:
-            appearance = "bg-blue-500 text-white font-medium hover:bg-blue-600 active:bg-blue-700 active:scale-97";
+            appearance = "bg-blue-500 text-white text-shadow-blue-700 font-medium hover:bg-blue-600 active:bg-blue-700";
             break;
     }
 
-    const classList = `${square ? "p-3" : "px-4.5 py-3.25"} rounded-xl text-sm leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none ${classes}`;
+    const classList = `${square ? "p-3" : "px-4.5 py-3.25"} rounded-xl text-sm leading-none shadow-[inset_0_2px_3px_rgba(255,255,255,0.5),inset_0_-2px_3px_rgba(0,0,0,0.2)] text-shadow-lg ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none active:scale-96
+ ${classes}`;
 
     return url?.length ? (
         <Link href={url} className={classList} {...rest} draggable={false}>

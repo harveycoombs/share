@@ -80,6 +80,8 @@ export type Database = {
       }
       users: {
         Row: {
+          access_code: string | null
+          accessed_at: string | null
           auth_code: number | null
           creation_date: string
           deleted: boolean | null
@@ -92,6 +94,8 @@ export type Database = {
           verified: boolean | null
         }
         Insert: {
+          access_code?: string | null
+          accessed_at?: string | null
           auth_code?: number | null
           creation_date?: string
           deleted?: boolean | null
@@ -104,6 +108,8 @@ export type Database = {
           verified?: boolean | null
         }
         Update: {
+          access_code?: string | null
+          accessed_at?: string | null
           auth_code?: number | null
           creation_date?: string
           deleted?: boolean | null
