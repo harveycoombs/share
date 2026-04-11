@@ -53,7 +53,7 @@ export default function Header() {
             className="p-5 flex justify-between items-center select-none"
         >
             <Panel>
-                <Field placeholder="Search uploads" classes="w-60" />
+                <Field placeholder="Search uploads" classes="w-60 invisible" />
             </Panel>
 
             <Panel>
