@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence } from "motion/react";
 
 import { UserContext } from "@/app/context/UserContext";
@@ -52,8 +52,8 @@ export default function Header() {
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
             className="p-5 flex justify-between items-center select-none"
         >
-            <Panel>
-                <Field placeholder="Search uploads" classes="w-60 invisible" />
+            <Panel classes="invisible">
+                <Field placeholder="Search uploads" classes="w-60" />
             </Panel>
 
             <Panel>
