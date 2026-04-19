@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faInfoCircle, faStopwatch, faKey, faXmark, faFolderPlus, faExclamationCircle, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faStopwatch, faKey, faXmark, faFolderPlus, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { AnimatePresence, motion } from "motion/react";
 import JSZip from "jszip";
 
@@ -13,6 +13,7 @@ import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
 import { formatTime } from "@/lib/utils";
 import { UserContext } from "./context/UserContext";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 export default function Home() {
     const user = useContext(UserContext);
@@ -29,6 +30,7 @@ export default function Home() {
     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
     const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
+    const [captchaToken, setCaptchaToken] = useState<string>("");
 
     const uploader = useRef<HTMLInputElement>(null);
 
@@ -40,7 +42,7 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        if (!files?.length) return;
+        if (!files?.length || !captchaToken.length) return;
 
         if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > (user ? 750000000 : 250000000)) {
             setError("File is too large");
@@ -56,7 +58,7 @@ export default function Home() {
         const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
 
         (async () => {
-            const uploadid = await insertUpload(title, contentType);
+            const uploadid = await insertUpload(title, contentType, captchaToken);
 
             if (!uploadid.length) return;
 
@@ -114,7 +116,7 @@ export default function Home() {
 
             request.send(file);
         })();
-    }, [files]);
+    }, [files, captchaToken]);
 
     useEffect(() => {
         window.addEventListener("paste", handlePaste);
@@ -123,14 +125,14 @@ export default function Home() {
 
     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
     
-    async function insertUpload(title: string, contentType: string): Promise<string> {
+    async function insertUpload(title: string, contentType: string, captcha: string): Promise<string> {
         if (!files?.length) return "";
 
         const size = Array.from(files).reduce((total: number, file: File) => total + file.size, 0);
 
         const response = await fetch("/api/uploads", {
             method: "POST",
-            body: JSON.stringify({ title, size, contentType, password, total: files.length })
+            body: JSON.stringify({ title, size, contentType, password, total: files.length, captchaToken: captcha })
         });
 
         const data = await response.json();
@@ -292,6 +294,15 @@ export default function Home() {
                 {!loading && !id.length && (
                     <div className="w-115 mx-auto max-sm:w-full">
                         <Notice color={error.length ? "red" : "blue"}>{error.length ? error : "Drag or paste files onto this page to upload"}</Notice>
+
+                        {!captchaToken.length && !!files?.length && !loading && (
+                            <div className="my-5 w-fit relative left-1/2 -translate-x-1/2">
+                                <HCaptcha
+                                    sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
+                                    onVerify={(token: string, _: any) => setCaptchaToken(token)}
+                                />
+                            </div>
+                        )}
 
                         <div className={`flex justify-between items-center p-2.5 rounded-2xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
                             <div>

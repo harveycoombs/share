@@ -22,7 +22,7 @@ export default function Footer() {
                 className="flex justify-between items-center text-slate-400 text-sm font-medium max-lg:flex-col max-lg:gap-2"
             >
                 <FooterPanel>
-                    <div className="h-9.75 flex items-center">2021 &ndash; {new Date().getFullYear()} &middot; <span title="Formerly cynohost.com">Share</span> {packageJson.version} &middot; <Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline" draggable={false}>Harvey Coombs</Link></div>
+                    <div className="h-9.75 flex items-center">2021 &ndash; {new Date().getFullYear()}<span className="mx-1">&middot;</span><span title="Formerly cynohost.com" className="mr-1">Share</span>{packageJson.version}<span className="mx-1">&middot;</span><Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline" draggable={false}>Harvey Coombs</Link></div>
                 </FooterPanel>
 
                 <FooterPanel>
