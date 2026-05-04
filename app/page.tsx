@@ -42,7 +42,7 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        if (!files?.length || !captchaToken.length) return;
+        if (!files?.length || (!captchaToken.length && !user)) return;
 
         if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > (user ? 750000000 : 250000000)) {
             setError("File is too large");
@@ -295,7 +295,7 @@ export default function Home() {
                     <div className="w-115 mx-auto max-sm:w-full">
                         <Notice color={error.length ? "red" : "blue"}>{error.length ? error : "Drag or paste files onto this page to upload"}</Notice>
 
-                        {!captchaToken.length && !!files?.length && !loading && (
+                        {!user && !captchaToken.length && !!files?.length && !loading && (
                             <div className="my-5 w-fit relative left-1/2 -translate-x-1/2">
                                 <HCaptcha
                                     sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
