@@ -11,7 +11,7 @@ import UploadHistory from "@/app/components/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
-import { formatTime } from "@/lib/utils";
+import { formatBytes, formatTime } from "@/lib/utils";
 import { UserContext } from "./context/UserContext";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
@@ -31,6 +31,9 @@ export default function Home() {
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
     const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
     const [captchaToken, setCaptchaToken] = useState<string>("");
+    const [totalUsers, setTotalUsers] = useState<number>(0);
+    const [totalUploadedSize, setTotalUploadedSize] = useState<number>(0);
+    const [totalUploadViews, setTotalUploadViews] = useState<number>(0);
 
     const uploader = useRef<HTMLInputElement>(null);
 
@@ -253,10 +256,10 @@ export default function Home() {
     }, [uploader]);
 
     return (
-        <main className="min-h-[calc(100vh-202px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-            <section className="select-none max-sm:w-full max-sm:px-4">
+        <main className="min-h-[calc(100vh-202px)] flex flex-col items-center justify-center gap-20" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <section className="max-sm:w-full max-sm:px-4">
                 <div className="mb-16">
-                    <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto" />
+                    <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto select-none" />
                     <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-500">The no-frills file sharing service</h2>
                 </div>
                 
@@ -355,6 +358,16 @@ export default function Home() {
                 )}
             </section>
 
+            <section>
+                <div className="w-115 mx-auto flex justify-center items-center gap-4 py-4 px-4.5 rounded-2xl border border-slate-300">
+                    <Statistic value={totalUsers} label="Users" />
+                    <Divider />
+                    <Statistic value={formatBytes(totalUploadedSize)} label="Uploaded Size" />
+                    <Divider />
+                    <Statistic value={totalUploadViews} label="Upload Views" />
+                </div>
+            </section>
+
             <input 
                 type="file"
                 className="hidden"
@@ -371,4 +384,17 @@ export default function Home() {
             </AnimatePresence>
         </main>
     );
+}
+
+function Statistic({ value, label }: any) {
+    return (
+        <div className="w-1/3 text-center">
+            <strong className="block text-4xl font-extrabold leading-none">{value}</strong>
+            <div className="text-sm font-medium text-slate-500 leading-none dark:text-zinc-500 mt-1">{label}</div>
+        </div>
+    );
+}
+
+function Divider() {
+    return <div className="w-px h-11 bg-slate-300"></div>;
 }

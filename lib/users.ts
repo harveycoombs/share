@@ -160,3 +160,12 @@ export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<s
 
     return data?.discord_id ?? "";
 }
+
+
+export async function getTotalUsers(): Promise<number> {
+    const { count, error } = await supabase.from("users").select("user_id", { count: "exact", head: true }).eq("deleted", false);
+
+    if (error) throw error;
+
+    return count ?? 0;
+}

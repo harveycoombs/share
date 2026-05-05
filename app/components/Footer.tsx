@@ -30,6 +30,7 @@ export default function Footer() {
                         <Link href="https://buymeacoffee.com/harveycoombs" target="_blank" rel="noopener" draggable={false} className="text-amber-500 text-shadow-md text-shadow-amber-200 hover:underline dark:text-shadow-none">Donate</Link>
                         <Link href="/documents/privacy-policy.pdf" className="hover:underline" draggable={false}>Privacy Policy</Link>
                         <Link href="/documents/terms-of-service.pdf" className="hover:underline" draggable={false}>Terms of Service</Link>
+                        <div className="hover:underline cursor-pointer">DMCA Takedowns</div>
                         <div className="hover:underline cursor-pointer" onClick={() => setIssueFormVisibility(true)} draggable={false}>Report an Issue</div>
                         <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                     </div>

@@ -87,3 +87,19 @@ export async function checkPasswordIsSet(id: string): Promise<boolean> {
     const passwordHash = await getUploadPasswordHash(id);
     return passwordHash.length > 0;
 }
+
+export async function getTotalUploadedSize(): Promise<number> {
+    const { data, error } = await supabase.from("uploads").select("size.sum()");
+
+    if (error) throw error;
+
+    return data?.[0]?.sum ?? 0;
+}
+
+export async function getTotalUploadViews(): Promise<number> {
+    const { data, error } = await supabase.from("uploads").select("views.sum()");
+
+    if (error) throw error;
+
+    return data?.[0]?.sum ?? 0;
+}
