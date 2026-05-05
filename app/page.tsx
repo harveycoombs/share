@@ -45,6 +45,17 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
+        (async () => {
+            const response = await fetch("/api/stats");
+            const { totalUsers, totalUploadedSize, totalUploadViews } = await response.json();
+
+            setTotalUsers(totalUsers);
+            setTotalUploadedSize(totalUploadedSize);
+            setTotalUploadViews(totalUploadViews);
+        })();
+    }, []);
+
+    useEffect(() => {
         if (!files?.length || (!captchaToken.length && !user)) return;
 
         if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > (user ? 750000000 : 250000000)) {
