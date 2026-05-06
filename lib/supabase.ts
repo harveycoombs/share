@@ -41,6 +41,7 @@ export type Database = {
     Tables: {
       uploads: {
         Row: {
+          access_id: string | null
           content_type: string | null
           files: number | null
           ip_address: string | null
@@ -53,6 +54,7 @@ export type Database = {
           views: number | null
         }
         Insert: {
+          access_id?: string | null
           content_type?: string | null
           files?: number | null
           ip_address?: string | null
@@ -65,6 +67,7 @@ export type Database = {
           views?: number | null
         }
         Update: {
+          access_id?: string | null
           content_type?: string | null
           files?: number | null
           ip_address?: string | null

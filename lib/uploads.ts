@@ -1,7 +1,9 @@
 "use server";
-import { supabase } from "./database";
-import { generateHash, verify } from "./passwords";
 import { randomUUID } from "crypto";
+
+import { generateRandomString } from "@/lib/utils";
+import { supabase } from "@/lib/database";
+import { generateHash, verify } from "@/lib/passwords";
 
 export async function getUploadHistory(userid: string, search: string = ""): Promise<any[]> {
     let query = supabase.from("uploads").select("upload_id, upload_date, ip_address, user_id, title, files, size, content_type, views").eq("user_id", userid).order("upload_date", { ascending: false });
@@ -21,8 +23,15 @@ export async function insertUploadHistory(userid: string, title: string, ip: str
     const passwordHash = password?.length ? await generateHash(password) : "";
     const uploadId = randomUUID();
     
-    const { data, error } = await supabase.from("uploads").insert({
+    let accessId = generateRandomString();
+
+    while (await checkAccessIDExists(accessId)) {
+        accessId = generateRandomString();
+    }
+
+    const { error } = await supabase.from("uploads").insert({
         upload_id: uploadId,
+        access_id: accessId,
         user_id: userid,
         title,
         ip_address: ip,
@@ -30,11 +39,11 @@ export async function insertUploadHistory(userid: string, title: string, ip: str
         size,
         password: passwordHash,
         content_type: contentType,
-    }).select("upload_id").maybeSingle();
+    });
 
     if (error) throw error;
 
-    return data?.upload_id ?? "";
+    return accessId;
 }
 
 export async function deleteUpload(userid: string, id: string): Promise<boolean> {
@@ -48,7 +57,7 @@ export async function renameUpload(userid: string, id: string, name: string): Pr
 }
 
 export async function checkUploadProtection(id: string): Promise<boolean> {
-    const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).maybeSingle();
+    const { data, error } = await supabase.from("uploads").select("password").eq("access_id", id).maybeSingle();
 
     if (error) throw error;
 
@@ -56,7 +65,7 @@ export async function checkUploadProtection(id: string): Promise<boolean> {
 }
 
 export async function getUploadPasswordHash(id: string): Promise<string> {
-    const { data, error } = await supabase.from("uploads").select("password").eq("upload_id", id).maybeSingle();
+    const { data, error } = await supabase.from("uploads").select("password").eq("access_id", id).maybeSingle();
 
     if (error) throw error;
 
@@ -72,13 +81,13 @@ export async function verifyUploadPassword(id: string, password: string): Promis
 }
 
 export async function incrementUploadViews(id: string): Promise<boolean> {
-    const { data: currentData, error: fetchError } = await supabase.from("uploads").select("views").eq("upload_id", id).maybeSingle();
+    const { data: currentData, error: fetchError } = await supabase.from("uploads").select("views").eq("access_id", id).maybeSingle();
 
     if (fetchError?.message?.length) throw new Error(fetchError.message);
 
     const currentViews = currentData?.views ?? 0;
 
-    const { error } = await supabase.from("uploads").update({ views: currentViews + 1 }).eq("upload_id", id);
+    const { error } = await supabase.from("uploads").update({ views: currentViews + 1 }).eq("access_id", id);
 
     return !error;
 }
@@ -88,18 +97,10 @@ export async function checkPasswordIsSet(id: string): Promise<boolean> {
     return passwordHash.length > 0;
 }
 
-export async function getTotalUploadedSize(): Promise<number> {
-    const { data, error } = await supabase.from("uploads").select("size.sum()");
+export async function checkAccessIDExists(accessid: string): Promise<boolean> {
+    const { count, error } = await supabase.from("uploads").select("access_id").eq("access_id", accessid).maybeSingle();
 
-    if (error) throw error;
+    if (error?.message?.length) throw error;
 
-    return data?.[0]?.sum ?? 0;
-}
-
-export async function getTotalUploadViews(): Promise<number> {
-    const { data, error } = await supabase.from("uploads").select("views.sum()");
-
-    if (error) throw error;
-
-    return data?.[0]?.sum ?? 0;
+    return !!count;
 }
