@@ -149,7 +149,7 @@ export default function Home() {
                 break;
         }
 
-        return data.uploadid ?? "";
+        return data.accessid ?? "";
     }
 
     async function getUploadURL(path: string) {
