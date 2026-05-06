@@ -12,11 +12,10 @@ export function generateCode(length: number = 6): number {
 }
 
 export function generateRandomString(length: number = 8): string {
-    const chars = "abcdefghijklmnopqrstuvwxyz";
     let result = "";
 
     for (let i = 0; i < length; i++) {
-        result += chars[Math.floor(Math.random() * chars.length)];
+        result += String.fromCharCode(Math.floor(Math.random() * 26) + 97);
     }
 
     return result;
