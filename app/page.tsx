@@ -31,9 +31,6 @@ export default function Home() {
     const [sessionExists, setSessionExistence] = useState<boolean>(false);
     const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
     const [captchaToken, setCaptchaToken] = useState<string>("");
-    const [totalUsers, setTotalUsers] = useState<number>(0);
-    const [totalUploadedSize, setTotalUploadedSize] = useState<number>(0);
-    const [totalUploadViews, setTotalUploadViews] = useState<number>(0);
 
     const uploader = useRef<HTMLInputElement>(null);
 
@@ -41,17 +38,6 @@ export default function Home() {
         (async () => {
             const response = await fetch("/api/user/session");
             setSessionExistence(response.ok);
-        })();
-    }, []);
-
-    useEffect(() => {
-        (async () => {
-            const response = await fetch("/api/stats");
-            const { totalUsers, totalUploadedSize, totalUploadViews } = await response.json();
-
-            setTotalUsers(totalUsers);
-            setTotalUploadedSize(totalUploadedSize);
-            setTotalUploadViews(totalUploadViews);
         })();
     }, []);
 
