@@ -262,7 +262,7 @@ export default function Home() {
 
                 {id.length > 0 && (
                     <div>
-                        <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}/${id}` : ""}</strong>
+                        <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
@@ -371,17 +371,4 @@ export default function Home() {
             </AnimatePresence>
         </main>
     );
-}
-
-function Statistic({ value, label }: any) {
-    return (
-        <div className="w-1/3 text-center">
-            <strong className="block text-4xl font-extrabold leading-none">{value}</strong>
-            <div className="text-sm font-medium text-slate-500 leading-none dark:text-zinc-500 mt-1">{label}</div>
-        </div>
-    );
-}
-
-function Divider() {
-    return <div className="w-px h-11 bg-slate-300"></div>;
 }
