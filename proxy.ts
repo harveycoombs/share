@@ -7,9 +7,9 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl;
     const { pathname } = url;
 
-    if (!pathname.startsWith("/uploads/")) return NextResponse.next();
+    if (pathname.length != 9 || /[\.\-\?\&]/g.test(pathname)) return NextResponse.next();
 
-    const id = pathname.slice(9);
+    const id = pathname.slice(1);
     const password = request.headers.get("Share-Upload-Password");
 
     await incrementUploadViews(id);
@@ -25,5 +25,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/uploads/:path*"]
+    matcher: ["/:path*"]
 };

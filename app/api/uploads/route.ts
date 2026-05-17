@@ -54,8 +54,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const ip = (request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host")) ?? "";
 
-    const uploadid = await insertUploadHistory(user?.user_id, title, ip, total, size, password, contentType);
-    return NextResponse.json({ uploadid }, { status: 200 });
+    const accessid = await insertUploadHistory(user?.user_id, title, ip, total, size, password, contentType);
+    return NextResponse.json({ accessid }, { status: 200 });
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {

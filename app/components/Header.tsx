@@ -50,46 +50,40 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -100 }}
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
-            className="p-5 flex justify-between items-center select-none"
+            className="p-5 flex justify-end items-center select-none max-sm:p-3.5 max-sm:gap-3.5"
         >
-            <Panel classes="invisible">
-                <Field placeholder="Search uploads" classes="w-60" />
-            </Panel>
+            <Panel classes="max-sm:w-1/2">
+                {user ? (
+                    <nav className="flex items-center gap-2.5 relative">
+                        <Image 
+                            src={user.avatar || "/images/default.jpg"}
+                            alt={avatarLabel} 
+                            title={avatarLabel}
+                            width={39} 
+                            height={39}
+                            className="inline-block align-middle rounded-xl object-cover aspect-square"
+                            draggable={false}
+                        />
 
-            <Panel>
-                <nav className={`flex items-center gap-2.5 relative ${!user ? "max-sm:w-full" : ""}`}>
-                    {user ? (
-                        <>
-                            <Image 
-                                src={user.avatar || "/images/default.jpg"}
-                                alt={avatarLabel} 
-                                title={avatarLabel}
-                                width={39} 
-                                height={39}
-                                className="inline-block align-middle rounded-xl object-cover aspect-square"
-                                draggable={false}
-                            />
+                        <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                            <FontAwesomeIcon icon={faEllipsis} />
+                        </div>
 
-                            <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
-                                <FontAwesomeIcon icon={faEllipsis} />
-                            </div>
-
-                            <AnimatePresence>
-                                {menuIsVisible && (
-                                    <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
-                                        <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
-                                        <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
-                                    </div>
-                                )}
-                            </AnimatePresence>                        
-                        </>
-                    ) : (
-                        <>
-                            <Button url="/signin" classes="inline-block align-middle max-sm:w-full">Sign In</Button>
-                            <Button url="/signup" classes="inline-block align-middle max-sm:w-full" color="gray">Sign Up</Button>
-                        </>
-                    )}
-                </nav>
+                        <AnimatePresence>
+                            {menuIsVisible && (
+                                <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
+                                    <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
+                                    <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
+                                </div>
+                            )}
+                        </AnimatePresence> 
+                    </nav>
+                ) : (
+                    <nav className="flex items-center gap-2.5">
+                        <Button url="/signin" classes="block max-sm:w-1/2 max-sm:px-3.25">Sign In</Button>
+                        <Button url="/signup" classes="block max-sm:w-1/2 max-sm:px-3.25" color="gray">Sign Up</Button>
+                    </nav>
+                )}
             </Panel>
 
             <AnimatePresence>

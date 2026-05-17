@@ -11,7 +11,7 @@ import UploadHistory from "@/app/components/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
-import { formatTime } from "@/lib/utils";
+import { formatBytes, formatTime } from "@/lib/utils";
 import { UserContext } from "./context/UserContext";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
@@ -149,7 +149,7 @@ export default function Home() {
                 break;
         }
 
-        return data.uploadid ?? "";
+        return data.accessid ?? "";
     }
 
     async function getUploadURL(path: string) {
@@ -253,16 +253,16 @@ export default function Home() {
     }, [uploader]);
 
     return (
-        <main className="min-h-[calc(100vh-202px)] grid place-items-center" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-            <section className="select-none max-sm:w-full max-sm:px-4">
+        <main className="min-h-[calc(100vh-202px)] flex flex-col items-center justify-center gap-20" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+            <section className="max-sm:w-full max-sm:px-4">
                 <div className="mb-16">
-                    <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto" />
+                    <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto select-none" />
                     <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-500">The no-frills file sharing service</h2>
                 </div>
-                
+
                 {id.length > 0 && (
                     <div>
-                        <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}uploads/${id}` : ""}</strong>
+                        <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
@@ -348,7 +348,7 @@ export default function Home() {
 
                         <div className={`text-sm font-medium leading-none text-slate-400 flex ${user ? "justify-between max-sm:justify-center" : "flex-col items-center gap-2.75"} dark:text-zinc-500`}>
                             <div>Expires after {user ? "48" : "24"} hours{!user && " (48 hours for registered users)"}</div>
-                            <div className="hidden mx-2 max-sm:block">&middot;</div>
+                            <div className="hidden mx-2 max-sm:hidden">&middot;</div>
                             <div>{user ? "750MB" : "250MB"} upload limit{!user && " (750MB for registered users)"}</div>
                         </div>
                     </div>

@@ -13,7 +13,7 @@ export default function Footer() {
     const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
 
     return (
-        <footer className="p-5 select-none overflow-hidden">
+        <footer className="p-5 select-none overflow-hidden hidden">
             <motion.div 
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -22,7 +22,7 @@ export default function Footer() {
                 className="flex justify-between items-center text-slate-400 text-sm font-medium max-lg:flex-col max-lg:gap-2"
             >
                 <FooterPanel>
-                    <div className="h-9.75 flex items-center">2021 &ndash; {new Date().getFullYear()}<span className="mx-1">&middot;</span><span title="Formerly cynohost.com" className="mr-1">Share</span>{packageJson.version}<span className="mx-1">&middot;</span><Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline" draggable={false}>Harvey Coombs</Link></div>
+                    <div className="h-9.75 flex items-center">2021 &ndash; {new Date().getFullYear()}<span className="mx-1">&middot;</span><span title="Formerly cynohost.com" className="mr-1">Share</span><Link href={`https://github.com/harveycoombs/share/releases/tag/${packageJson.version}`}>{packageJson.version}</Link><span className="mx-1">&middot;</span><Link href="https://harveycoombs.com/" target="_blank" rel="noopener" className="hover:underline" draggable={false}>Harvey Coombs</Link></div>
                 </FooterPanel>
 
                 <FooterPanel>
@@ -30,6 +30,7 @@ export default function Footer() {
                         <Link href="https://buymeacoffee.com/harveycoombs" target="_blank" rel="noopener" draggable={false} className="text-amber-500 text-shadow-md text-shadow-amber-200 hover:underline dark:text-shadow-none">Donate</Link>
                         <Link href="/documents/privacy-policy.pdf" className="hover:underline" draggable={false}>Privacy Policy</Link>
                         <Link href="/documents/terms-of-service.pdf" className="hover:underline" draggable={false}>Terms of Service</Link>
+                        <div className="hover:underline cursor-pointer">DMCA Takedowns</div>
                         <div className="hover:underline cursor-pointer" onClick={() => setIssueFormVisibility(true)} draggable={false}>Report an Issue</div>
                         <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                     </div>
