@@ -50,12 +50,8 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -100 }}
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
-            className="p-5 flex justify-between items-center select-none max-sm:p-3.5 max-sm:gap-3.5"
+            className="p-5 flex justify-end items-center select-none max-sm:p-3.5 max-sm:gap-3.5"
         >
-            <Panel classes="max-sm:w-1/2">
-                <Field placeholder="Search uploads" classes="w-60 max-sm:w-full" />
-            </Panel>
-
             <Panel classes="max-sm:w-1/2">
                 {user ? (
                     <nav className="flex items-center gap-2.5 relative">
