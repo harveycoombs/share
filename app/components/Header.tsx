@@ -12,7 +12,6 @@ import { UserContext } from "@/app/context/UserContext";
 import Button from "@/app/components/common/Button";
 import Settings from "@/app/components/popups/Settings";
 import Panel from "@/app/components/common/Panel";
-import Field from "@/app/components/common/Field";
 
 export default function Header() {
     const path = usePathname();
