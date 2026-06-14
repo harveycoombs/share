@@ -9,7 +9,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     const email = searchParams.get("email") ?? "";
     const code = searchParams.get("code") ?? "";
 
-    if (!email?.length || !code?.length) return NextResponse.json({ error: "One or more fields were not provided." });
+    if (!email?.length || !code?.length) return NextResponse.redirect(new URL("/signin/error", request.url));
 
     const user = await getUserByEmailAddress(email);
     

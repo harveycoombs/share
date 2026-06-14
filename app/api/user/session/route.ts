@@ -45,7 +45,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         await sendEmail({
             to: email, 
             subject: "Share.surf - Sign In", 
-            html: `<p>Hello ${user.name},</p> <p>To continue signing in to <i>Share.surf</i>, <a href="${baseUrl}/signin/confirm?userid=${encodeURIComponent(user.user_id)}&code=${code}" style="font-weight: bold;">click here</a>.</p>` 
+            html: `<p>Hello ${user.name},</p> <p>To continue signing in to <i>Share.surf</i>, <a href="${baseUrl}/signin/confirm?email=${encodeURIComponent(user.email_address)}&code=${code}" style="font-weight: bold;">click here</a>.</p>` 
         });
 
         return NextResponse.json({ success: true }, { status: 200 });
