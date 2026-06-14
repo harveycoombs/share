@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleQuestion } from "@fortawesome/free-solid-svg-icons";
-import Button from "./components/common/Button";
+
+import Button from "@/app/components/common/Button";
 
 export default function NotFound() {
     return (

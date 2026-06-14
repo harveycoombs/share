@@ -26,9 +26,9 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Share",
         description: description,
-        url: "https://share.surf",
+        url: "https://www.share.surf",
         images: [{
-            url: "https://share.surf/images/splash.jpg?v=1",
+            url: "https://www.share.surf/images/splash.jpg?v=1",
             width: 1200,
             height: 630,
             alt: "Share splash image"
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Share",
         description: description,
-        creator: "@harveycoombs23",
+        creator: "",
     }
 };
 
@@ -58,7 +58,7 @@ export default async function RootLayout({
                 <meta name="theme-color" content="#2B7FFF" />
 
                 <link rel="apple-touch-icon" sizes="180x180" href="/images/icon.png" />
-                <link rel="canonical" href="https://share.surf" />
+                <link rel="canonical" href="https://www.share.surf" />
             </head>
 
             <body className={`${monaSans.className} antialiased h-screen bg-white text-slate-800 overflow-x-hidden dark:bg-zinc-950 dark:text-white`}>
