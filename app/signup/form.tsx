@@ -115,6 +115,9 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
             <Label classes="block mt-2.5">Email Address</Label>
             <Field type="email" classes="block w-full" readOnly={success.length > 0} defaultValue={email} onInput={(e: any) => setEmail(e.target.value.trim())} />
 
+            email: {email}<br/>
+            initialEmail: {initialEmail}<br/>
+
             <AnimatePresence>
                 {proceed && !success.length && (
                     <motion.div
