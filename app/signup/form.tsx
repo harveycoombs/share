@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 import { motion, AnimatePresence } from "motion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,7 +11,11 @@ import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
 import Notice from "@/app/components/common/Notice";
 
-export default function RegistrationForm() {
+interface Properties {
+    initialEmail?: string;
+}
+
+export default function RegistrationForm({ initialEmail = "" }: Properties) {
     const [proceed, setProceed] = useState<boolean>(false);
     
     const [name, setName] = useState<string>("");
@@ -109,7 +113,7 @@ export default function RegistrationForm() {
             {!success.length && <Field type="text" classes="block w-full" onInput={(e: any) => setName(e.target.value.trim())} />}
 
             <Label classes="block mt-2.5">Email Address</Label>
-            <Field type="email" classes="block w-full" readOnly={success.length > 0} onInput={(e: any) => setEmail(e.target.value.trim())} />
+            <Field type="email" classes="block w-full" readOnly={success.length > 0} defaultValue={initialEmail} onInput={(e: any) => setEmail(e.target.value.trim())} />
 
             <AnimatePresence>
                 {proceed && !success.length && (

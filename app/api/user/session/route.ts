@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
 import { authenticate } from "@/lib/jwt";
-import { updateUserAccessCode } from "@/lib/users";
+import { updateUserAccessCode, getUserByEmailAddress } from "@/lib/users";
 import sendEmail from "@/lib/email";
 
 export async function GET(_: Request): Promise<NextResponse> {
@@ -32,16 +32,20 @@ export async function POST(request: Request): Promise<NextResponse> {
 
         if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
 
+        const user = await getUserByEmailAddress(email);
+
+        if (!user) return NextResponse.json({ error: "User not found." }, { status: 404 });
+
         const code = crypto.randomUUID();
 
         await updateUserAccessCode(email, code);
 
         const baseUrl = new URL(request.url).origin;
 
-        await sendEmail({ 
+        await sendEmail({
             to: email, 
             subject: "Share.surf - Sign In", 
-            html: `<p>Hello,</p> <p>To continue signing in to <i>Share.surf</i>, <a href="${baseUrl}/signin/confirm?email=${encodeURIComponent(email)}&code=${code}" style="font-weight: bold;">click here</a>.</p>` 
+            html: `<p>Hello ${user.name},</p> <p>To continue signing in to <i>Share.surf</i>, <a href="${baseUrl}/signin/confirm?email=${encodeURIComponent(user.email_address)}&code=${code}" style="font-weight: bold;">click here</a>.</p>` 
         });
 
         return NextResponse.json({ success: true }, { status: 200 });

@@ -8,12 +8,14 @@ import { AnimatePresence } from "motion/react";
 
 import packageJson from "@/package.json";
 import IssueForm from "@/app/components/popups/IssueForm";
+import DCMAForm from "@/app/components/popups/DCMAForm";
 
 export default function Footer() {
     const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
+    const [DMCAFormVisibility, setDMCAFormVisibility] = useState<boolean>(false);
 
     return (
-        <footer className="p-5 select-none overflow-hidden hidden">
+        <footer className="p-5 select-none overflow-hidden">
             <motion.div 
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -30,12 +32,16 @@ export default function Footer() {
                         <Link href="https://buymeacoffee.com/harveycoombs" target="_blank" rel="noopener" draggable={false} className="text-amber-500 text-shadow-md text-shadow-amber-200 hover:underline dark:text-shadow-none">Donate</Link>
                         <Link href="/documents/privacy-policy.pdf" className="hover:underline" draggable={false}>Privacy Policy</Link>
                         <Link href="/documents/terms-of-service.pdf" className="hover:underline" draggable={false}>Terms of Service</Link>
-                        <div className="hover:underline cursor-pointer">DMCA Takedowns</div>
+                        <div className="hover:underline cursor-pointer" onClick={() => setDMCAFormVisibility(true)} draggable={false}>DMCA Takedowns</div>
                         <div className="hover:underline cursor-pointer" onClick={() => setIssueFormVisibility(true)} draggable={false}>Report an Issue</div>
                         <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                     </div>
                 </FooterPanel>
             </motion.div>
+
+            <AnimatePresence>
+                {DMCAFormVisibility && <DCMAForm onClose={() => setDMCAFormVisibility(false)} />}
+            </AnimatePresence>
 
             <AnimatePresence>
                 {issueFormVisibility && <IssueForm onClose={() => setIssueFormVisibility(false)} />}

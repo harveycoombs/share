@@ -9,18 +9,18 @@ export async function GET(request: Request): Promise<NextResponse> {
     const email = searchParams.get("email") ?? "";
     const code = searchParams.get("code") ?? "";
 
-    if (!email?.length || !code?.length) return NextResponse.json({ error: "One or more fields were not provided." });
-
-    const valid = await verifyUserAccessCode(email, code);
-
-    if (!valid) return NextResponse.json({ error: "Invalid code." });
-
-    await updateUserAccessDate(email);
-    await updateUserAccessCode(email, null);
+    if (!email?.length || !code?.length) return NextResponse.redirect(new URL("/signin/error", request.url));
 
     const user = await getUserByEmailAddress(email);
     
-    if (!user) return NextResponse.json({ success: false }, { status: 500 });
+    if (!user) return NextResponse.redirect(new URL("/signin/error", request.url));
+
+    const valid = await verifyUserAccessCode(email, code);
+
+    if (!valid) return NextResponse.redirect(new URL("/signin/error", request.url));
+
+    await updateUserAccessDate(email);
+    await updateUserAccessCode(email, null);
 
     const credentials = createJWT(user);
     
