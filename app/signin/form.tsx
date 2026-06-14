@@ -52,6 +52,9 @@ export default function LoginForm() {
             case 403:
                 setWarning(json.error);
                 break;
+            case 404:
+                window.location.href = `/signup?email=${encodeURIComponent(email)}`;
+                break;
             default:
                 setError(json.error);
                 break;
@@ -75,7 +78,6 @@ export default function LoginForm() {
                     />
                 </div>
             )}
-
 
             {!success.length && <Button classes="block w-full mt-4" disabled={!email.length || !captchaToken.length} loading={loading}>Continue</Button>}
 

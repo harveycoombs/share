@@ -11,16 +11,16 @@ export async function GET(request: Request): Promise<NextResponse> {
 
     if (!email?.length || !code?.length) return NextResponse.json({ error: "One or more fields were not provided." });
 
+    const user = await getUserByEmailAddress(email);
+    
+    if (!user) return NextResponse.redirect(new URL("/signin/confirm/error?type=no_user", request.url));
+
     const valid = await verifyUserAccessCode(email, code);
 
-    if (!valid) return NextResponse.json({ error: "Invalid code." });
+    if (!valid) return NextResponse.redirect(new URL("/signin/confirm/error?type=invalid_code", request.url));
 
     await updateUserAccessDate(email);
     await updateUserAccessCode(email, null);
-
-    const user = await getUserByEmailAddress(email);
-    
-    if (!user) return NextResponse.json({ success: false }, { status: 500 });
 
     const credentials = createJWT(user);
     
