@@ -13,7 +13,7 @@ export default function Footer() {
     const [issueFormVisibility, setIssueFormVisibility] = useState<boolean>(false);
 
     return (
-        <footer className="p-5 select-none overflow-hidden hidden">
+        <footer className="p-5 select-none overflow-hidden">
             <motion.div 
                 initial={{ opacity: 0, y: 100 }}
                 animate={{ opacity: 1, y: 0 }}
