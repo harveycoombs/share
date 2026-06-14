@@ -10,10 +10,14 @@ export default function Register() {
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
-        const email = params.get("email") ?? "";
+        const emailAddress = params.get("email") ?? "";
 
-        setEmail(email);
-    });
+        setEmail(emailAddress);
+
+        if (emailAddress.length) {
+            window.history.replaceState({}, "", "/signup");
+        }
+    }, []);
 
     return (
         <main className="min-h-[calc(100vh-101px)] grid place-items-center">
