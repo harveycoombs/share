@@ -110,10 +110,10 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
             {error.length > 0 && <Notice color="red" classes="mb-5">{error}</Notice>}
 
             {!success.length && <Label classes="block mt-2.5">Name</Label>}
-            {!success.length && <Field type="text" classes="block w-full" onInput={(e: any) => setName(e.target.value.trim())} />}
+            {!success.length && <Field type="text" classes="block w-full" defaultValue={name} onInput={(e: any) => setName(e.target.value.trim())} />}
 
             <Label classes="block mt-2.5">Email Address</Label>
-            <Field type="email" classes="block w-full" readOnly={success.length > 0} onInput={(e: any) => setEmail(e.target.value.trim())} />
+            <Field type="email" classes="block w-full" readOnly={success.length > 0} defaultValue={email} onInput={(e: any) => setEmail(e.target.value.trim())} />
 
             <AnimatePresence>
                 {proceed && !success.length && (
