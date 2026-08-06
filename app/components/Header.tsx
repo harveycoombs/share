@@ -51,7 +51,7 @@ export default function Header() {
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
             className="p-5 flex justify-end items-center select-none max-sm:p-3.5 max-sm:gap-3.5"
         >
-            <Panel classes="max-sm:w-1/2">
+            <Panel classes="backdrop-blur bg-white/10 max-sm:w-full">
                 {user ? (
                     <nav className="flex items-center gap-2.5 relative">
                         <Image 

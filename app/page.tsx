@@ -253,7 +253,7 @@ export default function Home() {
     }, [uploader]);
 
     return (
-        <main className="min-h-[calc(100vh-203px)] flex flex-col items-center justify-center gap-20" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+        <main className="min-h-[calc(100vh-203px)] flex flex-col items-center justify-center gap-20 max-sm:min-h-[calc(100vh-191px)]" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
             <section className="max-sm:w-full max-sm:px-4">
                 <div className="mb-16">
                     <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto select-none" />
