@@ -1,374 +1,253 @@
 "use client";
-import { useState, useRef, useEffect, useCallback, useContext } from "react";
+import { useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faStopwatch, faKey, faXmark, faFolderPlus, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import { AnimatePresence, motion } from "motion/react";
-import JSZip from "jszip";
+import { faHistory, faKey } from "@fortawesome/free-solid-svg-icons";
+import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 
-import Logo from "@/app/components/common/Logo";
 import Button from "@/app/components/common/Button";
-import UploadHistory from "@/app/components/popups/UploadHistory";
-import Field from "@/app/components/common/Field";
-import Notice from "@/app/components/common/Notice";
-import AccountPrompt from "@/app/components/popups/AccountPrompt";
-import { formatBytes, formatTime } from "@/lib/utils";
-import { UserContext } from "./context/UserContext";
-import HCaptcha from "@hcaptcha/react-hcaptcha";
+
+type GridColumn = {
+    head: number;
+    speed: number;
+    trail: number;
+};
+
+const randomBetween = (minimum: number, maximum: number) => (
+    Math.random() * (maximum - minimum) + minimum
+);
 
 export default function Home() {
-    const user = useContext(UserContext);
-
-    const [files, setFiles] = useState<FileList|null>(null);
-    const [id, setID] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false);
-    const [dragging, setDragging] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-    const [progress, setProgress] = useState<number>(0);
-    const [password, setPassword] = useState<string>("");
-    const [passwordFieldIsVisible, setPasswordFieldVisibility] = useState<boolean>(false);
-    const [uploadTime, setUploadTime] = useState<string>("");
-    const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
-    const [sessionExists, setSessionExistence] = useState<boolean>(false);
-    const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
-    const [captchaToken, setCaptchaToken] = useState<string>("");
-
-    const uploader = useRef<HTMLInputElement>(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        (async () => {
-            const response = await fetch("/api/user/session");
-            setSessionExistence(response.ok);
-        })();
-    }, []);
+        const canvas = canvasRef.current;
+        const context = canvas?.getContext("2d");
 
-    useEffect(() => {
-        if (!files?.length || (!captchaToken.length && !user)) return;
+        if (!canvas || !context) return;
 
-        if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > (user ? 750000000 : 250000000)) {
-            setError("File is too large");
-            setLoading(false);
-            return;
-        }
+        const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+        let animationFrame = 0;
+        let resizeFrame = 0;
+        let lastFrame = performance.now();
+        let lastDigitChange = lastFrame;
+        let width = 0;
+        let height = 0;
+        let cellWidth = 16;
+        let cellHeight = 19;
+        let fontSize = 11;
+        let columnCount = 0;
+        let rowCount = 0;
+        let cycleHeight = 0;
+        let digits = new Uint8Array();
+        let cellOpacity = new Float32Array();
+        let columns: GridColumn[] = [];
 
-        setLoading(true);
+        const createGrid = () => {
+            columnCount = Math.ceil(width / cellWidth) + 1;
+            rowCount = Math.ceil(height / cellHeight) + 1;
+            cycleHeight = height + cellHeight * 10;
+            digits = new Uint8Array(columnCount * rowCount);
+            cellOpacity = new Float32Array(columnCount * rowCount);
 
-        const start = new Date().getTime();
-
-        const title = (files.length > 1) ? "files.zip" : files[0].name;
-        const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
-
-        (async () => {
-            const uploadid = await insertUpload(title, contentType, captchaToken);
-
-            if (!uploadid.length) return;
-
-            const url = await getUploadURL(`uploads/${uploadid}`);
-
-            if (!url.length) return;
-    
-            const request = new XMLHttpRequest();
-
-            request.open("PUT", url, true);
-            request.setRequestHeader("Content-Type", contentType);
-
-            let file;
-
-            if (files.length > 1) {
-                const zip = new JSZip();
-
-                for (const file of files) zip.file(file.name, await file.arrayBuffer());
-                const content = await zip.generateAsync({ type: "blob" });
-
-                file = new File([content], title, { type: contentType });
-            } else {
-                file = files[0];
+            for (let index = 0; index < digits.length; index++) {
+                digits[index] = Math.random() > 0.5 ? 1 : 0;
+                cellOpacity[index] = randomBetween(0.055, 0.115);
             }
 
-            request.upload.addEventListener("progress", (e: ProgressEvent) => {
-                if (!e.lengthComputable) return;
-                setProgress((e.loaded / e.total) * 100);
-            });
-    
-            request.addEventListener("readystatechange", (e: any) => {
-                if (e.target.readyState != 4) return;
-    
-                setLoading(false);
-    
-                const end = new Date().getTime();
-                setUploadTime(formatTime(end - start));
-    
-                switch (e.target.status) {
-                    case 200:
-                    case 201:
-                        setID(uploadid);
-                        break;
-                    case 413:
-                        setError("File is too large");
-                        break;
-                    case 408:
-                        setError("Server timed out");
-                        break;
-                    default:
-                        setError("Something went wrong");
-                        break;
+            columns = Array.from({ length: columnCount }, () => ({
+                head: randomBetween(0, cycleHeight),
+                speed: randomBetween(180, 320),
+                trail: randomBetween(height * 0.22, height * 0.48)
+            }));
+        };
+
+        const changeDigits = () => {
+            const changes = Math.ceil(digits.length * 0.09);
+
+            for (let index = 0; index < changes; index++) {
+                const cell = Math.floor(Math.random() * digits.length);
+                digits[cell] = digits[cell] === 0 ? 1 : 0;
+            }
+        };
+
+        const drawGridLines = () => {
+            context.beginPath();
+
+            for (let column = 0; column <= columnCount; column++) {
+                const x = column * cellWidth - cellWidth / 2;
+                context.moveTo(x, 0);
+                context.lineTo(x, height);
+            }
+
+            for (let row = 0; row <= rowCount; row++) {
+                const y = row * cellHeight - cellHeight / 2;
+                context.moveTo(0, y);
+                context.lineTo(width, y);
+            }
+
+            context.strokeStyle = "rgba(112, 186, 143, 0.025)";
+            context.lineWidth = 0.5;
+            context.stroke();
+        };
+
+        const draw = (time: number) => {
+            context.clearRect(0, 0, width, height);
+            drawGridLines();
+
+            context.font = `500 ${fontSize}px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace`;
+            context.textAlign = "center";
+            context.textBaseline = "middle";
+
+            for (let column = 0; column < columnCount; column++) {
+                const x = column * cellWidth;
+                const sweep = columns[column];
+
+                for (let row = 0; row < rowCount; row++) {
+                    const y = row * cellHeight;
+                    const index = row * columnCount + column;
+                    const distance = (sweep.head - y + cycleHeight) % cycleHeight;
+                    const isInTrail = distance < sweep.trail;
+                    const trailStrength = isInTrail
+                        ? Math.pow(1 - distance / sweep.trail, 1.65)
+                        : 0;
+                    const pulse = (Math.sin(time * 0.006 + column * 0.31 + row * 0.17) + 1) * 0.008;
+                    const alpha = Math.min(cellOpacity[index] + trailStrength * 0.38 + pulse, 0.54);
+                    const isLeadingCell = distance < cellHeight * 0.8;
+
+                    if (isLeadingCell) {
+                        context.fillStyle = `rgba(205, 235, 217, ${alpha})`;
+                        context.shadowColor = "rgba(111, 204, 151, 0.32)";
+                        context.shadowBlur = 7;
+                    } else {
+                        context.fillStyle = `rgba(101, 177, 132, ${alpha})`;
+                        context.shadowBlur = 0;
+                    }
+
+                    context.fillText(digits[index].toString(), x, y);
                 }
-            });
-
-            request.send(file);
-        })();
-    }, [files, captchaToken]);
-
-    useEffect(() => {
-        window.addEventListener("paste", handlePaste);
-        return () => window.removeEventListener("paste", handlePaste);
-    }, []);
-
-    useEffect(() => setPassword(""), [passwordFieldIsVisible]);
-    
-    async function insertUpload(title: string, contentType: string, captcha: string): Promise<string> {
-        if (!files?.length) return "";
-
-        const size = Array.from(files).reduce((total: number, file: File) => total + file.size, 0);
-
-        const response = await fetch("/api/uploads", {
-            method: "POST",
-            body: JSON.stringify({ title, size, contentType, password, total: files.length, captchaToken: captcha })
-        });
-
-        const data = await response.json();
-
-        switch (response.status) {
-            case 413:
-                setError("File is too large");
-                break;
-            case 408:
-                setError("Server timed out");
-                break;
-            case 500:
-                setError("Something went wrong");
-                break;
-        }
-
-        return data.accessid ?? "";
-    }
-
-    async function getUploadURL(path: string) {
-        const response = await fetch(`/api/uploads/url?filename=${path}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-            setError("An internal server error occurred");
-            setLoading(false);
-            return "";
-        }
-
-        return data.url ?? "";
-    }
-
-    const resetUploader = useCallback(() => {
-        setID("");
-        setError("");
-        setProgress(0);
-        setFiles(null);
-        setUploadTime("");
-        setLoading(false);
-        setPassword("");
-
-        if (uploader.current) {
-            uploader.current.value = "";
-        }
-    }, []);
-
-    const copyUploadURL = useCallback(async (e: any) => {
-        if (!id) return;
-
-        const url = e.target.innerText;
-
-        await navigator.clipboard.writeText(url.toLowerCase());
-        e.target.innerText = "Copied to Clipboard";
-
-        setTimeout(() => e.target.innerText = url, 1200);
-    }, [id]);
-
-    const handleDragOverEvent = useCallback((e: any) => {
-        e.preventDefault();
-
-        if (!dragging && !files?.length) handleDragEnterEvent();
-    }, [dragging, files]);
-    
-    const handleDragEnterEvent = useCallback(() => {
-        if (files?.length) return;
-
-        setDragging(true);
-    }, [files]);
-    
-    const handleDragLeaveEvent = useCallback(() => {
-        if (files?.length) return;
-        setDragging(false);
-    }, [files]);
-
-    const handleDropEvent = useCallback((e: any) => {
-        e.preventDefault();
-
-        if (files?.length) return;
-
-        if (uploader?.current) {
-            uploader.current.files = e.dataTransfer.files;
-            uploader.current.dispatchEvent(new Event("input", { bubbles: true }));
-
-            handleDragLeaveEvent();
-        }
-    }, [files, uploader, handleDragLeaveEvent]);
-
-    function handlePaste(e: ClipboardEvent) {
-        const transfer = new DataTransfer();
-
-        if (e.clipboardData?.files?.length) {
-            for (let pastedFile of e.clipboardData.files) {
-                transfer.items.add(pastedFile);
             }
-        } else if (e.clipboardData?.getData("text")?.length) {
-            const textFile = new File([e.clipboardData.getData("text")], "pasted.txt", { type: "text/plain" });
-            transfer.items.add(textFile);
-        }
 
-        if (!transfer.files.length) return;
+            context.shadowBlur = 0;
+        };
 
-        setFiles(transfer.files);
-        uploader.current?.dispatchEvent(new Event("change"));
-    }
+        const resize = () => {
+            const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+            width = window.innerWidth;
+            height = window.innerHeight;
+            cellWidth = width < 640 ? 13 : 16;
+            cellHeight = width < 640 ? 16 : 19;
+            fontSize = width < 640 ? 9 : 11;
 
-    const browseFiles = useCallback(() => {
-        uploader.current?.removeAttribute("webkitdirectory");
-        uploader.current?.removeAttribute("directory");
+            canvas.width = Math.floor(width * pixelRatio);
+            canvas.height = Math.floor(height * pixelRatio);
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 
-        uploader.current?.click();
-    }, [uploader]);
+            createGrid();
+            draw(performance.now());
+        };
 
-    const browseFolders = useCallback(() => {
-        uploader.current?.setAttribute("webkitdirectory", "true");
-        uploader.current?.setAttribute("directory", "true");
+        const animate = (time: number) => {
+            const elapsed = Math.min(time - lastFrame, 64);
 
-        uploader.current?.click();
-    }, [uploader]);
+            if (elapsed >= 1000 / 30) {
+                columns.forEach((column) => {
+                    column.head = (column.head + column.speed * (elapsed / 1000)) % cycleHeight;
+                });
 
-    return (
-        <main className="min-h-[calc(100vh-203px)] flex flex-col items-center justify-center gap-20 max-sm:min-h-[calc(100vh-191px)]" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
-            <section className="max-sm:w-full max-sm:px-4">
-                <div className="mb-16">
-                    <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto select-none" />
-                    <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-500">The no-frills file sharing service</h2>
-                </div>
+                if (time - lastDigitChange >= 65) {
+                    changeDigits();
+                    lastDigitChange = time;
+                }
 
-                {id.length > 0 && (
-                    <div>
-                        <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
+                draw(time);
+                lastFrame = time;
+            }
 
-                        <div className="flex items-center gap-5 w-fit mx-auto mt-4">
-                            <Button onClick={resetUploader}>Upload More</Button>
-                            <div className="text-sm font-medium text-slate-400 leading-none dark:text-zinc-500"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
-                        </div>
+            animationFrame = window.requestAnimationFrame(animate);
+        };
+
+        const updateMotion = () => {
+            window.cancelAnimationFrame(animationFrame);
+
+            if (motionPreference.matches) {
+                draw(performance.now());
+                return;
+            }
+
+            lastFrame = performance.now();
+            lastDigitChange = lastFrame;
+            animationFrame = window.requestAnimationFrame(animate);
+        };
+
+        const handleResize = () => {
+            window.cancelAnimationFrame(resizeFrame);
+            resizeFrame = window.requestAnimationFrame(resize);
+        };
+
+        resize();
+        updateMotion();
+        window.addEventListener("resize", handleResize);
+        motionPreference.addEventListener("change", updateMotion);
+
+        return () => {
+            window.cancelAnimationFrame(animationFrame);
+            window.cancelAnimationFrame(resizeFrame);
+            window.removeEventListener("resize", handleResize);
+            motionPreference.removeEventListener("change", updateMotion);
+        };
+    }, []);
+
+     return (
+          <main
+               aria-hidden="true"
+               className="fixed inset-0 isolate overflow-hidden bg-[#050705] grid place-items-center"
+          >
+               <div
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                    background: [
+                         "radial-gradient(circle at 50% 45%, rgba(61, 119, 84, 0.1), transparent 42%)",
+                         "linear-gradient(145deg, #090e0a 0%, #050705 60%, #020302 100%)"
+                    ].join(", ")
+                    }}
+               />
+     
+               <canvas
+                    ref={canvasRef}
+                    className="pointer-events-none absolute inset-0 h-full w-full"
+               />
+     
+               <div
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                         background: "radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.38) 100%)"
+                    }}
+               />
+     
+               <section className="p-4 backdrop-blur-md border border-white/15 bg-white/5 rounded w-100">
+                    <ul>
+                         <li>Uploads expire after 24 hours</li>
+                         <li>250MB Upload Limit</li>
+                    </ul>
+                    
+                    <div className="flex gap-3.5">
+                         <Button classes="w-full">Browse Files</Button>
+
+                         <Button type="secondary" title="Upload Folder" square>
+                              <FontAwesomeIcon icon={faFolderOpen} />
+                         </Button>
+
+                         <Button type="secondary" title="View Upload History" square>
+                              <FontAwesomeIcon icon={faHistory} />
+                         </Button>
+
+                         <Button type="secondary" title="Set Upload Password" square>
+                              <FontAwesomeIcon icon={faKey} />
+                         </Button>
                     </div>
-                )}
-
-                {loading && progress < 100 && (
-                    <div className="w-115 mx-auto max-sm:w-full">
-                        <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
-                        <motion.progress 
-                            className="block appearance-none w-full h-3 border-none origin-center"
-                            max={100}
-                            value={Math.round(progress)}
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
-                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                        ></motion.progress>
-                    </div>
-                )}
-
-                {loading && progress >= 100 && (
-                    <div className="w-115 mx-auto text-center max-sm:w-full">
-                        <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60 dark:text-zinc-500"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
-                    </div>
-                )}
-
-                {!loading && !id.length && (
-                    <div className="w-115 mx-auto max-sm:w-full">
-                        <Notice color={error.length ? "red" : "blue"}>{error.length ? error : "Drag or paste files onto this page to upload"}</Notice>
-
-                        {!user && !captchaToken.length && !!files?.length && !loading && (
-                            <div className="my-5 w-fit relative left-1/2 -translate-x-1/2">
-                                <HCaptcha
-                                    sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
-                                    onVerify={(token: string, _: any) => setCaptchaToken(token)}
-                                />
-                            </div>
-                        )}
-
-                        <div className={`flex justify-between items-center p-2.5 rounded-2xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
-                            <div>
-                                <Button onClick={browseFiles} classes={`inline-block align-middle${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>Browse Files</Button>
-                                
-                                <Button
-                                    color="gray"
-                                    classes="ml-2.5"
-                                    square={true}
-                                    title="Upload Folder"
-                                    onClick={browseFolders}
-                                >
-                                    <FontAwesomeIcon icon={faFolderPlus} />
-                                </Button>
-                            </div>
-
-                            <div className={`flex items-center gap-2.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
-                                <Button color="gray" square={true} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => sessionExists ? setHistoryVisibility(true) : setAccountPromptVisibility(true)}>
-                                    <FontAwesomeIcon icon={faClockRotateLeft} />
-                                </Button>
-
-                                {passwordFieldIsVisible ? (
-                                    <div className={`relative${passwordFieldIsVisible ? " max-sm:w-full max-sm:grow" : ""}`}>
-                                        <Field 
-                                            type="password"
-                                            placeholder="Password"
-                                            classes={passwordFieldIsVisible ? "max-sm:w-full max-sm:grow-1" : ""}
-                                            readOnly={!sessionExists}
-                                            onChange={(e: any) => setPassword(e.target.value)}
-                                        />
-
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}>
-                                            <FontAwesomeIcon icon={faXmark} />
-                                        </div> 
-                                    </div>
-                                ) : (
-                                    <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => sessionExists ? setPasswordFieldVisibility(sessionExists) : setAccountPromptVisibility(true)}>
-                                        <FontAwesomeIcon icon={faKey} />
-                                    </Button>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className={`text-sm font-medium leading-none text-slate-400 flex ${user ? "justify-between max-sm:justify-center" : "flex-col items-center gap-2.75"} dark:text-zinc-500`}>
-                            <div>Expires after {user ? "48" : "24"} hours{!user && " (48 hours for registered users)"}</div>
-                            <div className="hidden mx-2 max-sm:hidden">&middot;</div>
-                            <div>{user ? "750MB" : "250MB"} upload limit{!user && " (750MB for registered users)"}</div>
-                        </div>
-                    </div>
-                )}
-            </section>
-
-            <input 
-                type="file"
-                className="hidden"
-                multiple={true}
-                ref={uploader}
-                onInput={(e: any) => setFiles(e.target.files)}
-            />
-            <AnimatePresence>
-                {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
-            </AnimatePresence>
-
-            <AnimatePresence>
-                {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
-            </AnimatePresence>
-        </main>
-    );
+               </section>
+          </main>
+     );
 }

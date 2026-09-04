@@ -4,41 +4,37 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 interface Properties {
-    children: React.ReactNode;
-    url?: string;
-    square?: boolean;
-    classes?: string;
-    color?: string;
-    loading?: boolean;
-    disabled?: boolean;
-    [key: string]: any;
+     type?: "primary" | "secondary";
+     children: React.ReactNode;
+     url?: string;
+     classes?: string;
+     loading?: boolean;
+     disabled?: boolean;
+     square?: boolean;
+     [key: string]: any;
 }
 
-export default function Button({ children, url, square, classes = "", color = "", loading, disabled, ...rest }: Properties) {
-    let appearance = "";
+export default function Button({ type = "primary", children, url, classes = "", loading, disabled, square = false, ...rest }: Properties) {
+     let colors;
 
-    switch (color) {
-        case "red":
-            appearance = "bg-red-500 text-white text-shadow-red-700 font-semibold hover:bg-red-600 active:bg-red-700";
-            break;
-        case "gray":
-            appearance = "bg-slate-100 text-slate-500 text-shadow-slate-200 font-semibold hover:bg-slate-200 active:bg-slate-300/80  dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700/80 dark:active:bg-zinc-700";
-            break;
-        default:
-            appearance = "bg-blue-500 text-white text-shadow-blue-700 font-semibold hover:bg-blue-600 active:bg-blue-700";
-            break;
-    }
-
-    const classList = `${square ? "p-3" : "px-4.5 py-3.25"} rounded-xl text-sm leading-none shadow-[inset_0_2px_3px_rgba(255,255,255,0.5),inset_0_-2px_3px_rgba(0,0,0,0.2)] text-shadow-lg ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none active:scale-96
- ${classes}`;
-
-    return url?.length ? (
-        <Link href={url} className={classList} {...rest} draggable={false}>
-            {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
-        </Link>
-    ) : (
-        <button className={classList} disabled={disabled || loading} {...rest}>
-            {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
-        </button>
-    );
+     switch (type) {
+          case "primary":
+               colors = "bg-white text-black hover:text-white active:text-white";
+               break;
+          case "secondary":
+               colors = "bg-transparent text-white";
+               break;
+     }
+     
+     const classList = `${square ? "p-3.25" : "px-4.25 py-3.25"} text-sm uppercase leading-none font-semibold ${colors} border border-white rounded-sm select-none cursor-pointer duration-150 ${classes} hover:bg-white/25 active:bg-white/40 active:scale-96`;
+     
+     return url?.length ? (
+          <Link href={url} className={classList} {...rest} draggable={false}>
+               {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
+          </Link>
+     ) : (
+          <button className={classList} disabled={disabled || loading} {...rest}>
+               {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
+          </button>
+     );
 }

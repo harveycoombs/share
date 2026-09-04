@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Be_Vietnam_Pro } from "next/font/google";
+import { Chakra_Petch } from "next/font/google";
 import { cookies } from "next/headers";
 
 import packageJson from "@/package.json";
@@ -12,8 +12,8 @@ import Footer from "@/app/components/Footer";
 import UserProvider from "@/app/context/UserContext";
 import { authenticate } from "@/lib/jwt";
 
-const beVietnamPro = Be_Vietnam_Pro({
-    weight: ["400", "500", "600", "700", "800", "900"],
+const chakraPetch = Chakra_Petch({
+    weight: ["300", "400", "500", "600", "700"],
     subsets: ["latin"]
 });
 
@@ -61,7 +61,7 @@ export default async function RootLayout({
                 <link rel="canonical" href="https://www.share.surf" />
             </head>
 
-            <body className={`${beVietnamPro.className} antialiased h-screen bg-white text-slate-800 overflow-x-hidden dark:bg-zinc-950 dark:text-white`}>
+            <body className={`${chakraPetch.className} antialiased h-screen bg-white text-white/65 overflow-x-hidden`}>
                 <UserProvider user={user}>
                     <Header />
                     {children}

@@ -14,87 +14,53 @@ import Settings from "@/app/components/popups/Settings";
 import Panel from "@/app/components/common/Panel";
 
 export default function Header() {
-    const path = usePathname();
-    const user = useContext(UserContext);
+     const path = usePathname();
+     const user = useContext(UserContext);
+     
+     if (user && (path.startsWith("/signin") || path == "/signup")) {
+          window.location.href = "/";
+     }
+     
+     if (path.startsWith("/signin") || path == "/signup" || path == "/authenticate") return null;
+     
+     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
+     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
+     
+     const logout = useCallback(async () => {
+          await fetch("/api/user/session", { method: "DELETE" });
+          window.location.reload();
+     }, []);
+     
+     const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
+     
+     useEffect(() => {
+          document.addEventListener("click", closeMenu);
+          return () => document.removeEventListener("click", closeMenu);
+     }, []);
+     
+     const closeMenu = useCallback((e: any) => {
+          if (e.target.matches("#menu, #menu *, #menu_button, #menu_button *")) return;
+          setMenuVisibility(false);
+     }, []);
+     
+     return (
+          <header className="p-4 sticky top-0 z-40 text-white">
+               <div className="flex items-center justify-between p-4 backdrop-blur-md border border-white/15 bg-white/5 rounded">
+                    <Link href="/" className="uppercase font-semibold leading-none text-2xl select-none">Share.surf</Link>
 
-    if (user && (path.startsWith("/signin") || path == "/signup")) {
-        window.location.href = "/";
-    }
+                    <nav className="flex items-center gap-4">
+                         <HeaderLink url="/">Donate</HeaderLink>
+                         <HeaderLink url="/">DMCA Takedowns</HeaderLink>
+                         <HeaderLink url="/">Report an Issue</HeaderLink>
 
-    if (path.startsWith("/signin") || path == "/signup" || path == "/authenticate") return null;
-
-    const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
-    const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
-
-    const logout = useCallback(async () => {
-        await fetch("/api/user/session", { method: "DELETE" });
-        window.location.reload();
-    }, []);
-
-    const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
-
-    useEffect(() => {
-        document.addEventListener("click", closeMenu);
-        return () => document.removeEventListener("click", closeMenu);
-    }, []);
-
-    const closeMenu = useCallback((e: any) => {
-        if (e.target.matches("#menu, #menu *, #menu_button, #menu_button *")) return;
-        setMenuVisibility(false);
-    }, []);
-    
-    return (
-        <motion.header
-            initial={{ opacity: 0, y: -100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -100 }}
-            transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
-            className="p-5 flex justify-end items-center select-none max-sm:p-3.5 max-sm:gap-3.5"
-        >
-            <Panel classes="backdrop-blur bg-white/10 max-sm:w-full">
-                {user ? (
-                    <nav className="flex items-center gap-2.5 relative">
-                        <Image 
-                            src={user.avatar || "/images/default.jpg"}
-                            alt={avatarLabel} 
-                            title={avatarLabel}
-                            width={39} 
-                            height={39}
-                            className="inline-block align-middle rounded-xl object-cover aspect-square"
-                            draggable={false}
-                        />
-
-                        <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
-                            <FontAwesomeIcon icon={faEllipsis} />
-                        </div>
-
-                        <AnimatePresence>
-                            {menuIsVisible && (
-                                <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
-                                    <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
-                                    <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
-                                </div>
-                            )}
-                        </AnimatePresence> 
+                         <Button>Sign In</Button>
+                         <Button type="secondary">Sign Up</Button>
                     </nav>
-                ) : (
-                    <nav className="flex items-center gap-2.5">
-                        <Button url="/signin" classes="block max-sm:w-1/2 max-sm:px-3.25">Sign In</Button>
-                        <Button url="/signup" classes="block max-sm:w-1/2 max-sm:px-3.25" color="gray">Sign Up</Button>
-                    </nav>
-                )}
-            </Panel>
-
-            <AnimatePresence>
-                {settingsAreVisible && user && <Settings onClose={() => setSettingsVisibility(false)} />}
-            </AnimatePresence>
-        </motion.header>
-    );
+               </div>
+          </header>
+     );
 }
 
-function HeaderSubMenuItem({ url = "", children, classes = "", first = false, red = false, ...rest }: any) {
-    const color = red ? "text-red-500 hover:bg-red-50" : "text-slate-700 hover:bg-slate-100/50";
-    const classList = `block px-2.5 py-1.75 text-[0.8rem] font-medium ${first ? "" : "border-t border-slate-200/50"} ${color} duration-150 cursor-pointer${classes}`;
-
-    return url.length ? <Link href={url} target="_blank" rel="noopener noreferrer" className={classList} {...rest}>{children}</Link> : <div className={classList} {...rest}>{children}</div>;
+function HeaderLink({ url, children }: any) {
+     return <Link href={url} className="font-semibold uppercase hover:underline text-sm">{children}</Link>;
 }
