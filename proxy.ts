@@ -7,7 +7,7 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl;
     const { pathname } = url;
 
-    if (pathname.length != 9 || /[\.\-\?\&]/g.test(pathname)) return NextResponse.next();
+    if (pathname.length != 9 || /[\.\-\?\&]/g.test(pathname) || pathname.startsWith("/api/")) return NextResponse.next();
 
     const id = pathname.slice(1);
     const password = request.headers.get("Share-Upload-Password");

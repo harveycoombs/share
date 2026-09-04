@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Mona_Sans } from "next/font/google";
+import { Be_Vietnam_Pro } from "next/font/google";
 import { cookies } from "next/headers";
 
 import packageJson from "@/package.json";
@@ -12,7 +12,7 @@ import Footer from "@/app/components/Footer";
 import UserProvider from "@/app/context/UserContext";
 import { authenticate } from "@/lib/jwt";
 
-const monaSans = Mona_Sans({
+const beVietnamPro = Be_Vietnam_Pro({
     weight: ["400", "500", "600", "700", "800", "900"],
     subsets: ["latin"]
 });
@@ -61,7 +61,7 @@ export default async function RootLayout({
                 <link rel="canonical" href="https://www.share.surf" />
             </head>
 
-            <body className={`${monaSans.className} antialiased h-screen bg-white text-slate-800 overflow-x-hidden dark:bg-zinc-950 dark:text-white`}>
+            <body className={`${beVietnamPro.className} antialiased h-screen bg-white text-slate-800 overflow-x-hidden dark:bg-zinc-950 dark:text-white`}>
                 <UserProvider user={user}>
                     <Header />
                     {children}

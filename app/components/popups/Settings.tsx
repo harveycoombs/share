@@ -204,17 +204,15 @@ export default function Settings({ onClose }: Properties) {
                     </div>
 
                     {section == "details" && (
-                        <SettingsSection>
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Name</Label>
-                                <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
-                            </SettingsFieldContainer>
-
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Email Address</Label>
-                                <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
-                            </SettingsFieldContainer>
-                        </SettingsSection>
+                         <div>
+                              <FieldContainer title="Name">
+                                   <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
+                              </FieldContainer>
+                              
+                              <FieldContainer title="Email Address" classes="mt-3.5">
+                                   <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
+                              </FieldContainer>
+                         </div>
                     )}
 
                     {section == "security" && (
@@ -253,9 +251,18 @@ export default function Settings({ onClose }: Properties) {
     );
 }
 
+function FieldContainer({ title = "", children, classes = "" }: any) {
+     return (
+          <div className={`flex gap-3.5 justify-between items-center ${classes}`}>
+               <label className="text-sm font-medium text-gray-600">{title}</label>
+               <div className="w-3/5">{children}</div>
+          </div>
+     );
+}
+
 function SettingsSection({ children }: any) {
     return (
-        <div className="min-h-40 flex gap-3.5 max-sm:flex-col max-sm:min-h-0">
+        <div className="">
             {children}
         </div>
     );
