@@ -1,11 +1,18 @@
 "use client";
-import { useEffect, useRef, useMemo } from "react";
+import { useState, useRef, useEffect, useCallback, useContext, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHistory, faKey } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 
 import Panel from "@/app/components/common/Panel";
 import Button from "@/app/components/common/Button";
+import UploadHistory from "@/app/components/popups/UploadHistory";
+import Field from "@/app/components/common/Field";
+import Notice from "@/app/components/common/Notice";
+import AccountPrompt from "@/app/components/popups/AccountPrompt";
+import { formatBytes, formatTime } from "@/lib/utils";
+import { UserContext } from "./context/UserContext";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 type GridColumn = {
     head: number;
@@ -18,6 +25,242 @@ const randomBetween = (minimum: number, maximum: number) => (
 );
 
 export default function Home() {
+     const user = useContext(UserContext);
+ 
+     const [files, setFiles] = useState<FileList|null>(null);
+     const [id, setID] = useState<string>("");
+     const [loading, setLoading] = useState<boolean>(false);
+     const [dragging, setDragging] = useState<boolean>(false);
+     const [error, setError] = useState<string>("");
+     const [progress, setProgress] = useState<number>(0);
+     const [password, setPassword] = useState<string>("");
+     const [passwordFieldIsVisible, setPasswordFieldVisibility] = useState<boolean>(false);
+     const [uploadTime, setUploadTime] = useState<string>("");
+     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
+     const [sessionExists, setSessionExistence] = useState<boolean>(false);
+     const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
+     const [captchaToken, setCaptchaToken] = useState<string>("");
+ 
+     const uploader = useRef<HTMLInputElement>(null);
+ 
+     useEffect(() => {
+         (async () => {
+             const response = await fetch("/api/user/session");
+             setSessionExistence(response.ok);
+         })();
+     }, []);
+
+     useEffect(() => {
+         if (!files?.length || (!captchaToken.length && !user)) return;
+ 
+         if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > (user ? 750000000 : 250000000)) {
+             setError("File is too large");
+             setLoading(false);
+             return;
+         }
+ 
+         setLoading(true);
+ 
+         const start = new Date().getTime();
+ 
+         const title = (files.length > 1) ? "files.zip" : files[0].name;
+         const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
+ 
+         (async () => {
+             const uploadid = await insertUpload(title, contentType, captchaToken);
+ 
+             if (!uploadid.length) return;
+ 
+             const url = await getUploadURL(`uploads/${uploadid}`);
+ 
+             if (!url.length) return;
+     
+             const request = new XMLHttpRequest();
+ 
+             request.open("PUT", url, true);
+             request.setRequestHeader("Content-Type", contentType);
+ 
+             let file;
+ 
+             if (files.length > 1) {
+                 const zip = new JSZip();
+ 
+                 for (const file of files) zip.file(file.name, await file.arrayBuffer());
+                 const content = await zip.generateAsync({ type: "blob" });
+ 
+                 file = new File([content], title, { type: contentType });
+             } else {
+                 file = files[0];
+             }
+ 
+             request.upload.addEventListener("progress", (e: ProgressEvent) => {
+                 if (!e.lengthComputable) return;
+                 setProgress((e.loaded / e.total) * 100);
+             });
+     
+             request.addEventListener("readystatechange", (e: any) => {
+                 if (e.target.readyState != 4) return;
+     
+                 setLoading(false);
+     
+                 const end = new Date().getTime();
+                 setUploadTime(formatTime(end - start));
+     
+                 switch (e.target.status) {
+                     case 200:
+                     case 201:
+                         setID(uploadid);
+                         break;
+                     case 413:
+                         setError("File is too large");
+                         break;
+                     case 408:
+                         setError("Server timed out");
+                         break;
+                     default:
+                         setError("Something went wrong");
+                         break;
+                 }
+             });
+ 
+             request.send(file);
+         })();
+     }, [files, captchaToken]);
+ 
+     useEffect(() => {
+         window.addEventListener("paste", handlePaste);
+         return () => window.removeEventListener("paste", handlePaste);
+     }, []);
+ 
+     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
+     
+     async function insertUpload(title: string, contentType: string, captcha: string): Promise<string> {
+         if (!files?.length) return "";
+ 
+         const size = Array.from(files).reduce((total: number, file: File) => total + file.size, 0);
+ 
+         const response = await fetch("/api/uploads", {
+             method: "POST",
+             body: JSON.stringify({ title, size, contentType, password, total: files.length, captchaToken: captcha })
+         });
+ 
+         const data = await response.json();
+ 
+         switch (response.status) {
+             case 413:
+                 setError("File is too large");
+                 break;
+             case 408:
+                 setError("Server timed out");
+                 break;
+             case 500:
+                 setError("Something went wrong");
+                 break;
+         }
+ 
+         return data.accessid ?? "";
+     }
+ 
+     async function getUploadURL(path: string) {
+         const response = await fetch(`/api/uploads/url?filename=${path}`);
+         const data = await response.json();
+ 
+         if (!response.ok) {
+             setError("An internal server error occurred");
+             setLoading(false);
+             return "";
+         }
+ 
+         return data.url ?? "";
+     }
+ 
+     const resetUploader = useCallback(() => {
+         setID("");
+         setError("");
+         setProgress(0);
+         setFiles(null);
+         setUploadTime("");
+         setLoading(false);
+         setPassword("");
+ 
+         if (uploader.current) {
+             uploader.current.value = "";
+         }
+     }, []);
+ 
+     const copyUploadURL = useCallback(async (e: any) => {
+         if (!id) return;
+ 
+         const url = e.target.innerText;
+ 
+         await navigator.clipboard.writeText(url.toLowerCase());
+         e.target.innerText = "Copied to Clipboard";
+ 
+         setTimeout(() => e.target.innerText = url, 1200);
+     }, [id]);
+ 
+     const handleDragOverEvent = useCallback((e: any) => {
+         e.preventDefault();
+ 
+         if (!dragging && !files?.length) handleDragEnterEvent();
+     }, [dragging, files]);
+     
+     const handleDragEnterEvent = useCallback(() => {
+         if (files?.length) return;
+ 
+         setDragging(true);
+     }, [files]);
+     
+     const handleDragLeaveEvent = useCallback(() => {
+         if (files?.length) return;
+         setDragging(false);
+     }, [files]);
+ 
+     const handleDropEvent = useCallback((e: any) => {
+         e.preventDefault();
+ 
+         if (files?.length) return;
+ 
+         if (uploader?.current) {
+             uploader.current.files = e.dataTransfer.files;
+             uploader.current.dispatchEvent(new Event("input", { bubbles: true }));
+ 
+             handleDragLeaveEvent();
+         }
+     }, [files, uploader, handleDragLeaveEvent]);
+ 
+     function handlePaste(e: ClipboardEvent) {
+         const transfer = new DataTransfer();
+ 
+         if (e.clipboardData?.files?.length) {
+             for (let pastedFile of e.clipboardData.files) {
+                 transfer.items.add(pastedFile);
+             }
+         } else if (e.clipboardData?.getData("text")?.length) {
+             const textFile = new File([e.clipboardData.getData("text")], "pasted.txt", { type: "text/plain" });
+             transfer.items.add(textFile);
+         }
+ 
+         if (!transfer.files.length) return;
+ 
+         setFiles(transfer.files);
+         uploader.current?.dispatchEvent(new Event("change"));
+     }
+ 
+     const browseFiles = useCallback(() => {
+         uploader.current?.removeAttribute("webkitdirectory");
+         uploader.current?.removeAttribute("directory");
+ 
+         uploader.current?.click();
+     }, [uploader]);
+ 
+     const browseFolders = useCallback(() => {
+         uploader.current?.setAttribute("webkitdirectory", "true");
+         uploader.current?.setAttribute("directory", "true");
+ 
+         uploader.current?.click();
+     }, [uploader]);
+     
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
@@ -245,9 +488,9 @@ export default function Home() {
                     <p className="font-semibold mb-3.5">Drop files onto this page to upload</p>
                     
                     <div className="flex gap-3.5">
-                         <Button classes="w-full">Browse Files</Button>
+                         <Button classes="w-full" onClick={browseFiles}>Browse Files</Button>
 
-                         <Button type="secondary" title="Upload Folder" square>
+                         <Button type="secondary" title="Upload Folder" onClick={browseFolders} square>
                               <FontAwesomeIcon icon={faFolderOpen} />
                          </Button>
 
