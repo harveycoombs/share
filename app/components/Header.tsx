@@ -45,18 +45,18 @@ export default function Header() {
      
      return (
           <header className="p-4 sticky top-0 z-40 text-white">
-               <div className="flex items-center justify-between p-4 backdrop-blur-md border border-white/15 bg-white/5 rounded">
-                    <Link href="/" className="uppercase font-semibold leading-none text-2xl select-none">Share.surf</Link>
+               <Panel classes="flex items-center justify-between">
+                    <Link href="/" className="uppercase font-semibold leading-none text-2xl select-none duration-150 hover:text-white/75 active:text-white/55 active:scale-97">Share.surf</Link>
 
                     <nav className="flex items-center gap-4">
                          <HeaderLink url="/">Donate</HeaderLink>
                          <HeaderLink url="/">DMCA Takedowns</HeaderLink>
                          <HeaderLink url="/">Report an Issue</HeaderLink>
 
-                         <Button>Sign In</Button>
-                         <Button type="secondary">Sign Up</Button>
+                         <Button url="/signin">Sign In</Button>
+                         <Button url="/signup" type="secondary">Sign Up</Button>
                     </nav>
-               </div>
+               </Panel>
           </header>
      );
 }

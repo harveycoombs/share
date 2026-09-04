@@ -6,7 +6,7 @@ interface Properties {
 
 export default function Panel({ children, classes = "", ...rest }: Properties) {
     return (
-        <div className={`p-2.5 border border-slate-300 rounded-2xl dark:text-zinc-500 dark:border-zinc-700 ${classes}`} {...rest}>
+        <div className={`p-4 backdrop-blur-md border border-white/15 bg-white/5 rounded ${classes}`} {...rest}>
             {children}
         </div>
     );

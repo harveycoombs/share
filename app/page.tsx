@@ -1,9 +1,10 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHistory, faKey } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 
+import Panel from "@/app/components/common/Panel";
 import Button from "@/app/components/common/Button";
 
 type GridColumn = {
@@ -199,10 +200,23 @@ export default function Home() {
         };
     }, []);
 
+     const currentHour = new Date().getHours();
+     
+     const greeting = useMemo(() => {
+          switch (true) {
+               case (currentHour < 12):
+                    return "Morning";
+               case (currentHour < 18):
+                    return "Afternoon";
+               default:
+                    return "Evening";
+          }
+     }, [currentHour]);
+     
      return (
           <main
                aria-hidden="true"
-               className="fixed inset-0 isolate overflow-hidden bg-[#050705] grid place-items-center"
+               className="h-screen fixed inset-0 isolate overflow-hidden bg-[#050705] grid place-items-center"
           >
                <div
                     className="pointer-events-none absolute inset-0"
@@ -226,11 +240,9 @@ export default function Home() {
                     }}
                />
      
-               <section className="p-4 backdrop-blur-md border border-white/15 bg-white/5 rounded w-100">
-                    <ul>
-                         <li>Uploads expire after 24 hours</li>
-                         <li>250MB Upload Limit</li>
-                    </ul>
+               <Panel classes="w-100">
+                    <h1 className="text-white font-semibold text-3xl">Good {greeting}</h1>
+                    <p className="font-semibold mb-3.5">Drop files onto this page to upload</p>
                     
                     <div className="flex gap-3.5">
                          <Button classes="w-full">Browse Files</Button>
@@ -247,7 +259,12 @@ export default function Home() {
                               <FontAwesomeIcon icon={faKey} />
                          </Button>
                     </div>
-               </section>
+
+                    <div className="leading-none font-semibold text-xs flex justify-between items-center mt-3 px-px">
+                         <div>24h expiration</div>
+                         <div>Max 250MB</div>
+                    </div>
+               </Panel>
           </main>
      );
 }

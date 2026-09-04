@@ -61,7 +61,7 @@ export default async function RootLayout({
                 <link rel="canonical" href="https://www.share.surf" />
             </head>
 
-            <body className={`${chakraPetch.className} antialiased h-screen bg-white text-white/65 overflow-x-hidden`}>
+            <body className={`${chakraPetch.className} antialiased h-screen uppercase bg-white text-white/65 overflow-x-hidden`}>
                 <UserProvider user={user}>
                     <Header />
                     {children}
