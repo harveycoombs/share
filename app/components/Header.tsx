@@ -49,9 +49,9 @@ export default function Header() {
                     <Link href="/" className="uppercase font-semibold leading-none text-2xl select-none duration-150 hover:text-white/75 active:text-white/55 active:scale-97">Share.surf</Link>
 
                     <nav className="flex items-center gap-4">
-                         <HeaderLink url="/">Donate</HeaderLink>
-                         <HeaderLink url="/">DMCA Takedowns</HeaderLink>
-                         <HeaderLink url="/">Report an Issue</HeaderLink>
+                         <HeaderLink classes="text-amber-400">Donate</HeaderLink>
+                         <HeaderLink>DMCA Takedowns</HeaderLink>
+                         <HeaderLink>Report an Issue</HeaderLink>
 
                          <Button url="/signin">Sign In</Button>
                          <Button url="/signup" type="secondary">Sign Up</Button>
@@ -61,6 +61,7 @@ export default function Header() {
      );
 }
 
-function HeaderLink({ url, children }: any) {
-     return <Link href={url} className="font-semibold uppercase hover:underline text-sm">{children}</Link>;
+function HeaderLink({ url = "", children, classes = "", ...rest }: any) {
+     const classList = `text-sm font-semibold uppercase cursor-pointer hover:underline ${classes}`;
+     return url.length > 0 ? <Link href={url} className={classList} {...rest}>{children}</Link> : <button className={classList} {...rest}>{children}</button>;
 }

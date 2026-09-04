@@ -240,7 +240,7 @@ export default function Home() {
                     }}
                />
      
-               <Panel classes="w-100">
+               <Panel classes="w-100 shadow-lg">
                     <h1 className="text-white font-semibold text-3xl">Good {greeting}</h1>
                     <p className="font-semibold mb-3.5">Drop files onto this page to upload</p>
                     
