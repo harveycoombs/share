@@ -3,6 +3,7 @@ import { useState, useRef, useEffect, useCallback, useContext, useMemo } from "r
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHistory, faKey } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
+import { AnimatePresence } from "motion/react";
 
 import Panel from "@/app/components/common/Panel";
 import Button from "@/app/components/common/Button";
@@ -460,6 +461,10 @@ export default function Home() {
           <main
                aria-hidden="true"
                className="h-screen fixed inset-0 isolate overflow-hidden bg-[#050705] grid place-items-center"
+               onDragOver={handleDragOverEvent}
+               onDragEnter={handleDragEnterEvent}
+               onDragLeave={handleDragLeaveEvent}
+               onDrop={handleDropEvent}
           >
                <div
                     className="pointer-events-none absolute inset-0"
@@ -484,30 +489,79 @@ export default function Home() {
                />
      
                <Panel classes="w-100 shadow-lg">
-                    <h1 className="text-white font-semibold text-3xl">Good {greeting}</h1>
-                    <p className="font-semibold mb-3.5">Drop files onto this page to upload</p>
+                    {id.length > 0 && (
+                        <div>
+                            <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
+    
+                            <div className="flex items-center gap-5 w-fit mx-auto mt-4">
+                                <Button onClick={resetUploader}>Upload More</Button>
+                                <div className="text-sm font-medium text-slate-400 leading-none dark:text-zinc-500"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
+                            </div>
+                        </div>
+                    )}
+    
+                    {loading && progress < 100 && (
+                        <div className="w-115 mx-auto max-sm:w-full">
+                              <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
+                              
+                              <progress 
+                                   className="block appearance-none w-full h-3 border-none origin-center"
+                                   max={100}
+                                   value={Math.round(progress)}
+                              ></progress>
+                        </div>
+                    )}
                     
-                    <div className="flex gap-3.5">
-                         <Button classes="w-full" onClick={browseFiles}>Browse Files</Button>
+                    {loading && progress >= 100 && (
+                        <div className="w-full mx-auto text-center max-sm:w-full">
+                            <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60 dark:text-zinc-500"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
+                        </div>
+                    )}
 
-                         <Button type="secondary" title="Upload Folder" onClick={browseFolders} square>
-                              <FontAwesomeIcon icon={faFolderOpen} />
-                         </Button>
+                    {!loading && !id.length && (
+                         <>
+                              <h1 className="text-white font-semibold text-3xl">Good {greeting}</h1>
+                              <p className="font-semibold mb-3.5">Drop files onto this page to upload</p>
+                              
+                              <div className="flex gap-3.5">
+                                   <Button classes="w-full" onClick={browseFiles}>Browse Files</Button>
+          
+                                   <Button type="secondary" title="Upload Folder" onClick={browseFolders} square>
+                                        <FontAwesomeIcon icon={faFolderOpen} />
+                                   </Button>
+          
+                                   <Button type="secondary" title="View Upload History" square>
+                                        <FontAwesomeIcon icon={faHistory} />
+                                   </Button>
+          
+                                   <Button type="secondary" title="Set Upload Password" square>
+                                        <FontAwesomeIcon icon={faKey} />
+                                   </Button>
+                              </div>
+          
+                              <div className="leading-none font-semibold text-xs flex justify-between items-center mt-3 px-px">
+                                   <div>24h expiration</div>
+                                   <div>Max 250MB</div>
+                              </div>
+                         </>
+                    )}
 
-                         <Button type="secondary" title="View Upload History" square>
-                              <FontAwesomeIcon icon={faHistory} />
-                         </Button>
-
-                         <Button type="secondary" title="Set Upload Password" square>
-                              <FontAwesomeIcon icon={faKey} />
-                         </Button>
-                    </div>
-
-                    <div className="leading-none font-semibold text-xs flex justify-between items-center mt-3 px-px">
-                         <div>24h expiration</div>
-                         <div>Max 250MB</div>
-                    </div>
+                    <AnimatePresence>
+                        {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
+                    </AnimatePresence>
+        
+                    <AnimatePresence>
+                        {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
+                    </AnimatePresence>
                </Panel>
+
+               <input 
+                   type="file"
+                   className="hidden"
+                   multiple={true}
+                   ref={uploader}
+                   onInput={(e: any) => setFiles(e.target.files)}
+               />
           </main>
      );
 }
