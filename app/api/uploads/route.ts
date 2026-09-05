@@ -40,7 +40,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     const password = data.password ?? "";
     const captchaToken = data.captchaToken ?? "";
 
-    if (!user) {
+    /*if (!user) {
         if (!captchaToken.length) return NextResponse.json({ error: "Captcha token is required." }, { status: 400 });
 
         const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
@@ -50,7 +50,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         });
     
         if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
-    }
+        }*/
 
     const ip = (request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host")) ?? "";
 
