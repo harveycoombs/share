@@ -519,7 +519,10 @@ export default function Home() {
                     
                     {loading && progress >= 100 && (
                         <div className="w-full mx-auto text-center max-sm:w-full">
-                            <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60 dark:text-zinc-500"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
+                              <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60 dark:text-zinc-500">
+                                   <FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" />
+                                   <span className="text-lg">Finalising</span>
+                              </div>
                         </div>
                     )}
 
