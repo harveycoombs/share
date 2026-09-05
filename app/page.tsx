@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, useEffect, useCallback, useContext, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHistory, faKey } from "@fortawesome/free-solid-svg-icons";
+import { faHistory, faKey, faStopwatch, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 import { AnimatePresence } from "motion/react";
 import JSZip from "jszip";
