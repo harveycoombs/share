@@ -558,6 +558,12 @@ export default function Home() {
                     <AnimatePresence>
                         {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
                     </AnimatePresence>
+
+                    <i className="block mt-7.5">
+                         {loading ? "loading" : "not loading"}
+                         <br />Progress = {progress}
+                         <br />ID = {id}
+                    </i>
                </Panel>
 
                <input 
