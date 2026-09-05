@@ -11,10 +11,11 @@ interface Properties {
      loading?: boolean;
      disabled?: boolean;
      square?: boolean;
+     actionType?: "submit" | "reset" | "button" | undefined;
      [key: string]: any;
 }
 
-export default function Button({ type = "primary", children, url, classes = "", loading, disabled, square = false, ...rest }: Properties) {
+export default function Button({ type = "primary", children, url, classes = "", loading, disabled, square = false, actionType, ...rest }: Properties) {
      let colors;
 
      switch (type) {
@@ -33,7 +34,7 @@ export default function Button({ type = "primary", children, url, classes = "", 
                {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
           </Link>
      ) : (
-          <button className={classList} disabled={disabled || loading} {...rest}>
+               <button className={classList} disabled={disabled || loading} type={actionType} {...rest}>
                {loading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /> : children}
           </button>
      );

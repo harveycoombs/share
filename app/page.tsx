@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHistory, faKey } from "@fortawesome/free-solid-svg-icons";
 import { faFolderOpen } from "@fortawesome/free-regular-svg-icons";
 import { AnimatePresence } from "motion/react";
+import JSZip from "jszip";
 
 import Panel from "@/app/components/common/Panel";
 import Button from "@/app/components/common/Button";
@@ -501,14 +502,18 @@ export default function Home() {
                     )}
     
                     {loading && progress < 100 && (
-                        <div className="w-115 mx-auto max-sm:w-full">
-                              <strong className="block text-center text-2xl font-bold mb-4">{Math.round(progress)}&#37;</strong>
+                        <div className="w-full mx-auto max-sm:w-full">
+                              <div className="block text-center font-medium text-lg mb-3.5 leading-none">{Math.round(progress)}&#37; Uploaded</div>
                               
                               <progress 
                                    className="block appearance-none w-full h-3 border-none origin-center"
                                    max={100}
                                    value={Math.round(progress)}
                               ></progress>
+
+                              <div className="text-xs font-medium text-center mt-3.5 leading-none">
+                                   Not uploading? <button className="uppercase text-white font-semibold cursor-pointer hover:underline">Click Here</button>
+                              </div>
                         </div>
                     )}
                     
