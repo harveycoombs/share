@@ -143,7 +143,7 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
                 )}
             </AnimatePresence>
 
-            {!success.length && <Button type="submit" classes="block w-full my-4" loading={loading} disabled={error.length > 0 || warning.length > 0 || (proceed && (!captchaToken?.length || !consent))}>{proceed ? "Continue" : "Next"}</Button>}
+            {!success.length && <Button actionType="submit" classes="block w-full my-4" loading={loading} disabled={error.length > 0 || warning.length > 0 || (proceed && (!captchaToken?.length || !consent))}>{proceed ? "Continue" : "Next"}</Button>}
             
             <div className="text-sm text-center text-slate-400 select-none my-5 dark:text-zinc-500">
                 Already have an account?
