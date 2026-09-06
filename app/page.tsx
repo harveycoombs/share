@@ -31,24 +31,25 @@ export default function Home() {
  
      const [files, setFiles] = useState<FileList|null>(null);
      const [id, setID] = useState<string>("");
-     const [loading, setLoading] = useState<boolean>(false);
      const [dragging, setDragging] = useState<boolean>(false);
+     const [password, setPassword] = useState<string>("");
+     const [captchaToken, setCaptchaToken] = useState<string>("");
+     const [loading, setLoading] = useState<boolean>(false);
      const [error, setError] = useState<string>("");
      const [progress, setProgress] = useState<number>(0);
-     const [password, setPassword] = useState<string>("");
-     const [passwordFieldIsVisible, setPasswordFieldVisibility] = useState<boolean>(false);
      const [uploadTime, setUploadTime] = useState<string>("");
-     const [historyIsVisible, setHistoryVisibility] = useState<boolean>(false);
-     const [sessionExists, setSessionExistence] = useState<boolean>(false);
-     const [accountPromptIsVisible, setAccountPromptVisibility] = useState<boolean>(false);
-     const [captchaToken, setCaptchaToken] = useState<string>("");
+     
+     const [sessionExists, setSessionExists] = useState<boolean>(false);
+     
+     const [passwordFieldOpen, setPasswordFieldOpen] = useState<boolean>(false);
+     const [historyOpen, setHistoryOpen] = useState<boolean>(false);
  
      const uploader = useRef<HTMLInputElement>(null);
  
      useEffect(() => {
          (async () => {
              const response = await fetch("/api/user/session");
-             setSessionExistence(response.ok);
+             setSessionExists(response.ok);
          })();
      }, []);
 
@@ -67,8 +68,6 @@ export default function Home() {
      
           const title = (files.length > 1) ? "files.zip" : files[0].name;
           const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
-
-          console.log(`title: ${title}\ncontent type: ${contentType}`);
          
           (async () => {
              const uploadid = await insertUpload(title, contentType, captchaToken);
@@ -136,7 +135,7 @@ export default function Home() {
          return () => window.removeEventListener("paste", handlePaste);
      }, []);
  
-     useEffect(() => setPassword(""), [passwordFieldIsVisible]);
+     useEffect(() => setPassword(""), [passwordFieldOpen]);
      
      async function insertUpload(title: string, contentType: string, captcha: string): Promise<string> {
          if (!files?.length) return "";
@@ -546,7 +545,7 @@ export default function Home() {
                                         <FontAwesomeIcon icon={faHistory} />
                                    </Button>
           
-                                   <Button type="secondary" title="Set Upload Password" square>
+                                   <Button type="secondary" title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => setPasswordFieldOpen(true)} square>
                                         <FontAwesomeIcon icon={faKey} />
                                    </Button>
                               </div>
@@ -557,14 +556,6 @@ export default function Home() {
                               </div>
                          </>
                     )}
-
-                    <AnimatePresence>
-                        {historyIsVisible && sessionExists && <UploadHistory onClose={() => setHistoryVisibility(false)} />}
-                    </AnimatePresence>
-        
-                    <AnimatePresence>
-                        {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
-                    </AnimatePresence>
                </Panel>
 
                <input 
@@ -574,6 +565,14 @@ export default function Home() {
                    ref={uploader}
                    onInput={(e: any) => setFiles(e.target.files)}
                />
+
+               <AnimatePresence>
+                   {historyOpen && sessionExists && <UploadHistory onClose={() => setHistoryOpen(false)} />}
+               </AnimatePresence>
+
+               <AnimatePresence>
+                   {!sessionExists && (historyOpen || passwordFieldOpen) && <AccountPrompt onClose={() => setPasswordFieldOpen(false)} />}
+               </AnimatePresence>
           </main>
      );
 }

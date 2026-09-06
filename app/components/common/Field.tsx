@@ -7,5 +7,11 @@ interface Properties {
 }
 
 export default function Field({ type, classes, warning, error, ...rest }: Properties) {
-    return <input type={type ?? "text"} className={`p-2.25 text-sm text-slate-700 font-medium rounded-xl bg-slate-50 border border-slate-200 leading-none duration-150 focus:outline-hidden focus:border-blue-500 dark:bg-zinc-900 dark:border-zinc-700/65 dark:text-white ${classes}`} {...rest} />;
+     return (
+          <input
+               type={type ?? "text"}
+               className={`p-2.75 text-sm leading-none border border-white/25 bg-white/10 rounded-sm select-none cursor-pointer duration-150 focus:outline-none focus:border-white ${classes}`}
+               {...rest}
+          />
+     );
 }

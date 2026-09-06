@@ -5,7 +5,7 @@ import Panel from "@/app/components/common/Panel";
 
 export default function Footer() {
      return (
-          <footer className="fixed w-full bottom-0 z-40 p-4">
+          <footer className="fixed w-full bottom-0 z-30 p-4">
                <Panel classes="text-sm font-medium flex justify-between items-center">
                     <div>
                          <span>2021 &ndash; {new Date().getFullYear()}</span>

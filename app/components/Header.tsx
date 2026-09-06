@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { AnimatePresence } from "motion/react";
 
 import { UserContext } from "@/app/context/UserContext";
@@ -22,27 +22,14 @@ export default function Header() {
      }
      
      if (path.startsWith("/signin") || path == "/signup" || path == "/authenticate") return null;
-     
-     const [menuIsVisible, setMenuVisibility] = useState<boolean>(false);
-     const [settingsAreVisible, setSettingsVisibility] = useState<boolean>(false);
+
+     const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
      
      const logout = useCallback(async () => {
           await fetch("/api/user/session", { method: "DELETE" });
           window.location.reload();
      }, []);
-     
-     const avatarLabel = useMemo(() => `${user?.name} (You)`, [user]);
-     
-     useEffect(() => {
-          document.addEventListener("click", closeMenu);
-          return () => document.removeEventListener("click", closeMenu);
-     }, []);
-     
-     const closeMenu = useCallback((e: any) => {
-          if (e.target.matches("#menu, #menu *, #menu_button, #menu_button *")) return;
-          setMenuVisibility(false);
-     }, []);
-     
+
      return (
           <header className="p-4 sticky top-0 z-40 text-white">
                <Panel classes="flex items-center justify-between">
@@ -53,10 +40,27 @@ export default function Header() {
                          <HeaderLink>DMCA Takedowns</HeaderLink>
                          <HeaderLink>Report an Issue</HeaderLink>
 
-                         <Button url="/signin">Sign In</Button>
-                         <Button url="/signup" type="secondary">Sign Up</Button>
+                         {user ? (
+                              <div
+                                   className="text-xl border border-white text-white grid place-items-center w-10.5 h-10.5 rounded select-none cursor-pointer duration-150 hover:bg-white/15 active:bg-white/10 active:scale-96"
+                                   title={`Signed in as ${user.name}`}
+                                   onClick={() => setSettingsOpen(true)}
+                              >
+                                   <FontAwesomeIcon icon={faUser} />
+                              </div>
+                         ) : (
+                              <>
+                                   <Button url="/signin">Sign In</Button>
+                                   <Button url="/signup" type="secondary">Sign Up</Button>
+                              </>
+                         )}
+
                     </nav>
                </Panel>
+
+               <AnimatePresence>
+                    {settingsOpen && <Settings onClose={() => setSettingsOpen(false)} />}
+               </AnimatePresence>
           </header>
      );
 }
