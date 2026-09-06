@@ -498,7 +498,7 @@ export default function Home() {
     
                             <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                                 <Button onClick={resetUploader}>Upload More</Button>
-                                <div className="text-sm font-medium text-white/50 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
+                                <div className="text-sm font-medium leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
                             </div>
                         </div>
                     )}
@@ -521,12 +521,14 @@ export default function Home() {
                     
                     {loading && progress >= 100 && (
                         <div className="w-full mx-auto text-center max-sm:w-full">
-                              <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60 dark:text-zinc-500">
-                                   <FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" />
+                              <div className="flex items-center justify-center gap-1.5 font-semibold text-white">
+                                   <FontAwesomeIcon icon={faCircleNotch} className="text-lg animate-spin" />
                                    <span className="text-lg">Finalising</span>
                               </div>
+
+                              <div className="mt-2 font-medium text-sm leading-none">Do not refresh this page</div>
                         </div>
-                    )}
+                    )}   
 
                     {!loading && !id.length && (
                          <>
