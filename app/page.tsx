@@ -494,11 +494,11 @@ export default function Home() {
                <Panel classes="w-100 shadow-lg">
                     {id.length > 0 && (
                         <div>
-                            <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
+                            <strong className={`block w-fit mx-auto text-xl font-semibold text-center ${id ? " text-green-400 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
     
                             <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                                 <Button onClick={resetUploader}>Upload More</Button>
-                                <div className="text-sm font-medium text-slate-400 leading-none dark:text-zinc-500"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
+                                <div className="text-sm font-medium text-white/50 leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
                             </div>
                         </div>
                     )}
@@ -563,13 +563,6 @@ export default function Home() {
                     <AnimatePresence>
                         {accountPromptIsVisible && <AccountPrompt onClose={() => setAccountPromptVisibility(false)} />}
                     </AnimatePresence>
-
-                    <i className="block mt-7.5">
-                         Files Length = {files?.length ?? 0}
-                         <br />{loading ? "loading" : "not loading"}
-                         <br />Progress = {progress}
-                         <br />ID = {id}
-                    </i>
                </Panel>
 
                <input 
