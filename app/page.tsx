@@ -494,7 +494,7 @@ export default function Home() {
                <Panel classes="w-100 shadow-lg">
                     {id.length > 0 && (
                         <div>
-                            <strong className={`block w-fit mx-auto text-xl font-semibold text-center ${id ? " text-green-400 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
+                            <strong className={`block w-fit mx-auto text-lg font-semibold text-center leading-none ${id ? " text-green-400 cursor-pointer break-all" : ""}`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
     
                             <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                                 <Button onClick={resetUploader}>Upload More</Button>
