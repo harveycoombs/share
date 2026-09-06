@@ -564,7 +564,7 @@ export default function Home() {
 
                     <i className="block mt-7.5">
                          Files Length = {files?.length ?? 0}
-                         {loading ? "loading" : "not loading"}
+                         <br />{loading ? "loading" : "not loading"}
                          <br />Progress = {progress}
                          <br />ID = {id}
                     </i>
