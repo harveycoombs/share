@@ -53,7 +53,7 @@ export default function Home() {
      }, []);
 
      useEffect(() => {
-         if (!files?.length || (!captchaToken.length && !user)) return;
+         if (!files?.length) return; //  || (!captchaToken.length && !user)
  
          if (Array.from(files).reduce((total: number, file: File) => total + file.size, 0) > (user ? 750000000 : 250000000)) {
              setError("File is too large");
@@ -63,12 +63,14 @@ export default function Home() {
  
          setLoading(true);
  
-         const start = new Date().getTime();
- 
-         const title = (files.length > 1) ? "files.zip" : files[0].name;
-         const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
- 
-         (async () => {
+          const start = new Date().getTime();
+     
+          const title = (files.length > 1) ? "files.zip" : files[0].name;
+          const contentType = (files.length > 1) ? "application/zip" : files[0]?.type || "application/octet-stream";
+
+          console.log(`title: ${title}\ncontent type: ${contentType}`);
+         
+          (async () => {
              const uploadid = await insertUpload(title, contentType, captchaToken);
  
              if (!uploadid.length) return;
