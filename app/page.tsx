@@ -563,7 +563,7 @@ export default function Home() {
                     </AnimatePresence>
 
                     <i className="block mt-7.5">
-                         Files Length = {files.length}
+                         Files Length = {files?.length ?? 0}
                          {loading ? "loading" : "not loading"}
                          <br />Progress = {progress}
                          <br />ID = {id}
