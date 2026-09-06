@@ -459,7 +459,7 @@ export default function Home() {
                     return "Evening";
           }
      }, [currentHour]);
-     
+
      return (
           <main
                aria-hidden="true"
@@ -532,8 +532,8 @@ export default function Home() {
 
                     {!loading && !id.length && (
                          <>
-                              <h1 className="text-white font-semibold text-3xl">Good {greeting}</h1>
-                              <p className="font-semibold mb-3.5">Drop files onto this page to upload</p>
+                              <h1 className="text-white font-semibold text-3xl">{dragging ? `Drop files to upload` : `Good ${greeting}`}</h1>
+                              <p className="font-semibold mb-3.5">{dragging ? "Your files will begin uploading after" : "Drop files onto this page to upload"}</p>
                               
                               <div className="flex gap-3.5">
                                    <Button classes="w-full" onClick={browseFiles}>Browse Files</Button>
