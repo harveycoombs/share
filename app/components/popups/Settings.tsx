@@ -9,6 +9,7 @@ import Popup from "@/app/components/common/Popup";
 import Field from "@/app/components/common/Field";
 import Button from "@/app/components/common/Button";
 import Notice from "@/app/components/common/Notice";
+import Switch from "@/app/components/common/Switch";
 import QRCodeViewer from "@/app/components/popups/QRCodeViewer";
 
 interface Properties {
@@ -31,7 +32,7 @@ export default function Settings({ onClose }: Properties) {
      
      const [error, setError] = useState<string>("");
      const [warning, setWarning] = useState<string>("");
-     const [success, setSuccess] = useState<string>("");
+     const [success, setSuccess] = useState<string>("");    
      
      const [deletionIntent, setDeletionIntent] = useState<boolean>(false);
      
@@ -164,6 +165,11 @@ export default function Settings({ onClose }: Properties) {
                setSuccess("");
           }, 4000);
      }, []);
+
+     const logout = useCallback(async () => {
+          await fetch("/api/user/session", { method: "DELETE" });
+          window.location.reload();
+     }, []);
      
      return (
           <Popup title="Account Settings" classes="w-146 max-sm:w-full" onClose={onClose}>
@@ -203,7 +209,7 @@ export default function Settings({ onClose }: Properties) {
                          </div>
           
                          {section == "details" && (
-                              <div>
+                              <SettingsSection>
                                    <FieldContainer title="Name">
                                         <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
                                    </FieldContainer>
@@ -211,12 +217,16 @@ export default function Settings({ onClose }: Properties) {
                                    <FieldContainer title="Email Address" classes="mt-3.5">
                                         <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                                    </FieldContainer>
-                              </div>
+                              </SettingsSection>
                          )}
           
                          {section == "security" && (
                               <SettingsSection>
-                                   <FieldContainer title="2-Factor Authentication">
+                                   <FieldContainer title="Use Password">
+                                        <Switch on={false} onChange={(on: boolean) => console.log(on)} />
+                                   </FieldContainer>
+                                   
+                                   <FieldContainer title="2-Factor Authentication" classes="mt-3.5">
                                         {QRCode.length ? (
                                              <div className="flex flex-col">
                                                   <Image src={QRCode} alt="QR Code" width={160} height={160} className="block mx-auto select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
@@ -225,21 +235,20 @@ export default function Settings({ onClose }: Properties) {
                                              </div>
                                         ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                                    </FieldContainer>
-          
+                                        
                                    <FieldContainer title="Data &amp; GDPR" classes="mt-3.5">
                                         <div className="flex gap-3.5">
                                              <Button classes="w-1/2 shrink-1" type="secondary" loading={dataRequestLoading} onClick={requestData}>Request Data</Button>
                                              <Button classes="w-1/2 shrink-1" type="dangerous" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>
                                         </div>
-                              </FieldContainer>
-          
-                                   
+                                   </FieldContainer>
                               </SettingsSection>
                          )}
           
                          <div className="flex mt-3.5 gap-3.5">
-                              <Button classes="w-1/2" onClick={updateDetails}>Save</Button>
-                              <Button classes="w-1/2" type="secondary" onClick={onClose}>Cancel</Button>
+                              <Button classes="w-1/3" onClick={updateDetails}>Save</Button>
+                              <Button classes="w-1/3" type="secondary" onClick={onClose}>Cancel</Button>
+                              <Button type="dangerous" classes="w-1/3">Log Out</Button>
                          </div>
           
                          <AnimatePresence>
@@ -262,7 +271,7 @@ function FieldContainer({ title = "", children, classes = "" }: any) {
 
 function SettingsSection({ children }: any) {
     return (
-        <div className="">
+        <div className="min-h-36.75">
             {children}
         </div>
     );

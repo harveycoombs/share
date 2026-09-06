@@ -24,11 +24,6 @@ export default function Header() {
      if (path.startsWith("/signin") || path == "/signup" || path == "/authenticate") return null;
 
      const [settingsOpen, setSettingsOpen] = useState<boolean>(false);
-     
-     const logout = useCallback(async () => {
-          await fetch("/api/user/session", { method: "DELETE" });
-          window.location.reload();
-     }, []);
 
      return (
           <header className="p-4 sticky top-0 z-40 text-white">
@@ -37,8 +32,8 @@ export default function Header() {
 
                     <nav className="flex items-center gap-4">
                          <HeaderLink classes="text-amber-400">Donate</HeaderLink>
-                         <HeaderLink>DMCA Takedowns</HeaderLink>
-                         <HeaderLink>Report an Issue</HeaderLink>
+                         <HeaderLink url="mailto:contact@harveycoombs.com">DMCA Takedowns</HeaderLink>
+                         <HeaderLink url="https://github.com/harveycoombs/share/issues/new">Report an Issue</HeaderLink>
 
                          {user ? (
                               <div

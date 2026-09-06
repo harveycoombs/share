@@ -12,17 +12,21 @@ export default function Footer() {
                          <span className="mx-2 font-black">&middot;</span>
                          <span>Share.surf</span>
                          <span className="mx-2 font-black">&middot;</span>
-                         <Link href="https://www.harveycoombs.com" className="hover:underline">Harvey Coombs</Link>
+                         <FooterLink url="https://www.harveycoombs.com" text="Harvey Coombs" />
                     </div>
 
                     <div>
-                         <Link href="/documents/privacy-policy.pdf" className="hover:underline">Privacy Policy</Link>
+                         <FooterLink url="/documents/privacy-policy.pdf" text="Privacy Policy" />
                          <span className="mx-2 font-black">&middot;</span>
-                         <Link href="/documents/terms-of-service.pdf" className="hover:underline">Terms of Service</Link>
+                         <FooterLink url="/documents/terms-of-service.pdf" text="Terms of Service" />
                          <span className="mx-2 font-black">&middot;</span>
-                         <Link href="https://github.com/harveycoombs/share" className="hover:underline">View on GitHub</Link>
+                         <FooterLink url="https://github.com/harveycoombs/share" text="View on GitHub" />
                     </div>
                </Panel>
           </footer>
      );
+}
+
+function FooterLink({ url, text }: any) {
+     return <Link href={url} rel="noopener noreferrer" target="_blank" className="hover:underline">{text}</Link>;
 }
