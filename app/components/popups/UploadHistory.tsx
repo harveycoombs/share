@@ -232,7 +232,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                             </div>
                         </strong>
 
-                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })} &middot; {data.views} View{data.views != 1 ? "s" : ""}</div>
+                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.created_at).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })} &middot; {data.views} View{data.views != 1 ? "s" : ""}</div>
                     </div>
                 </div>
 

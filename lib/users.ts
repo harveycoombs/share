@@ -1,46 +1,31 @@
 "use server";
-import { supabase } from "@/lib/database";
+import pool from "@/lib/database";
 import { generateHash, verify } from "./passwords";
 
 export async function getUserByID(userid: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, name").eq("user_id", userid).eq("deleted", false).maybeSingle();
-
-    if (error) throw error;
-
-    return data;
+    const { rows } = await pool.query("SELECT user_id, name FROM users WHERE user_id = $1 AND deleted = FALSE LIMIT 1", [userid]);
+    return rows[0] ?? null;
 }
 
 export async function getUserByEmailAddress(emailAddress: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, name, email_address").eq("email_address", emailAddress).eq("deleted", false).maybeSingle();
-
-    if (error) throw error;
-
-    return data;
+    const { rows } = await pool.query("SELECT user_id, name, email_address FROM users WHERE email_address = $1 AND deleted = FALSE LIMIT 1", [emailAddress]);
+    return rows[0] ?? null;
 }
 
 export async function getUserDetails(userid: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, name, email_address, creation_date, totp_secret, discord_id").eq("user_id", userid).eq("deleted", false).maybeSingle();
-
-    if (error) throw error;
-
-    return data;
+    const { rows } = await pool.query("SELECT user_id, name, email_address, creation_date, totp_secret, discord_id FROM users WHERE user_id = $1 AND deleted = FALSE LIMIT 1", [userid]);
+    return rows[0] ?? null;
 }
 
 export async function getUserData(userid: string): Promise<any> {
-    const { data, error } = await supabase.from("users").select("user_id, creation_date, email_address, name, discord_id, verified, deleted").eq("user_id", userid).maybeSingle();
-
-    if (error) throw error;
-
-    return data;
+    const { rows } = await pool.query("SELECT user_id, creation_date, email_address, name, discord_id, verified, deleted FROM users WHERE user_id = $1 LIMIT 1", [userid]);
+    return rows[0] ?? null;
 }
 
 export async function getPasswordHash(identifier: string | number): Promise<string> {
-    const field = typeof identifier == "number" ? "user_id" : "email_address";
-    const { data, error } = await supabase.from("users").select("password").eq(field, String(identifier)).eq("deleted", false).maybeSingle();
-    
-    if (error) throw error;
-
-    return data?.password ?? "";
+    const field = typeof identifier === "number" ? "user_id" : "email_address";
+    const { rows } = await pool.query<{ password: string|null }>(`SELECT password FROM users WHERE ${field} = $1 AND deleted = FALSE LIMIT 1`, [identifier]);
+    return rows[0]?.password ?? "";
 }
 
 export async function verifyCredentials(emailAddress: string, password: string): Promise<boolean> {
@@ -48,115 +33,103 @@ export async function verifyCredentials(emailAddress: string, password: string):
 
     if (!hash?.length) return false;
 
-    const valid = await verify(password, hash);
-    return valid;
+    return await verify(password, hash);
 }
 
 export async function emailExists(emailAddress: string, userid: string = ""): Promise<boolean> {
-    let query = supabase.from("users").select("user_id", { count: "exact", head: true }).eq("email_address", emailAddress).eq("deleted", false);
-    
-    if (userid.length) {
-        query = query.neq("user_id", userid);
-    }
-    
-    const { count, error } = await query;
-
-    if (error) throw error;
-
-    return (count ?? 0) > 0;
+    const values = userid.length ? [emailAddress, userid] : [emailAddress];
+    const excludeUser = userid.length ? " AND user_id <> $2" : "";
+    const { rows } = await pool.query<{ exists: boolean }>(
+        `SELECT EXISTS(SELECT 1 FROM users WHERE email_address = $1 AND deleted = FALSE${excludeUser}) AS exists`,
+        values
+    );
+    return rows[0]?.exists ?? false;
 }
 
 export async function createUser(name: string, emailAddress: string): Promise<any> {
     const code = crypto.randomUUID();
 
-    const { error } = await supabase.from("users").insert({
-        name,
-        email_address: emailAddress,
-        access_code: code,
-        creation_date: new Date().toISOString()
-    });
-
-    return { success: !error, code };
+    try {
+        await pool.query(
+            "INSERT INTO users (name, email_address, access_code, creation_date) VALUES ($1, $2, $3, $4)",
+            [name, emailAddress, code, new Date().toISOString()]
+        );
+        return { success: true, code };
+    } catch {
+        return { success: false, code };
+    }
 }
 
 export async function createUserFromDiscord(name: string, emailAddress: string, discordid: string): Promise<boolean> {
-    const { error } = await supabase.from("users").insert({
-        name,
-        email_address: emailAddress,
-        discord_id: discordid,
-        creation_date: new Date().toISOString()
-    });
-
-    return !error;
+    try {
+        await pool.query(
+            "INSERT INTO users (name, email_address, discord_id, creation_date) VALUES ($1, $2, $3, $4)",
+            [name, emailAddress, discordid, new Date().toISOString()]
+        );
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 export async function updateUser(userid: string, name: string, emailAddress: string): Promise<boolean> {
-    const { error } = await supabase.from("users").update({ name, email_address: emailAddress }).eq("user_id", userid);
-    return !error;
+    return runMutation("UPDATE users SET name = $1, email_address = $2 WHERE user_id = $3", [name, emailAddress, userid]);
 }
 
 export async function updateUserPassword(userid: string, password: string): Promise<boolean> {
     const passwordHash = await generateHash(password);
-    const { error } = await supabase.from("users").update({ password: passwordHash }).eq("user_id", userid);
-
-    return !error;
+    return runMutation("UPDATE users SET password = $1 WHERE user_id = $2", [passwordHash, userid]);
 }
 
 export async function updateUserPasswordByEmail(emailAddress: string, password: string): Promise<boolean> {
     const passwordHash = await generateHash(password);
-    const { error } = await supabase.from("users").update({ password: passwordHash }).eq("email_address", emailAddress);
-
-    return !error;
+    return runMutation("UPDATE users SET password = $1 WHERE email_address = $2", [passwordHash, emailAddress]);
 }
 
 export async function deleteUser(userid: string): Promise<boolean> {
-    const { error } = await supabase.from("users").update({ deleted: true }).eq("user_id", userid);
-    return !error;
+    return runMutation("UPDATE users SET deleted = TRUE WHERE user_id = $1", [userid]);
 }
 
 export async function verifyUserAccessCode(emailAddress: string, code: string): Promise<boolean> {
-    const { count, error } = await supabase.from("users").select("user_id", { count: "exact", head: true }).eq("email_address", emailAddress).eq("access_code", code);
-
-    if (error) throw error;
-
-    return (count ?? 0) > 0;
+    const { rows } = await pool.query<{ exists: boolean }>(
+        "SELECT EXISTS(SELECT 1 FROM users WHERE email_address = $1 AND access_code = $2) AS exists",
+        [emailAddress, code]
+    );
+    return rows[0]?.exists ?? false;
 }
 
 export async function updateUserAccessDate(emailAddress: string): Promise<boolean> {
-    const { error } = await supabase.from("users").update({ accessed_at: new Date().toISOString() }).eq("email_address", emailAddress);
-    return !error;
+    return runMutation("UPDATE users SET accessed_at = $1 WHERE email_address = $2", [new Date().toISOString(), emailAddress]);
 }
 
 export async function updateUserAccessCode(emailAddress: string, code: string|null): Promise<boolean> {
-    const result = await supabase.from("users").update({ access_code: code }).eq("email_address", emailAddress);
-    return !result.error;
+    return runMutation("UPDATE users SET access_code = $1 WHERE email_address = $2", [code, emailAddress]);
 }
 
 export async function checkUserVerification(userid: string): Promise<boolean> {
-    const { data, error } = await supabase.from("users").select("accessed_at").eq("user_id", userid).maybeSingle();
-    
-    if (error) throw error;
-
-    return !!data?.accessed_at;
+    const { rows } = await pool.query<{ accessed_at: string|null }>("SELECT accessed_at FROM users WHERE user_id = $1 LIMIT 1", [userid]);
+    return !!rows[0]?.accessed_at;
 }
 
 export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
-    const { data, error } = await supabase.from("users").select("totp_secret").eq("email_address", emailAddress).eq("deleted", false).maybeSingle();
-    
-    if (error) throw error;
-
-    return data?.totp_secret ?? "";
+    const { rows } = await pool.query<{ totp_secret: string|null }>("SELECT totp_secret FROM users WHERE email_address = $1 AND deleted = FALSE LIMIT 1", [emailAddress]);
+    return rows[0]?.totp_secret ?? "";
 }
 
 export async function updateUserTOTPSettings(userid: string, secret: string): Promise<boolean> {
-    const { error } = await supabase.from("users").update({ totp_secret: secret }).eq("user_id", userid);
-    return !error;
+    return runMutation("UPDATE users SET totp_secret = $1 WHERE user_id = $2", [secret, userid]);
 }
 
 export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<string> {
-    const { data, error } = await supabase.from("users").select("discord_id").eq("email_address", emailAddress).maybeSingle();
-    
-    if (error) throw error;
+    const { rows } = await pool.query<{ discord_id: string|null }>("SELECT discord_id FROM users WHERE email_address = $1 LIMIT 1", [emailAddress]);
+    return rows[0]?.discord_id ?? "";
+}
 
-    return data?.discord_id ?? "";
+async function runMutation(query: string, values: unknown[]): Promise<boolean> {
+    try {
+        await pool.query(query, values);
+        return true;
+    } catch {
+        return false;
+    }
 }

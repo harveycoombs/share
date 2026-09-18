@@ -13,8 +13,10 @@ If you wish to run Share yourself, follow the instructions below.
 ### 1. Create a .env file in the root of the repository
 Follow the structure provided below, with your own credentials.
 ```
-SUPABASE_URL=
-SUPABASE_KEY=
+DATABASE_HOST=
+DATABASE_USER=
+DATABASE_PASSWORD=
+DATABASE_SCHEMA=
 
 JWT_SECRET=
 
