@@ -11,7 +11,7 @@ import UploadHistory from "@/app/components/popups/UploadHistory";
 import Field from "@/app/components/common/Field";
 import Notice from "@/app/components/common/Notice";
 import AccountPrompt from "@/app/components/popups/AccountPrompt";
-import { formatBytes, formatTime } from "@/lib/utils";
+import { formatTime } from "@/lib/utils";
 import { UserContext } from "./context/UserContext";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
@@ -62,7 +62,7 @@ export default function Home() {
 
             if (!uploadid.length) return;
 
-            const url = await getUploadURL(`uploads/${uploadid}`);
+            const url = await getUploadURL(`uploads/${uploadid}/${title}`);
 
             if (!url.length) return;
     
