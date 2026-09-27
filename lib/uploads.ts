@@ -104,3 +104,11 @@ export async function checkAccessIDExists(accessid: string): Promise<boolean> {
 
     return !!count;
 }
+
+export async function getUploadTitle(accessid: string): Promise<string> {
+	const { data, error } = await supabase.from("uploads").select("title").eq("access_id", accessid).maybeSingle();
+
+	if (error?.message?.length) throw error;
+
+	return data?.title ?? "";
+}
