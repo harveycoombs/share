@@ -205,19 +205,19 @@ export default function Settings({ onClose }: Properties) {
 
                     {section === "details" && (
                         <div className="space-y-5">
-                            <SettingsFieldContainer title="Name">
+                            <SettingsFieldContainer label="Name">
                                 <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
                             </SettingsFieldContainer>
 
-                            <SettingsFieldContainer title="Email Address">
+                            <SettingsFieldContainer label="Email Address">
                                 <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                             </SettingsFieldContainer>
                         </div>
                     )}
 
                     {section === "security" && (
-                        <div>
-                            <SettingsFieldContainer title="Multi-Factor Authentication">
+                        <div className="space-y-5">
+                            <SettingsFieldContainer label="Multi-Factor Authentication">
                                 {QRCode.length ? (
                                     <div className="flex flex-col">
                                         <Image src={QRCode} alt="QR Code" width={160} height={160} className="block mx-auto select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
@@ -227,7 +227,7 @@ export default function Settings({ onClose }: Properties) {
                                 ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                             </SettingsFieldContainer>
 
-                            <SettingsFieldContainer title="Data & GDPR">
+                            <SettingsFieldContainer label="Data & GDPR">
                                 <Button color="gray" classes="block w-full min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Data</Button>
                             </SettingsFieldContainer>
                         </div>
