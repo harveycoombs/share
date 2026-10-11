@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 import { verifyUploadPassword, incrementUploadViews, checkPasswordIsSet, getUploadTitle } from "@/lib/uploads";
 
-const RESERVED_PATHS = ["/api/", "/signin", "/signup", "/protected"];
+const RESERVED_PATHS = ["/", "/api/", "/signin", "/signup", "/protected"];
 
 export async function proxy(request: NextRequest) {
 	const url = request.nextUrl;
