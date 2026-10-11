@@ -203,8 +203,8 @@ export default function Settings({ onClose }: Properties) {
                         <SettingsSectionTab name="Privacy & Security" onClick={() => setSection("security")} selected={section == "security"} />
                     </div>
 
-                    {section == "details" && (
-                        <SettingsSection>
+                    {section === "details" && (
+                        <div>
                             <SettingsFieldContainer>
                                 <Label classes="block w-full">Name</Label>
                                 <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
@@ -214,11 +214,11 @@ export default function Settings({ onClose }: Properties) {
                                 <Label classes="block w-full">Email Address</Label>
                                 <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                             </SettingsFieldContainer>
-                        </SettingsSection>
+                        </div>
                     )}
 
-                    {section == "security" && (
-                        <SettingsSection>
+                    {section === "security" && (
+                        <div>
                             <SettingsFieldContainer>
                                 <Label classes="block w-full">Multi-Factor Authentication</Label>
 
@@ -235,13 +235,13 @@ export default function Settings({ onClose }: Properties) {
                                 <Label classes="block w-full">Data &amp; GDPR</Label>
                                 <Button color="gray" classes="block w-full min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Personal Data</Button>
                             </SettingsFieldContainer>
-                        </SettingsSection>
+                        </div>
                     )}
 
                     <div className="flex mt-3.5 gap-3.5">
                         <Button classes="w-1/2" onClick={updateDetails}>Save</Button>
                         <Button classes="w-1/2" color="gray" onClick={onClose}>Cancel</Button>
-                        {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
+                        {section === "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
                     </div>
 
                     <AnimatePresence>
@@ -253,20 +253,13 @@ export default function Settings({ onClose }: Properties) {
     );
 }
 
-function SettingsSection({ children }: any) {
-    return (
-        <div className="min-h-40 flex gap-3.5 max-sm:flex-col max-sm:min-h-0">
-            {children}
-        </div>
-    );
-}
-
 function SettingsFieldContainer({ children }: any) {
-    return (
-        <div className="w-1/2 max-sm:w-full">
-            {children}
-        </div>
-    );
+     return (
+          <div className="w-full flex justify-between items-center gap-2.5">
+               <Label classes="w-2/5">Email Address</Label>
+               <div className="w-3/5">{children}</div>
+          </div>
+     );
 }
 
 function SettingsSectionTab({ name, selected = false, ...rest }: any) {
