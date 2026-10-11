@@ -167,7 +167,7 @@ export default function Settings({ onClose }: Properties) {
     }, []);
 
     return (
-        <Popup title="Account Settings" classes="w-120 max-sm:w-full" onClose={onClose}>
+        <Popup title="Account Settings" classes="w-125 max-sm:w-full" onClose={onClose}>
             {loading ? (<div className="w-full h-89 grid place-items-center">
                 <div className="text-center">
                     <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-slate-400/60" />
@@ -250,13 +250,13 @@ export default function Settings({ onClose }: Properties) {
 
 function SettingsFieldContainer({ label, children }: any) {
      return (
-          <div className="w-full flex justify-between items-center gap-2.5">
-               <Label classes="w-2/5">{label}</Label>
-               <div className="w-3/5">{children}</div>
+          <div className="w-full flex justify-between items-center gap-5">
+               <Label classes="w-1/2">{label}</Label>
+               <div className="w-1/2">{children}</div>
           </div>
      );
 }
 
 function SettingsSectionTab({ name, selected = false, ...rest }: any) {
-    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-[0.8rem] select-none ${selected ? "border-blue-500 text-blue-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-blue-500 hover:text-blue-500`} {...rest}>{name}</div>;
+    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-sm select-none ${selected ? "border-blue-500 text-blue-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-blue-500 hover:text-blue-500`} {...rest}>{name}</div>;
 }
