@@ -205,11 +205,11 @@ export default function Settings({ onClose }: Properties) {
 
                     {section === "details" && (
                         <div className="space-y-5">
-                            <SettingsFieldContainer>
+                            <SettingsFieldContainer title="Name">
                                 <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
                             </SettingsFieldContainer>
 
-                            <SettingsFieldContainer>
+                            <SettingsFieldContainer title="Email Address">
                                 <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                             </SettingsFieldContainer>
                         </div>
@@ -217,9 +217,7 @@ export default function Settings({ onClose }: Properties) {
 
                     {section === "security" && (
                         <div>
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Multi-Factor Authentication</Label>
-
+                            <SettingsFieldContainer title="Multi-Factor Authentication">
                                 {QRCode.length ? (
                                     <div className="flex flex-col">
                                         <Image src={QRCode} alt="QR Code" width={160} height={160} className="block mx-auto select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
@@ -229,9 +227,8 @@ export default function Settings({ onClose }: Properties) {
                                 ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                             </SettingsFieldContainer>
 
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Data &amp; GDPR</Label>
-                                <Button color="gray" classes="block w-full min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Personal Data</Button>
+                            <SettingsFieldContainer title="Data & GDPR">
+                                <Button color="gray" classes="block w-full min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Data</Button>
                             </SettingsFieldContainer>
                         </div>
                     )}
@@ -251,10 +248,10 @@ export default function Settings({ onClose }: Properties) {
     );
 }
 
-function SettingsFieldContainer({ children }: any) {
+function SettingsFieldContainer({ label, children }: any) {
      return (
           <div className="w-full flex justify-between items-center gap-2.5">
-               <Label classes="w-2/5">Email Address</Label>
+               <Label classes="w-2/5">{label}</Label>
                <div className="w-3/5">{children}</div>
           </div>
      );
