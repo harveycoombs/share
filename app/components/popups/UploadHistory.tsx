@@ -259,7 +259,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
 }
 
 function UploadOption({ icon, url = "", loading = false, ...rest }: any) {
-    const classList = `leading-none p-1.25 rounded-md border border-transparent bg-transparent text-slate-400 aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/70 hover:text-slate-500 active:scale-95 ${loading ? "pointer-events-none" : ""}`;
+    const classList = `leading-none p-1.25 rounded-md border border-transparent bg-transparent text-slate-400 aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/70 hover:text-slate-500 active:scale-95 ${loading ? "pointer-events-none" : ""} dark:text-slate-500`;
 
     return url.length ? (
         <Link href={url} className={classList} {...rest}>
