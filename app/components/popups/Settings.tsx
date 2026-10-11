@@ -204,14 +204,12 @@ export default function Settings({ onClose }: Properties) {
                     </div>
 
                     {section === "details" && (
-                        <div>
+                        <div className="space-y-5">
                             <SettingsFieldContainer>
-                                <Label classes="block w-full">Name</Label>
                                 <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
                             </SettingsFieldContainer>
 
                             <SettingsFieldContainer>
-                                <Label classes="block w-full">Email Address</Label>
                                 <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                             </SettingsFieldContainer>
                         </div>

@@ -25,7 +25,7 @@ export default function Popup({ title, onClose, children, classes, ...rest }: Pr
                 initial={{ scale: 0, opacity: 0 }} 
                 animate={{ scale: 1, opacity: 1, transition: { duration: 0.15, ease: "easeOut" }}} 
                 exit={{ scale: 0, opacity: 0, transition: { duration: 0.15, ease: "easeOut" }}}
-                className={`bg-white p-3 rounded-xl dark:bg-zinc-900 ${classes}`} 
+                className={`bg-white p-5 rounded-xl dark:bg-zinc-900 ${classes}`} 
                 {...rest}
             >
                 <div className="flex justify-between items-center leading-none pb-1.5">
