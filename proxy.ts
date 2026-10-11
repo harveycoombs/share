@@ -3,11 +3,13 @@ import type { NextRequest } from "next/server";
 
 import { verifyUploadPassword, incrementUploadViews, checkPasswordIsSet, getUploadTitle } from "@/lib/uploads";
 
+const RESERVED_PATHS = ["/", "/api/", "/signin", "/signup", "/protected"];
+
 export async function proxy(request: NextRequest) {
 	const url = request.nextUrl;
 	const { pathname } = url;
 	
-	if (pathname.length != 9 || /[\.\-\?\&]/g.test(pathname)) return NextResponse.next();
+	if (RESERVED_PATHS.some(rp => pathname.startsWith(rp)) || /[\.\-\?\&]/g.test(pathname)) return NextResponse.next();
 	
 	const id = pathname.slice(1);
 	const password = request.headers.get("Share-Upload-Password");

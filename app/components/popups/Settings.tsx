@@ -167,7 +167,7 @@ export default function Settings({ onClose }: Properties) {
     }, []);
 
     return (
-        <Popup title="Account Settings" classes="w-120 max-sm:w-full" onClose={onClose}>
+        <Popup title="Account Settings" classes="w-125 max-sm:w-full" onClose={onClose}>
             {loading ? (<div className="w-full h-89 grid place-items-center">
                 <div className="text-center">
                     <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-slate-400/60" />
@@ -203,25 +203,21 @@ export default function Settings({ onClose }: Properties) {
                         <SettingsSectionTab name="Privacy & Security" onClick={() => setSection("security")} selected={section == "security"} />
                     </div>
 
-                    {section == "details" && (
-                        <SettingsSection>
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Name</Label>
+                    {section === "details" && (
+                        <div className="space-y-5">
+                            <SettingsFieldContainer label="Name">
                                 <Field classes="block w-full" defaultValue={details?.name ?? ""} onChange={(e: any) => setName(e.target.value)} />
                             </SettingsFieldContainer>
 
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Email Address</Label>
+                            <SettingsFieldContainer label="Email Address">
                                 <Field classes="block w-full" defaultValue={details?.email_address ?? ""} onChange={(e: any) => setEmailAddress(e.target.value)} />
                             </SettingsFieldContainer>
-                        </SettingsSection>
+                        </div>
                     )}
 
-                    {section == "security" && (
-                        <SettingsSection>
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Multi-Factor Authentication</Label>
-
+                    {section === "security" && (
+                        <div className="space-y-5">
+                            <SettingsFieldContainer label="Multi-Factor Authentication">
                                 {QRCode.length ? (
                                     <div className="flex flex-col">
                                         <Image src={QRCode} alt="QR Code" width={160} height={160} className="block mx-auto select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
@@ -231,17 +227,16 @@ export default function Settings({ onClose }: Properties) {
                                 ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                             </SettingsFieldContainer>
 
-                            <SettingsFieldContainer>
-                                <Label classes="block w-full">Data &amp; GDPR</Label>
-                                <Button color="gray" classes="block w-full min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Personal Data</Button>
+                            <SettingsFieldContainer label="Data & GDPR">
+                                <Button color="gray" classes="block w-full min-w-44.5" loading={dataRequestLoading} onClick={requestData}>Request Data</Button>
                             </SettingsFieldContainer>
-                        </SettingsSection>
+                        </div>
                     )}
 
                     <div className="flex mt-3.5 gap-3.5">
                         <Button classes="w-1/2" onClick={updateDetails}>Save</Button>
                         <Button classes="w-1/2" color="gray" onClick={onClose}>Cancel</Button>
-                        {section == "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
+                        {section === "security" && <Button classes="w-1/2" color="red" onClick={deleteAccount}>{deletionIntent ? "Are You Sure?" : "Delete Account"}</Button>}
                     </div>
 
                     <AnimatePresence>
@@ -253,22 +248,15 @@ export default function Settings({ onClose }: Properties) {
     );
 }
 
-function SettingsSection({ children }: any) {
-    return (
-        <div className="min-h-40 flex gap-3.5 max-sm:flex-col max-sm:min-h-0">
-            {children}
-        </div>
-    );
-}
-
-function SettingsFieldContainer({ children }: any) {
-    return (
-        <div className="w-1/2 max-sm:w-full">
-            {children}
-        </div>
-    );
+function SettingsFieldContainer({ label, children }: any) {
+     return (
+          <div className="w-full flex justify-between items-center gap-5">
+               <Label classes="w-1/2">{label}</Label>
+               <div className="w-1/2">{children}</div>
+          </div>
+     );
 }
 
 function SettingsSectionTab({ name, selected = false, ...rest }: any) {
-    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-[0.8rem] select-none ${selected ? "border-blue-500 text-blue-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-blue-500 hover:text-blue-500`} {...rest}>{name}</div>;
+    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-sm select-none ${selected ? "border-blue-500 text-blue-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-blue-500 hover:text-blue-500`} {...rest}>{name}</div>;
 }

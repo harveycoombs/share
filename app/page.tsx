@@ -184,6 +184,8 @@ export default function Home() {
 
         const url = e.target.innerText;
 
+        if (url === "Copied to Clipboard") return;
+
         await navigator.clipboard.writeText(url.toLowerCase());
         e.target.innerText = "Copied to Clipboard";
 

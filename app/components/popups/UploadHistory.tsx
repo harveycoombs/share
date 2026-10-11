@@ -69,7 +69,7 @@ export default function UploadHistory({ onClose }: Properties) {
 
     return (
         <Popup title="Upload History" onClose={onClose} classes="w-125 max-sm:w-full">
-            <div className="sticky top-0 z-10 bg-white pt-1 pb-2.5">
+            <div className="sticky top-0 z-10 bg-white pt-1 pb-2.5 dark:bg-zinc-900">
                 <div className="w-full flex items-center justify-between">
                     <Field type="text" placeholder="Search" onInput={(e: any) => setSearch(e.target.value)} />
 
@@ -216,7 +216,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
-                className={`flex justify-between items-center p-2 rounded-lg bg-slate-50 text-slate-600 relative overflow-hidden ${index ? "mt-2.5" : ""}`}
+                className={`flex justify-between items-center p-2 rounded-lg bg-slate-50 relative overflow-hidden ${index ? "mt-2.5" : ""} dark:bg-zinc-800/75 dark:text-zinc-400`}
                 ref={uploadRef}
             >
                 {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
@@ -225,14 +225,23 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
 
                     <div className="inline-block align-middle">
                         <strong className="flex items-center gap-1 text-sm" title={uploadTitle}>
-                            {editing ? <input type="text" value={uploadTitle} onChange={(e) => setUploadTitle(e.target.value)} onBlur={() => setEditing(false)} className="font-semibold bg-transparent outline-hidden" autoFocus /> : <div className="font-semibold">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
+                             {editing ? (
+                                   <input 
+                                        type="text" 
+                                        value={uploadTitle} 
+                                        onChange={(e) => setUploadTitle(e.target.value)} 
+                                        onBlur={() => setEditing(false)} 
+                                        className="font-semibold bg-transparent outline-hidden" 
+                                        autoFocus 
+                                   />
+                              ) : <div className="font-semibold text-zinc-600 dark:text-white">{uploadTitle.length > 22 ? uploadTitle.slice(0, 22) + "..." : uploadTitle}</div>}
 
                             <div className={`ml-1 cursor-pointer duration-150`} title="Edit Name" onClick={() => setEditing(!editing)}>
                                 {editLoading ? <FontAwesomeIcon icon={faCircleNotch} className="animate-spin opacity-65" /> : editing ? <FontAwesomeIcon icon={faCheck} /> : <FontAwesomeIcon icon={faPenToSquare} />}
                             </div>
                         </strong>
 
-                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })} &middot; {data.views} View{data.views != 1 ? "s" : ""}</div>
+                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none dark:text-zinc-400`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })} &middot; {data.views} View{data.views != 1 ? "s" : ""}</div>
                     </div>
                 </div>
 
@@ -250,7 +259,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
 }
 
 function UploadOption({ icon, url = "", loading = false, ...rest }: any) {
-    const classList = `leading-none p-1.25 rounded-md border border-transparent bg-transparent text-slate-400 aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/70 hover:text-slate-500 active:scale-95 ${loading ? "pointer-events-none" : ""}`;
+    const classList = `leading-none p-1.25 rounded-md border border-transparent bg-transparent text-slate-400 aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/70 hover:text-slate-500 active:scale-95 ${loading ? "pointer-events-none" : ""} dark:text-slate-500`;
 
     return url.length ? (
         <Link href={url} className={classList} {...rest}>
