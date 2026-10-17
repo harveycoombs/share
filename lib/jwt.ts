@@ -1,12 +1,16 @@
 import jwt from "jsonwebtoken";
 
+import getEnvironmentVariables from "@/lib/variables";
+
+const env = await getEnvironmentVariables();
+
 export async function authenticate(token: string): Promise<any> {
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve, _) => {
 		if (!token) {
 			resolve(null);
 		}
 
-		jwt.verify(token, process.env.JWT_SECRET!, async (ex: any, user: any) => {
+		jwt.verify(token, env.JWT_SECRET!, async (ex: any, user: any) => {
 			if (ex || !user) {
 				resolve(null);
                 return;
@@ -21,7 +25,7 @@ export function createJWT(user: any) {
 	const now = new Date();
 
     return {
-		token: jwt.sign(JSON.stringify(user), process.env.JWT_SECRET!),
+		token: jwt.sign(JSON.stringify(user), env.JWT_SECRET!),
 		timestamp: now.getTime()
 	};
 }

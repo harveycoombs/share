@@ -1,10 +1,12 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import mime from "mime";
 
 import { insertUploadHistory, getUploadHistory, renameUpload, deleteUpload } from "@/lib/uploads";
 import { authenticate } from "@/lib/jwt";
 import { deleteFile } from "@/lib/storage";
+import getEnvironmentVariables from "@/lib/variables";
+
+const env = await getEnvironmentVariables();
 
 export const maxRequestBodySize = "4gb";
 
@@ -46,7 +48,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY!}`,
+            body: `response=${captchaToken}&secret=${env.HCAPTCHA_SECRET_KEY!}`,
         });
     
         if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });

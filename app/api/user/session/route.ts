@@ -4,6 +4,9 @@ import { cookies } from "next/headers";
 import { authenticate } from "@/lib/jwt";
 import { updateUserAccessCode, getUserByEmailAddress } from "@/lib/users";
 import sendEmail from "@/lib/email";
+import getEnvironmentVariables from "@/lib/variables";
+
+const env = await getEnvironmentVariables();
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -27,7 +30,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY!}`,
+            body: `response=${captchaToken}&secret=${env.HCAPTCHA_SECRET_KEY!}`,
         });
 
         if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });

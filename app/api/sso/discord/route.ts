@@ -4,21 +4,24 @@ import fs from "fs/promises";
 
 import { createUserFromDiscord, emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
+import getEnvironmentVariables from "@/lib/variables";
 
 export async function GET(request: NextRequest) {
     try {
         const code = new URL(request.url).searchParams.get("code") ?? "";
 
         if (!code?.length) return NextResponse.json({ error: "Missing code" }, { status: 400 });
-    
+
+        const env = await getEnvironmentVariables();
+
         const tokenResponse = await fetch("https://discord.com/api/oauth2/token", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({
-                client_id: process.env.DISCORD_CLIENT_ID!,
-                client_secret: process.env.DISCORD_CLIENT_SECRET!,
+                client_id: env.DISCORD_CLIENT_ID!,
+                client_secret: env.DISCORD_CLIENT_SECRET!,
                 grant_type: "authorization_code",
                 code,
                 redirect_uri: "https://share.surf/api/sso/discord",

@@ -3,18 +3,22 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import fs from "fs";
 import mime from "mime";
 
+import getEnvironmentVariables from "@/lib/variables";
+
+const env = await getEnvironmentVariables();
+
 const client = new S3Client({
     region: "auto",
-    endpoint: process.env.R2_ENDPOINT!,
+    endpoint: env.R2_ENDPOINT!,
     credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID!,
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY!
+        accessKeyId: env.R2_ACCESS_KEY_ID!,
+        secretAccessKey: env.R2_SECRET_ACCESS_KEY!
     }
 });
 
 export async function getSignedURL(key: string): Promise<string> {
     const command = new PutObjectCommand({
-        Bucket: process.env.R2_BUCKET!,
+        Bucket: env.R2_BUCKET!,
         Key: key,
         ContentType: mime.getType(key) || "application/octet-stream"
     });
@@ -26,7 +30,7 @@ export async function uploadFile(source: string, destination: string): Promise<a
     const stream = fs.createReadStream(source);
   
     const result = await client.send(new PutObjectCommand({
-        Bucket: process.env.R2_BUCKET!,
+        Bucket: env.R2_BUCKET!,
         Key: destination,  
         Body: stream,
         ContentType: mime.getType(source) ?? ""
@@ -37,7 +41,7 @@ export async function uploadFile(source: string, destination: string): Promise<a
 
 export async function deleteFile(key: string): Promise<any> {
     const result = await client.send(new DeleteObjectCommand({
-        Bucket: process.env.R2_BUCKET!,
+        Bucket: env.R2_BUCKET!,
         Key: key
     }));
 
@@ -46,7 +50,7 @@ export async function deleteFile(key: string): Promise<any> {
 
 export async function getFileMetadata(key: string): Promise<any> {
     const result = await client.send(new HeadObjectCommand({
-        Bucket: process.env.R2_BUCKET!,
+        Bucket: env.R2_BUCKET!,
         Key: key
     }));
 

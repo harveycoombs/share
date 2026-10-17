@@ -300,7 +300,7 @@ export default function Home() {
                         {!user && !captchaToken.length && !!files?.length && !loading && (
                             <div className="my-5 w-fit relative left-1/2 -translate-x-1/2">
                                 <HCaptcha
-                                    sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY ?? ""}
+                                    sitekey="5f2e9f82-e8bc-408a-b690-9e249948338c"
                                     onVerify={(token: string, _: any) => setCaptchaToken(token)}
                                 />
                             </div>

@@ -1,5 +1,9 @@
 import { Resend } from "resend";
 
+import getEnvironmentVariables from "@/lib/variables";
+
+const env = await getEnvironmentVariables();
+
 interface EmailParameters {
     to: string;
     subject: string;
@@ -7,7 +11,7 @@ interface EmailParameters {
 }
 
 export default async function sendEmail({ to, subject, html }: EmailParameters): Promise<void> {
-    const resend = new Resend(process.env.RESEND_API_KEY!);
+    const resend = new Resend(env.RESEND_API_KEY!);
     const result = await resend.emails.send({ from: "noreply@share.surf", to, subject, html });
 
     if (result.error?.message?.length) throw new Error(result.error.message);
