@@ -8,8 +8,6 @@ import { getUserData } from "@/lib/users";
 import { getUploadHistory } from "@/lib/uploads";
 import getEnvironmentVariables from "@/lib/variables";
 
-const env = await getEnvironmentVariables();
-
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value;
@@ -29,6 +27,8 @@ export async function GET(_: Request): Promise<NextResponse> {
     zip.addFile("uploads.json", uploadsBuff);
 
     const buffer = await zip.toBufferPromise();
+
+    const env = await getEnvironmentVariables();
 
     const resend = new Resend(env.RESEND_API_KEY ?? "");
 

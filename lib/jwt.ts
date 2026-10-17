@@ -2,9 +2,9 @@ import jwt from "jsonwebtoken";
 
 import getEnvironmentVariables from "@/lib/variables";
 
-const env = await getEnvironmentVariables();
-
 export async function authenticate(token: string): Promise<any> {
+     const env = await getEnvironmentVariables();
+
 	return new Promise((resolve, _) => {
 		if (!token) {
 			resolve(null);
@@ -21,11 +21,13 @@ export async function authenticate(token: string): Promise<any> {
 	});
 }
 
-export function createJWT(user: any) {
-	const now = new Date();
-
-    return {
-		token: jwt.sign(JSON.stringify(user), env.JWT_SECRET!),
-		timestamp: now.getTime()
-	};
+export async function createJWT(user: any) {
+     const env = await getEnvironmentVariables();
+     
+     const now = new Date();
+     
+     return {
+          token: jwt.sign(JSON.stringify(user), env.JWT_SECRET!),
+          timestamp: now.getTime()
+     };
 }

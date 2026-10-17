@@ -22,7 +22,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     await updateUserAccessDate(email);
     await updateUserAccessCode(email, null);
 
-    const credentials = createJWT(user);
+    const credentials = await createJWT(user);
     
     try {
         const metadata = await getFileMetadata(`avatars/${user.user_id}`);

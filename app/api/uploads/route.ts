@@ -6,8 +6,6 @@ import { authenticate } from "@/lib/jwt";
 import { deleteFile } from "@/lib/storage";
 import getEnvironmentVariables from "@/lib/variables";
 
-const env = await getEnvironmentVariables();
-
 export const maxRequestBodySize = "4gb";
 
 export async function GET(request: Request): Promise<NextResponse> {
@@ -44,6 +42,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!user) {
         if (!captchaToken.length) return NextResponse.json({ error: "Captcha token is required." }, { status: 400 });
+
+        const env = await getEnvironmentVariables();
 
         const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
             method: "POST",

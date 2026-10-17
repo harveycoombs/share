@@ -8,8 +8,6 @@ import { authenticate, createJWT } from "@/lib/jwt";
 import { getUserByEmailAddress, getUserTOTPSecret, updateUserTOTPSettings } from "@/lib/users";
 import getEnvironmentVariables from "@/lib/variables";
 
-const env = await getEnvironmentVariables();
-
 export async function GET(request: Request): Promise<NextResponse> {
     const token = new URL(request.url).searchParams.get("token") ?? "";
 
@@ -28,7 +26,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     cookieJar.delete("email");
 
     const user = await getUserByEmailAddress(email);
-    const credentials = createJWT(user);
+    const credentials = await createJWT(user);
 
     response.cookies.set("token", credentials.token, {
         httpOnly: true,
@@ -57,6 +55,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const updated = await updateUserTOTPSettings(user.user_id, secret);
 
+    const env = await getEnvironmentVariables();
+
     if (updated) {
         const resend = new Resend(env.RESEND_API_KEY!);
 
@@ -79,6 +79,8 @@ export async function DELETE(_: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const disabled = await updateUserTOTPSettings(user.user_id, "");
+
+    const env = await getEnvironmentVariables();
 
     if (disabled) {
         const resend = new Resend(env.RESEND_API_KEY!);

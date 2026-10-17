@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
             if (existingid == user.id) {
                 const shareUser = await getUserByEmailAddress(user.email);
 
-                const credentials = createJWT(shareUser);
+                const credentials = await createJWT(shareUser);
 
                 response.cookies.set("token", credentials.token, {
                     httpOnly: true,
@@ -81,7 +81,7 @@ export async function GET(request: NextRequest) {
 
                 const avatar = user.avatar?.length ? `https://uploads.share.surf/share/avatars/${createdUser.user_id}` : "/images/default.jpg";
 
-                const credentials = createJWT({ ...createdUser, avatar });
+                const credentials = await createJWT({ ...createdUser, avatar });
 
                 response.cookies.set("token", credentials.token, {
                     httpOnly: true,

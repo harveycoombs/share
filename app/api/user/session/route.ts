@@ -6,8 +6,6 @@ import { updateUserAccessCode, getUserByEmailAddress } from "@/lib/users";
 import sendEmail from "@/lib/email";
 import getEnvironmentVariables from "@/lib/variables";
 
-const env = await getEnvironmentVariables();
-
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
     const token = cookieJar.get("token")?.value ?? "";
@@ -26,6 +24,8 @@ export async function POST(request: Request): Promise<NextResponse> {
         const captchaToken = data.captchaToken ?? "";
     
         if (!email?.length || !captchaToken?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+
+        const env = await getEnvironmentVariables();
 
         const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
             method: "POST",

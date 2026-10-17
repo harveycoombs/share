@@ -4,8 +4,6 @@ import { Resend } from "resend";
 import { generateCode } from "@/lib/utils";
 import getEnvironmentVariables from "@/lib/variables";
 
-const env = await getEnvironmentVariables();
-
 export async function POST(request: Request): Promise<NextResponse> {
     const data = await request.json();
 
@@ -14,6 +12,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!email.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
     
+    const env = await getEnvironmentVariables();
+
     const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
