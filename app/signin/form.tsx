@@ -41,14 +41,19 @@ export default function LoginForm() {
 	          body: JSON.stringify({ email, password, captchaToken })
 	     });
 	
-	     const { error } = await response.json();
+	     const { success, usingPassword, error } = await response.json();
 	
 	     setLoading(false);
 	
 	     switch (response.status) {
 	          case 200:
 	          case 201:
-	               setSuccess("Success! A sign-in link has been sent to your email.");
+				if (!usingPassword) {
+				     setSuccess("A sign-in link has been sent to your email.");
+				     return;
+				}
+
+				window.location.href = "/";
 	               break;
 	          case 400:
 	          case 401:
