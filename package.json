@@ -3,10 +3,14 @@
   "version": "10.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
     "build": "next build --turbo",
+    "dev": "next dev --turbo",
     "start": "next start -p 3001",
-    "lint": "next lint"
+    "lint": "next lint",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "packageManager": "pnpm@11.12.0",
   "dependencies": {
