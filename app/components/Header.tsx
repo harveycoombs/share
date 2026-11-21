@@ -49,7 +49,7 @@ export default function Header() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -100 }}
             transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100 }}
-            className="p-5 flex justify-end items-center select-none max-sm:p-3.5 max-sm:gap-3.5"
+            className="p-5 flex justify-end items-center select-none"
         >
             <Panel classes="backdrop-blur bg-white/10 max-sm:w-full">
                 {user ? (
@@ -64,13 +64,13 @@ export default function Header() {
                             draggable={false}
                         />
 
-                        <div id="menu_button" className="inline-block align-middle text-xl text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
+                        <div id="menu_button" className="inline-block align-middle text-xl text-gray-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-gray-400 active:text-gray-500/85" onClick={() => setMenuVisibility(!menuIsVisible)}>
                             <FontAwesomeIcon icon={faEllipsis} />
                         </div>
 
                         <AnimatePresence>
                             {menuIsVisible && (
-                                <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-slate-200/50 rounded-lg shadow-lg w-38">
+                                <div id="menu" className="absolute top-[120%] right-0 overflow-hidden bg-white border border-gray-200/50 rounded-lg shadow-lg w-38">
                                     <HeaderSubMenuItem first={true} onClick={() => setSettingsVisibility(true)}>Settings</HeaderSubMenuItem>
                                     <HeaderSubMenuItem red={true} onClick={logout}>Log out</HeaderSubMenuItem>
                                 </div>
@@ -78,7 +78,7 @@ export default function Header() {
                         </AnimatePresence> 
                     </nav>
                 ) : (
-                    <nav className="flex items-center gap-2.5">
+                    <nav className="flex items-center gap-3">
                         <Button url="/signin" classes="block max-sm:w-1/2 max-sm:px-3.25">Sign In</Button>
                         <Button url="/signup" classes="block max-sm:w-1/2 max-sm:px-3.25" color="gray">Sign Up</Button>
                     </nav>
@@ -93,8 +93,8 @@ export default function Header() {
 }
 
 function HeaderSubMenuItem({ url = "", children, classes = "", first = false, red = false, ...rest }: any) {
-    const color = red ? "text-red-500 hover:bg-red-50" : "text-slate-700 hover:bg-slate-100/50";
-    const classList = `block px-2.5 py-1.75 text-[0.8rem] font-medium ${first ? "" : "border-t border-slate-200/50"} ${color} duration-150 cursor-pointer${classes}`;
+    const color = red ? "text-red-500 hover:bg-red-50" : "text-gray-700 hover:bg-gray-100/50";
+    const classList = `block px-2.5 py-1.75 text-[0.8rem] font-medium ${first ? "" : "border-t border-gray-200/50"} ${color} duration-150 cursor-pointer${classes}`;
 
     return url.length ? <Link href={url} target="_blank" rel="noopener noreferrer" className={classList} {...rest}>{children}</Link> : <div className={classList} {...rest}>{children}</div>;
 }

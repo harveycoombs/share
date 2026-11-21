@@ -170,8 +170,8 @@ export default function Settings({ onClose }: Properties) {
         <Popup title="Account Settings" classes="w-125 max-sm:w-full" onClose={onClose}>
             {loading ? (<div className="w-full h-89 grid place-items-center">
                 <div className="text-center">
-                    <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-slate-400/60" />
-                    <div className="font-medium text-slate-400/70 mt-1.5">Loading...</div>
+                    <FontAwesomeIcon icon={faCircleNotch} className="animate-spin text-2xl text-gray-400/60" />
+                    <div className="font-medium text-gray-400/70 mt-1.5">Loading...</div>
                 </div>
             </div>) : (
                 <>
@@ -194,11 +194,11 @@ export default function Settings({ onClose }: Properties) {
 
                         <div>
                             <strong className="block font-bold">{details?.name}</strong>
-                            <div className="text-xs text-slate-400 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
+                            <div className="text-xs text-gray-400 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
                         </div>
                     </div>
 
-                    <div className="w-full my-3.5 border-b border-slate-300 flex gap-1.5 justify-center">
+                    <div className="w-full my-3.5 border-b border-gray-300 flex gap-1.5 justify-center">
                         <SettingsSectionTab name="Details" onClick={() => setSection("details")} selected={section == "details"} />
                         <SettingsSectionTab name="Privacy & Security" onClick={() => setSection("security")} selected={section == "security"} />
                     </div>
@@ -222,7 +222,7 @@ export default function Settings({ onClose }: Properties) {
                                     <div className="flex flex-col">
                                         <Image src={QRCode} alt="QR Code" width={160} height={160} className="block mx-auto select-none cursor-pointer" draggable={false} onClick={() => setQRCodePopupVisibility(true)} />
 
-                                        <div className="text-xs font-medium text-center text-slate-500">Scan the QR code with your TOTP authenticator app (Google Authenticator, Authy, Duo, etc.)</div>
+                                        <div className="text-xs font-medium text-center text-gray-500">Scan the QR code with your TOTP authenticator app (Google Authenticator, Authy, Duo, etc.)</div>
                                     </div>
                                 ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                             </SettingsFieldContainer>
@@ -258,5 +258,5 @@ function SettingsFieldContainer({ label, children }: any) {
 }
 
 function SettingsSectionTab({ name, selected = false, ...rest }: any) {
-    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-sm select-none ${selected ? "border-blue-500 text-blue-500" : "border-transparent text-slate-400/75"} font-medium cursor-pointer duration-150 hover:border-blue-500 hover:text-blue-500`} {...rest}>{name}</div>;
+    return <div className={`py-1.5 px-2.5 border-b-3 translate-y-px text-sm select-none ${selected ? "border-blue-500 text-blue-500" : "border-transparent text-gray-400/75"} font-medium cursor-pointer duration-150 hover:border-blue-500 hover:text-blue-500`} {...rest}>{name}</div>;
 }

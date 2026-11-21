@@ -75,11 +75,11 @@ export default function UploadHistory({ onClose }: Properties) {
 
                     {selecting ? (
                         <div className="flex items-center gap-1">
-                            <div className="text-xs font-medium text-slate-400/75 mr-1.5 select-none">{selectedUploads.length} Selected</div>
-                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
-                            <div className="leading-none text-slate-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-slate-100 active:bg-slate-200" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
+                            <div className="text-xs font-medium text-gray-400/75 mr-1.5 select-none">{selectedUploads.length} Selected</div>
+                            <div className="leading-none text-gray-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-gray-100 active:bg-gray-200" title="Delete Selected" onClick={deleteUploads}><FontAwesomeIcon icon={faTrashAlt} /></div>
+                            <div className="leading-none text-gray-400/75 p-1.5 rounded-md aspect-square cursor-pointer duration-150 hover:bg-gray-100 active:bg-gray-200" title="Cancel" onClick={resetSelection}><FontAwesomeIcon icon={faXmark} /></div>
                         </div>
-                    ) : <div className="leading-none cursor-pointer text-slate-400/75 text-lg hover:text-slate-500 active:text-slate-600 duration-150" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>}
+                    ) : <div className="leading-none cursor-pointer text-gray-400/75 text-lg hover:text-gray-500 active:text-gray-600 duration-150" title="Bulk Select" onClick={() => setSelecting(!selecting)}><FontAwesomeIcon icon={faListCheck} /></div>}
                 </div>
 
                 {feedback.length > 0 && <div className="p-1.5 leading-none text-xs font-medium text-center bg-red-400 text-white rounded-md mt-2">{feedback}</div>}
@@ -87,9 +87,9 @@ export default function UploadHistory({ onClose }: Properties) {
 
             <div className="h-150">{
                 error.length ? <div className="w-full h-full pb-16 grid place-items-center select-none text-red-500 leading-none">{error}</div> 
-                : loading ? <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
+                : loading ? <div className="w-full h-full pb-16 grid place-items-center select-none text-gray-400/60 leading-none text-2xl"><FontAwesomeIcon icon={faCircleNotch} className="animate-spin" /></div> 
                 : uploads.length ? <div className="w-full h-full">{uploads.map((upload: any, index: number) => <Upload key={upload.upload_id} index={index} data={upload} bulkSelect={selecting} onSelect={updateSelection} />)}</div>
-                : <div className="w-full h-full pb-16 grid place-items-center select-none text-slate-400">You haven't uploaded anything yet</div>
+                : <div className="w-full h-full pb-16 grid place-items-center select-none text-gray-400">You haven't uploaded anything yet</div>
             }</div>
         </Popup>
     );
@@ -216,7 +216,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.3, ease: "easeOut", delay: index * 0.05 }}
-                className={`flex justify-between items-center p-2 rounded-lg bg-slate-50 relative overflow-hidden ${index ? "mt-2.5" : ""} dark:bg-zinc-800/75 dark:text-zinc-400`}
+                className={`flex justify-between items-center p-2 rounded-lg bg-gray-50 relative overflow-hidden ${index ? "mt-2.5" : ""} dark:bg-zinc-800/75 dark:text-zinc-400`}
                 ref={uploadRef}
             >
                 {(feedback.length > 0) && <div className="absolute bottom-0 left-0 right-0 text-center text-xs font-medium p-1 bg-red-300/25 text-red-500">{feedback}</div>}
@@ -241,7 +241,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                             </div>
                         </strong>
 
-                        <div className={`text-xs font-medium text-slate-500 opacity-65 mt-0.5 select-none dark:text-zinc-400`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })} &middot; {data.views} View{data.views != 1 ? "s" : ""}</div>
+                        <div className={`text-xs font-medium text-gray-500 opacity-65 mt-0.5 select-none dark:text-zinc-400`}>{data.files} File{data.files > 1 ? "s" : ""} &middot; {formatBytes(data.size)} &middot; {new Date(data.upload_date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })} &middot; {data.views} View{data.views != 1 ? "s" : ""}</div>
                     </div>
                 </div>
 
@@ -259,7 +259,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
 }
 
 function UploadOption({ icon, url = "", loading = false, ...rest }: any) {
-    const classList = `leading-none p-1.25 rounded-md border border-transparent bg-transparent text-slate-400 aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-slate-200/70 hover:text-slate-500 active:scale-95 ${loading ? "pointer-events-none" : ""} dark:text-slate-500`;
+    const classList = `leading-none p-1.25 rounded-md border border-transparent bg-transparent text-gray-400 aspect-square cursor-pointer inline-grid place-items-center duration-150 hover:bg-gray-200/70 hover:text-gray-500 active:scale-95 ${loading ? "pointer-events-none" : ""} dark:text-gray-500`;
 
     return url.length ? (
         <Link href={url} className={classList} {...rest}>

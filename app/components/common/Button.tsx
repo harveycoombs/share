@@ -6,7 +6,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 interface Properties {
     children: React.ReactNode;
     url?: string;
-    square?: boolean;
+    padding?: string;
     classes?: string;
     color?: string;
     loading?: boolean;
@@ -14,7 +14,7 @@ interface Properties {
     [key: string]: any;
 }
 
-export default function Button({ children, url, square, classes = "", color = "", loading, disabled, ...rest }: Properties) {
+export default function Button({ children, url, padding = "", classes = "", color = "", loading, disabled, ...rest }: Properties) {
     let appearance = "";
 
     switch (color) {
@@ -22,14 +22,14 @@ export default function Button({ children, url, square, classes = "", color = ""
             appearance = "bg-red-500 text-white text-shadow-red-700 font-semibold hover:bg-red-600 active:bg-red-700";
             break;
         case "gray":
-            appearance = "bg-slate-100 text-slate-500 text-shadow-slate-300 font-semibold hover:bg-slate-200 active:bg-slate-300/80 dark:bg-zinc-800 dark:text-zinc-500 dark:hover:bg-zinc-700/80 dark:active:bg-zinc-700 dark:text-shadow-zinc-950";
+            appearance = "bg-transparent border-blue-600 text-blue-600 font-medium hover:bg-blue-600/15 active:bg-blue-600/25";
             break;
         default:
-            appearance = "bg-blue-500 text-white text-shadow-blue-700 font-medium hover:bg-blue-600 active:bg-blue-700";
+            appearance = "bg-blue-600 border-blue-700 text-white font-medium hover:bg-blue-700 active:bg-blue-800";
             break;
     }
 
-    const classList = `${square ? "p-3" : "px-4.5 py-3.25"} rounded-xl text-sm leading-none shadow-[inset_0_2px_3px_rgba(255,255,255,0.5),inset_0_-2px_3px_rgba(0,0,0,0.2)] text-shadow-lg ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none active:scale-96
+    const classList = `${padding || "px-4.75 py-3.5"} rounded border text-sm leading-none ${appearance} duration-150 ${loading ? "" : "cursor-pointer"} text-center select-none active:scale-96
  ${classes}`;
 
     return url?.length ? (

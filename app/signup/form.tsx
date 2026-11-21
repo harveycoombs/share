@@ -104,7 +104,7 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
     }
 
     return (
-        <form onSubmit={register} onInput={resetFeedback}>
+        <form className="w-75.5" onSubmit={register} onInput={resetFeedback}>
             {success.length > 0 && <Notice color="green" classes="mb-5">{success}</Notice>}
             {warning.length > 0 && <Notice color="amber" classes="mb-5">{warning}</Notice>}
             {error.length > 0 && <Notice color="red" classes="mb-5">{error}</Notice>}
@@ -131,7 +131,7 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
                             />
                         </div>
 
-                        <div className="text-sm text-center text-slate-400 select-none flex items-center justify-center gap-2 dark:text-zinc-500">
+                        <div className="text-sm text-center text-gray-400 select-none flex items-center justify-center gap-2 dark:text-zinc-500">
                             <input type="checkbox" className="w-4 h-4 accent-blue-500" checked={consent} onChange={(e: any) => setConsent(e.target.checked)} />
 
                             <div>
@@ -145,13 +145,13 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
 
             {!success.length && <Button type="submit" classes="block w-full my-4" loading={loading} disabled={error.length > 0 || warning.length > 0 || (proceed && (!captchaToken?.length || !consent))}>{proceed ? "Continue" : "Next"}</Button>}
             
-            <div className="text-sm text-center text-slate-400 select-none my-5 dark:text-zinc-500">
+            <div className="text-sm text-center text-gray-400 select-none my-5 dark:text-zinc-500">
                 Already have an account?
                 <Link href="/signin" className="text-blue-500 font-semibold ml-1.25 hover:underline">Sign In</Link>
             </div>
 
             {!success.length && (
-                <div className="relative border-b border-slate-400/40 text-slate-400/60 text-xs font-medium select-none my-6">
+                <div className="relative border-b border-gray-400/40 text-gray-400/60 text-xs font-medium select-none my-6">
                     <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center bg-white px-1.5 dark:bg-zinc-950">OR</span>
                 </div>
             )}

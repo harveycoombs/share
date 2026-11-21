@@ -14,9 +14,9 @@ interface Properties {
 export default function Popup({ title, onClose, children, classes, ...rest }: Properties) {
     return (
         <motion.div 
-            initial={{ backgroundColor: "color-mix(in oklab,var(--color-slate-900)0%,transparent)", backdropFilter: "blur(0px)" }}
-            animate={{ backgroundColor: "color-mix(in oklab,var(--color-slate-900)60%,transparent)", backdropFilter: "blur(4px)" }}
-            exit={{ backgroundColor: "color-mix(in oklab,var(--color-slate-900)0%,transparent)", backdropFilter: "blur(0px)" }}
+            initial={{ backgroundColor: "color-mix(in oklab,var(--color-gray-900)0%,transparent)", backdropFilter: "blur(0px)" }}
+            animate={{ backgroundColor: "color-mix(in oklab,var(--color-gray-900)60%,transparent)", backdropFilter: "blur(4px)" }}
+            exit={{ backgroundColor: "color-mix(in oklab,var(--color-gray-900)0%,transparent)", backdropFilter: "blur(0px)" }}
             transition={{ duration: 0.15, ease: "easeOut" }}
             className="fixed inset-0 z-50 grid place-items-center max-sm:px-5" id="popup" 
             onMouseDown={(e: any) => {if (e.target.matches("#popup")) onClose() }}
@@ -29,10 +29,10 @@ export default function Popup({ title, onClose, children, classes, ...rest }: Pr
                 {...rest}
             >
                 <div className="flex justify-between items-center leading-none pb-1.5">
-                    <strong className="text-sm font-semibold text-slate-700 select-none dark:text-zinc-500">{title}</strong>
+                    <strong className="text-sm font-semibold text-gray-700 select-none dark:text-zinc-500">{title}</strong>
 
                     <motion.div 
-                        className="text-slate-400/60 text-sm cursor-pointer duration-100 hover:text-red-500 active:text-red-600 dark:text-zinc-500"
+                        className="text-gray-400/60 text-sm cursor-pointer duration-100 hover:text-red-500 active:text-red-600 dark:text-zinc-500"
                         onClick={onClose}
                         whileHover={{ 
                             scale: 1.1,

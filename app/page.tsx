@@ -255,20 +255,25 @@ export default function Home() {
     }, [uploader]);
 
     return (
-        <main className="min-h-[calc(100vh-203px)] flex flex-col items-center justify-center gap-20 max-sm:min-h-[calc(100vh-191px)]" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
+        <main className="min-page-height flex flex-col items-center justify-center gap-20" onDragOver={handleDragOverEvent} onDragEnter={handleDragEnterEvent} onDragLeave={handleDragLeaveEvent} onDrop={handleDropEvent}>
             <section className="max-sm:w-full max-sm:px-4">
                 <div className="mb-16">
-                    <Logo width={173} height={76} className="flex items-center gap-4 w-fit mx-auto select-none" />
-                    <h2 className="block font-medium text-slate-400 mt-4 text-center dark:text-zinc-500">The no-frills file sharing service</h2>
+                    <Logo width={300} height={42} className="w-fit mx-auto select-none" />
+                    <h2 className="block text-lg text-gray-900 font-medium mt-4 text-center">The no-frills file sharing service</h2>
                 </div>
 
                 {id.length > 0 && (
                     <div>
-                        <strong className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-emerald-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} onClick={copyUploadURL}>{id ? `${document.location.href}${id}` : ""}</strong>
+                        <strong 
+                              className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-green-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} 
+                              onClick={copyUploadURL}
+                        >
+                             {id ? `${document.location.href}${id}` : ""}
+                         </strong>
 
                         <div className="flex items-center gap-5 w-fit mx-auto mt-4">
                             <Button onClick={resetUploader}>Upload More</Button>
-                            <div className="text-sm font-medium text-slate-400 leading-none dark:text-zinc-500"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
+                            <div className="text-sm font-medium leading-none"><FontAwesomeIcon icon={faStopwatch} className="mr-1.5" />Upload took {uploadTime}</div>
                         </div>
                     </div>
                 )}
@@ -289,7 +294,7 @@ export default function Home() {
 
                 {loading && progress >= 100 && (
                     <div className="w-115 mx-auto text-center max-sm:w-full">
-                        <div className="flex items-center justify-center gap-1.5 font-semibold text-slate-400/60 dark:text-zinc-500"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
+                        <div className="flex items-center justify-center gap-1.5 font-semibold"><FontAwesomeIcon icon={faCircleNotch} className="text-xl animate-spin" /><span className="text-lg">Finalising</span></div>
                     </div>
                 )}
 
@@ -306,24 +311,23 @@ export default function Home() {
                             </div>
                         )}
 
-                        <div className={`flex justify-between items-center p-2.5 rounded-2xl mt-5 mb-4.5 border border-slate-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""} dark:border-zinc-700`}>
-                            <div>
+                        <div className={`flex justify-between items-center p-3 rounded-md mt-5 mb-4.5 border border-gray-300${passwordFieldIsVisible ? " max-sm:flex-col max-sm:gap-2" : ""}`}>
+                            <div className="flex items-center gap-3">
                                 <Button onClick={browseFiles} classes={`inline-block align-middle${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>Browse Files</Button>
                                 
                                 <Button
                                     color="gray"
-                                    classes="ml-2.5"
-                                    square={true}
+                                    padding="py-3.25 px-2.75"
                                     title="Upload Folder"
                                     onClick={browseFolders}
                                 >
-                                    <FontAwesomeIcon icon={faFolderPlus} />
+                                    <FontAwesomeIcon icon={faFolderPlus} className="text-base" />
                                 </Button>
                             </div>
 
-                            <div className={`flex items-center gap-2.5 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
-                                <Button color="gray" square={true} title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => sessionExists ? setHistoryVisibility(true) : setAccountPromptVisibility(true)}>
-                                    <FontAwesomeIcon icon={faClockRotateLeft} />
+                            <div className={`flex items-center gap-3 ${passwordFieldIsVisible ? " max-sm:w-full" : ""}`}>
+                                <Button color="gray" padding="py-3.25 px-2.75" title={sessionExists ? "View Upload History" : "Sign In To View Upload History"} onClick={() => sessionExists ? setHistoryVisibility(true) : setAccountPromptVisibility(true)}>
+                                    <FontAwesomeIcon icon={faClockRotateLeft} className="text-base" />
                                 </Button>
 
                                 {passwordFieldIsVisible ? (
@@ -336,19 +340,19 @@ export default function Home() {
                                             onChange={(e: any) => setPassword(e.target.value)}
                                         />
 
-                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-slate-300 leading-none cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500" onClick={() => setPasswordFieldVisibility(false)}>
-                                            <FontAwesomeIcon icon={faXmark} />
+                                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-gray-300 leading-none cursor-pointer duration-150 hover:text-gray-400 active:text-gray-500" onClick={() => setPasswordFieldVisibility(false)}>
+                                            <FontAwesomeIcon icon={faXmark} className="text-base" />
                                         </div> 
                                     </div>
                                 ) : (
-                                    <Button color="gray" square={true} title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => sessionExists ? setPasswordFieldVisibility(sessionExists) : setAccountPromptVisibility(true)}>
-                                        <FontAwesomeIcon icon={faKey} />
+                                    <Button color="gray" padding="py-3.25 px-2.75" title={sessionExists ? "Set Upload Password" : "Sign In To Set Upload Password"} onClick={() => sessionExists ? setPasswordFieldVisibility(sessionExists) : setAccountPromptVisibility(true)}>
+                                        <FontAwesomeIcon icon={faKey} className="text-base" />
                                     </Button>
                                 )}
                             </div>
                         </div>
 
-                        <div className={`text-sm font-medium leading-none text-slate-400 flex ${user ? "justify-between max-sm:justify-center" : "flex-col items-center gap-2.75"} dark:text-zinc-500`}>
+                        <div className={`text-sm font-medium leading-none text-gray-400 flex ${user ? "justify-between max-sm:justify-center" : "flex-col items-center gap-2.75"} dark:text-zinc-500`}>
                             <div>Expires after {user ? "48" : "24"} hours{!user && " (48 hours for registered users)"}</div>
                             <div className="hidden mx-2 max-sm:hidden">&middot;</div>
                             <div>{user ? "750MB" : "250MB"} upload limit{!user && " (750MB for registered users)"}</div>

@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub, faDiscord } from "@fortawesome/free-brands-svg-icons";
 import { AnimatePresence } from "motion/react";
 
+import Panel from "@/app/components/common/Panel";
 import packageJson from "@/package.json";
 import IssueForm from "@/app/components/popups/IssueForm";
 import DCMAForm from "@/app/components/popups/DCMAForm";
@@ -17,15 +18,15 @@ export default function Footer() {
      const [DMCAFormOpen, setDMCAFormOpen] = useState<boolean>(false);
      
      return (
-          <footer className="p-5 select-none overflow-hidden max-sm:overflow-visible">
+          <footer className="p-5 select-none overflow-hidden">
                <motion.div 
                     initial={{ opacity: 0, y: 100 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 100 }}
                     transition={{ duration: 0.3, type: "spring", damping: 10, stiffness: 100, delay: 0.15 }}
-                    className="flex justify-between items-center text-slate-400 text-sm font-medium max-lg:flex-col max-lg:gap-2"
+                    className="flex justify-between items-center text-gray-400 text-sm font-medium max-lg:flex-col max-lg:gap-2"
                >
-                    <FooterPanel classes="max-sm:w-full max-sm:flex max-sm:justify-between max-sm:items-center relative">
+                    <Panel classes="max-sm:w-full max-sm:flex max-sm:justify-between max-sm:items-center relative">
                          <div className="h-9.75 flex items-center">
                               2021 &ndash; {new Date().getFullYear()}
                               <span className="mx-1">&middot;</span>
@@ -37,7 +38,7 @@ export default function Footer() {
 
                          <AnimatePresence>
                               {mobileMenuOpen && (
-                                   <div className="p-5 border border-slate-300 rounded-2xl absolute bottom-[calc(100%+20px)] right-0 backdrop-blur bg-white/10">
+                                   <div className="p-5 border border-gray-300 rounded-2xl absolute bottom-[calc(100%+20px)] right-0 backdrop-blur bg-white/10">
                                         <MobileFooterLink url="https://buymeacoffee.com/harveycoombs" text="Donate" classes="text-amber-500 text-shadow-md text-shadow-amber-200 dark:text-shadow-none pt-0" />
                                         <MobileFooterLink url="/documents/privacy-policy.pdf" text="Privacy Policy" />
                                         <MobileFooterLink url="/documents/terms-of-service.pdf" text="Terms of Service" />
@@ -56,9 +57,9 @@ export default function Footer() {
                          <button className="sm:hidden block leading-none duration-200 cursor-pointer active:opacity-60 active:scale-94" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
                               <FontAwesomeIcon icon={faBars} className="block text-2xl" />
                          </button>
-                    </FooterPanel>
+                    </Panel>
      
-                    <FooterPanel classes="max-sm:hidden">
+                    <Panel classes="max-sm:hidden">
                          <div className="h-9.75 flex items-center gap-4 max-sm:gap-3">
                               <Link href="https://buymeacoffee.com/harveycoombs" target="_blank" rel="noopener" draggable={false} className="text-amber-500 text-shadow-md text-shadow-amber-200 hover:underline dark:text-shadow-none">Donate</Link>
                               <Link href="/documents/privacy-policy.pdf" className="hover:underline" draggable={false}>Privacy Policy</Link>
@@ -68,7 +69,7 @@ export default function Footer() {
                               <FooterIcon icon={faDiscord} title="GitHub" url="https://discord.gg/6yKZ6vmMyv" />
                               <FooterIcon icon={faGithub} title="GitHub" url="https://github.com/harveycoombs/share" />
                          </div>
-                    </FooterPanel>
+                    </Panel>
                </motion.div>
      
                <AnimatePresence>
@@ -82,12 +83,8 @@ export default function Footer() {
      );
 }
 
-function FooterPanel({ children, classes = "" }: any) {
-     return <div className={`py-2.5 px-4.5 border border-slate-300 rounded-2xl dark:text-zinc-500 dark:border-zinc-700 backdrop-blur bg-white/10 ${classes}`}>{children}</div>;
-}
-
 function FooterIcon({ icon, title, url, classes = "" }: any) {
-     return <Link href={url} target="_blank" rel="noopener" title={title} draggable={false} className={`text-lg text-slate-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-slate-400 active:text-slate-500/85 dark:text-zinc-500 dark:hover:text-zinc-300 dark:active:text-zinc-400 max-sm:block max-sm:text-xl ${classes?.length ? " " + classes : ""}`}><FontAwesomeIcon icon={icon} /></Link>
+     return <Link href={url} target="_blank" rel="noopener" title={title} draggable={false} className={`text-lg text-gray-400/60 leading-none translate-y-px cursor-pointer duration-150 hover:text-gray-400 active:text-gray-500/85 dark:text-zinc-500 dark:hover:text-zinc-300 dark:active:text-zinc-400 max-sm:block max-sm:text-xl ${classes?.length ? " " + classes : ""}`}><FontAwesomeIcon icon={icon} /></Link>
 }
 
 function MobileFooterLink({ url, text, classes = "" }: any) {

@@ -67,7 +67,7 @@ export default function Protected({ params }: any) {
             <section className="w-fit select-none">
                 <div className="w-fit mx-auto">
                     <div className="w-fit mx-auto max-sm:scale-90"><Logo width={288} height={56} className="dark:fill-white" /></div>
-                    <h2 className="block font-medium text-slate-400 my-4 text-center max-sm:text-sm">The no-frills file sharing service</h2>
+                    <h2 className="block font-medium text-gray-400 my-4 text-center max-sm:text-sm">The no-frills file sharing service</h2>
                 </div>
 
                 {error.length ? (
