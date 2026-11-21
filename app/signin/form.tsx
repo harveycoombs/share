@@ -41,7 +41,7 @@ export default function LoginForm() {
 	          body: JSON.stringify({ email, password, captchaToken })
 	     });
 	
-	     const { success, usingPassword, error } = await response.json();
+	     const { usingPassword, error } = await response.json();
 	
 	     setLoading(false);
 	
