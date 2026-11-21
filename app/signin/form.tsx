@@ -80,10 +80,7 @@ export default function LoginForm() {
      	     return;
      	}
      
-     	const response = await fetch("/api/user/check", {
-     		method: "POST",
-     		body: JSON.stringify({ email })
-     	});
+     	const response = await fetch(`/api/user/check?email=${encodeURIComponent(email)}`);
      	
      	const { exists, usingPassword } = await response.json();
      
