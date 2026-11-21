@@ -19,9 +19,9 @@ export async function GET(_: Request): Promise<NextResponse> {
 
 export async function POST(request: Request): Promise<NextResponse> {
      try {
-          const { email, captchaToken, password } = await request.json();
+          const { email, password } = await request.json();
      
-          if (!email?.length || !captchaToken?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+          if (!email?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 
           const user = await getUserByEmailAddress(email);
      
