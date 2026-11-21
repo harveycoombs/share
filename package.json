@@ -1,6 +1,6 @@
 {
   "name": "share",
-  "version": "9.2.3",
+  "version": "10.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
