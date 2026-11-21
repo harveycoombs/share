@@ -81,7 +81,6 @@ export default function LoginForm() {
      	}
      
      	const response = await fetch(`/api/user/check?email=${encodeURIComponent(email)}`);
-     	
      	const { exists, usingPassword } = await response.json();
      
      	if (!response.ok) {

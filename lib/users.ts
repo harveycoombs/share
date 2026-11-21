@@ -182,7 +182,7 @@ export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<s
 
 export async function checkUserPasswordUsage(emailAddress: string): Promise<boolean> {
      const supabase = await getSupabaseClient();
-     const { count, error } = await supabase.from("users").select("*", { count: "exact", head: true }).eq("email_address", emailAddress).maybeSingle();
+     const { count, error } = await supabase.from("users").select("*", { count: "exact", head: true }).eq("email_address", emailAddress).not("password", "is", null).neq("password", "").maybeSingle();
 
      if (error) throw error;
 
