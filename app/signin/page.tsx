@@ -23,11 +23,11 @@ export default function Login() {
                          <LoginForm />
 
                          <div className="text-sm text-center text-gray-400 select-none mt-5 dark:text-zinc-500">
-                              Don&apos;t have an account?<Link href="/signup" className="text-blue-500 font-semibold ml-1.5 hover:underline">Sign Up</Link>
+                              Don&apos;t have an account?<Link href="/signup" className="text-blue-600 font-semibold ml-1.5 hover:underline">Sign Up</Link>
                          </div>
                
                          <div className="text-sm text-center text-gray-400 select-none mt-2.5 dark:text-zinc-500">
-                              Can&apos;t sign in?<Link href="/recover" className="text-blue-500 font-semibold ml-1.5 hover:underline">Recover Account</Link>
+                              Can&apos;t sign in?<Link href="/recover" className="text-blue-600 font-semibold ml-1.5 hover:underline">Recover Account</Link>
                          </div>
                     
           

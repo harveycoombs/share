@@ -6,7 +6,6 @@ import { updateUserAccessCode, getUserByEmailAddress, verifyCredentials } from "
 import sendEmail from "@/lib/email";
 import { createJWT } from "@/lib/jwt";
 import { getFileMetadata } from "@/lib/storage";
-import getEnvironmentVariables from "@/lib/variables";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -23,17 +22,7 @@ export async function POST(request: Request): Promise<NextResponse> {
           const { email, captchaToken, password } = await request.json();
      
           if (!email?.length || !captchaToken?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
-     
-          const env = await getEnvironmentVariables();
-     
-          const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
-               method: "POST",
-               headers: { "Content-Type": "application/x-www-form-urlencoded" },
-               body: `response=${captchaToken}&secret=${env.HCAPTCHA_SECRET_KEY!}`,
-          });
-     
-          if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
-     
+
           const user = await getUserByEmailAddress(email);
      
           if (!user) return NextResponse.json({ error: "User not found." }, { status: 404 });
