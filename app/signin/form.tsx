@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "motion/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDiscord, faGoogle } from "@fortawesome/free-brands-svg-icons";
 
@@ -12,6 +13,7 @@ import Notice from "@/app/components/common/Notice";
 
 export default function LoginForm() {
 	const [email, setEmailAddress] = useState<string>("");
+	const [password, setPassword] = useState<string>("");
 	const [captchaToken, setCaptchaToken] = useState<string>("");
 	
 	const [loading, setLoading] = useState<boolean>(false);
@@ -36,10 +38,10 @@ export default function LoginForm() {
 	
 	     const response = await fetch("/api/user/session", {
 	          method: "POST",
-	          body: JSON.stringify({ email, captchaToken })
+	          body: JSON.stringify({ email, password, captchaToken })
 	     });
 	
-	     const json = await response.json();
+	     const { error } = await response.json();
 	
 	     setLoading(false);
 	
@@ -51,13 +53,13 @@ export default function LoginForm() {
 	          case 400:
 	          case 401:
 	          case 403:
-	               setWarning(json.error);
+	               setWarning(error);
 	               break;
 	          case 404:
 	               window.location.href = `/signup?email=${encodeURIComponent(email)}`;
 	               break;
 	          default:
-	               setError(json.error);
+	               setError(error);
 	               break;
 	     }
 	}
@@ -78,8 +80,23 @@ export default function LoginForm() {
 
 		const response = await fetch("/api/user/check", {
 			method: "POST",
-			
+			body: JSON.stringify({ email })
 		});
+		
+		const { exists, usingPassword } = await response.json();
+
+		if (!response.ok) {
+		     setError("Unable to check email address. Please try again later.");
+			setLoading(false);
+			return;
+		}
+
+		if (!exists) {
+		     window.location.href = `/signup?email=${encodeURIComponent(email)}`;
+			return;
+		}
+
+		setUsingPassword(usingPassword);
 	}
 	
 	return (
@@ -91,12 +108,23 @@ export default function LoginForm() {
 	          <Label classes="block mt-2.5">Email Address</Label>
 	          <Field type="email" classes="block w-full" readOnly={success.length > 0} onInput={(e: any) => setEmailAddress(e.target.value)} />
 	
+			{usingPassword && (
+			     <motion.div
+					initial={{ opacity: 0, height: 0 }}
+					animate={{ opacity: 1, height: "auto" }}
+					transition={{ duration: 0.5, ease: "easeInOut" }}
+				>
+                         <Label classes="block mt-2.5">Password</Label>
+                         <Field type="password" classes="block w-full" readOnly={success.length > 0} onInput={(e: any) => setPassword(e.target.value)} />				
+				</motion.div>
+			)}
+
 	          {!success.length && (
 	               <div className="my-4 w-fit relative left-1/2 -translate-x-1/2">
-	               <HCaptcha
-	                    sitekey="5f2e9f82-e8bc-408a-b690-9e249948338c"
-	                    onVerify={(token: string, _: any) => setCaptchaToken(token)}
-	               />
+     	               <HCaptcha
+     	                    sitekey="5f2e9f82-e8bc-408a-b690-9e249948338c"
+     	                    onVerify={(token: string, _: any) => setCaptchaToken(token)}
+     	               />
 	               </div>
 	          )}
 	

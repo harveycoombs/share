@@ -179,3 +179,12 @@ export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<s
      
      return data?.discord_id ?? "";
 }
+
+export async function checkUserPasswordUsage(emailAddress: string): Promise<boolean> {
+     const supabase = await getSupabaseClient();
+     const { count, error } = await supabase.from("users").select("*", { count: "exact", head: true }).eq("email_address", emailAddress).maybeSingle();
+
+     if (error) throw error;
+
+     return !!count;
+}
