@@ -8,22 +8,18 @@ export async function GET(request: Request): Promise<NextResponse> {
     const email = searchParams.get("email") ?? "";
     const code = searchParams.get("code") ?? "";
 
-    const fail = () => NextResponse.redirect(new URL("/signin/error", request.url));
-
-    if (!email.length || !code.length) return fail();
+    if (!email.length || !code.length) return NextResponse.redirect(new URL("/signin/error", request.url));
 
     const user = await getUserByEmailAddress(email);
-    if (!user) return fail();
+    if (!user) return NextResponse.redirect(new URL("/signin/error", request.url));
 
     if (/^\d+$/.test(code) && await verifyUserAuthCode(email, parseInt(code))) {
-        // Sign-up verification link (numeric code)
         await updateUserAuthCode(email, null);
         await updateUserStatus(user.user_id, UserStatus.Verified);
     } else if (await verifyUserAccessCode(email, code)) {
-        // Passwordless sign-in link (UUID code)
         await updateUserAccessCode(email, null);
     } else {
-        return fail();
+        return NextResponse.redirect(new URL("/signin/error", request.url));
     }
 
     const credentials = await createJWT(user);

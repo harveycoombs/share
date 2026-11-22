@@ -58,9 +58,9 @@ export default function Header() {
                             src={user.avatar || "/images/default.jpg"}
                             alt={avatarLabel} 
                             title={avatarLabel}
-                            width={39} 
-                            height={39}
-                            className="inline-block align-middle rounded-xl object-cover aspect-square"
+                            width={44} 
+                            height={44}
+                            className="inline-block align-middle rounded object-cover aspect-square"
                             draggable={false}
                         />
 
