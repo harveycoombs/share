@@ -29,7 +29,7 @@ export default function UploadHistory({ onClose }: Properties) {
 
         (async () => {
             const response = await fetch(`/api/uploads?search=${search}`);
-            const json = await response.json();
+            const json: any = await response.json();
 
             setUploads(json.uploads ?? []);
             setLoading(false);
@@ -57,7 +57,7 @@ export default function UploadHistory({ onClose }: Properties) {
             body: JSON.stringify({ uploads: JSON.stringify(selectedUploads) })
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         if (!response.ok || !json.success) {
             setFeedback("Something went wrong");
@@ -160,7 +160,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
             body: JSON.stringify({ uploadid: data.upload_id })
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         setDeleteLoading(false);
 
@@ -187,7 +187,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                 })
             });
 
-            const json = await response.json();
+            const json: any = await response.json();
 
             if (!response.ok || !json.success) {
                 switch (response.status) {

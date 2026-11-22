@@ -21,7 +21,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.json();
+    const data:any = await request.json();
 
     const total = data.total ?? 0;
     const size = data.size ?? 0;
@@ -58,7 +58,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 }
 
 export async function PATCH(request: Request): Promise<NextResponse> {
-    const data = await request.json();
+    const data:any = await request.json();
     const id = data.uploadid || "0";
     const title = data.name ?? "";
 
@@ -82,7 +82,7 @@ export async function DELETE(request: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const data = await request.json();
+    const data:any = await request.json();
     const id = data.uploadid || "0";
     const uploadids = JSON.parse(data.uploads || "[]");
 

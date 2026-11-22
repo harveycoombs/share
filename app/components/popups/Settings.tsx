@@ -51,7 +51,7 @@ export default function Settings({ onClose }: Properties) {
 
         (async () => {
             const response = await fetch("/api/user");
-            const json = await response.json();
+            const json: any = await response.json();
 
             setDetails(json);
             setLoading(false);
@@ -69,7 +69,7 @@ export default function Settings({ onClose }: Properties) {
             body: JSON.stringify({ name, emailAddress, oldPassword, newPassword })
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         setUpdating(false);
 
@@ -90,7 +90,7 @@ export default function Settings({ onClose }: Properties) {
             method: "DELETE"
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         setDeleting(false);
 
@@ -115,7 +115,7 @@ export default function Settings({ onClose }: Properties) {
             body: data
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         if (!json.uploaded) {
             setError("Something went wrong");
@@ -132,7 +132,7 @@ export default function Settings({ onClose }: Properties) {
             method: "POST",
             body: JSON.stringify({ email: details.email_address })
         });
-        const json = await response.json();
+        const json: any = await response.json();
 
         setUpdatingTOTP(false);
 
@@ -150,7 +150,7 @@ export default function Settings({ onClose }: Properties) {
         setDataRequestLoading(true);
 
         const response = await fetch("/api/user/data");
-        const json = await response.json();
+        const json: any = await response.json();
         
         setDataRequestLoading(false);
 

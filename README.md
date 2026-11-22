@@ -13,9 +13,6 @@ If you wish to run Share yourself, follow the instructions below.
 ### 1. Create a .env file in the root of the repository
 Follow the structure provided below, with your own credentials.
 ```
-SUPABASE_URL=
-SUPABASE_KEY=
-
 JWT_SECRET=
 
 RESEND_API_KEY=

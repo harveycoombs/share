@@ -39,7 +39,7 @@ export default function IssueForm({ onClose }: Properties) {
             body: JSON.stringify({ name, email, description, captchaToken })
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         setLoading(false);
 

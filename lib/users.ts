@@ -16,7 +16,7 @@ interface User {
      status?: UserStatus;
 }
 
-enum UserStatus {
+export enum UserStatus {
      Unverified,
      Verified,
      Suspended,

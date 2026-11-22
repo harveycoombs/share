@@ -5,7 +5,7 @@ import { Resend } from "resend";
 import { authenticate } from "@/lib/jwt";
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.json();
+    const data:any = await request.json();
 
     const description = data.description ?? "";
     const name = data.name ?? "";

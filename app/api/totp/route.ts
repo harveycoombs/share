@@ -43,7 +43,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const data = await request.json();
+    const data:any = await request.json();
     const email = data.email ?? "";
 
     if (!email.length) return NextResponse.json({ error: "Missing email address." }, { status: 400 });

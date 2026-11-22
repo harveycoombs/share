@@ -31,7 +31,7 @@ export default function AuthenticationForm() {
         setLoading(true);
 
         const response = await fetch(`/api/totp?token=${token}`);
-        const json = await response.json();
+        const json: any = await response.json();
 
         switch (response.status) {
             case 200:

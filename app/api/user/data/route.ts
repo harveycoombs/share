@@ -4,7 +4,7 @@ import AdmZip from "adm-zip";
 import { Resend } from "resend";
 
 import { authenticate } from "@/lib/jwt";
-import { getUserData } from "@/lib/users";
+import { getUserDetails } from "@/lib/users";
 import { getUploadHistory } from "@/lib/uploads";
 
 export async function GET(_: Request): Promise<NextResponse> {
@@ -16,9 +16,12 @@ export async function GET(_: Request): Promise<NextResponse> {
 
     const zip = new AdmZip();
 
-    const details = await getUserData(user.user_id);
+    const details = await getUserDetails(user.user_id);
     const uploads = await getUploadHistory(user.user_id);
 
+	delete details.password;
+	delete details.totp_secret;
+	
     const detailsBuff = Buffer.from(JSON.stringify(details, null, 2));
     const uploadsBuff = Buffer.from(JSON.stringify(uploads, null, 2));
 

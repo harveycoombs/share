@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.json();
+    const data:any = await request.json();
 
     const description = data.description ?? "";
     const name = data.name ?? "";

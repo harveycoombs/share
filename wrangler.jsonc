@@ -22,7 +22,6 @@
      "r2_buckets": [
      	// Use R2 incremental cache
      	// See https://opennext.js.org/cloudflare/caching
-     	{ "binding": "BUCKET", "bucket_name": "share" },
      	{
      		"binding": "NEXT_INC_CACHE_R2_BUCKET",
      		// Create the bucket before deploying

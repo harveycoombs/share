@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 
-
 import Button from "@/app/components/common/Button";
 import Field from "@/app/components/common/Field";
 import Label from "@/app/components/common/Label";
@@ -37,7 +36,7 @@ export default function LoginForm() {
                body: JSON.stringify({ email, password })
           });
      
-          const { usingPassword, error } = await response.json();
+          const { usingPassword, error }: any = await response.json();
      
           setLoading(false);
      
@@ -81,7 +80,7 @@ export default function LoginForm() {
      	}
      
      	const response = await fetch(`/api/user/check?email=${encodeURIComponent(email)}`);
-     	const { exists, usingPassword } = await response.json();
+     	const { exists, usingPassword }: any = await response.json();
      
      	if (!response.ok) {
      	     setError("Unable to check email address. Please try again later.");

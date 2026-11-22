@@ -2,7 +2,7 @@ import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-import { createUser, deleteUser, emailExists, getUserDetails, updateUser } from "@/lib/users";
+import { createUser, updateUserStatus, emailExists, getUserDetails, updateUser, UserStatus } from "@/lib/users";
 import { generateCode } from "@/lib/utils";
 import { deleteUpload, getUploadHistory } from "@/lib/uploads";
 import { deleteFile } from "@/lib/storage";
@@ -20,7 +20,7 @@ export async function GET(_: Request): Promise<NextResponse> {
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.json();
+    const data:any = await request.json();
     
     const name = data.name ?? "";
     const email = data.email ?? "";
@@ -65,7 +65,7 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const data = await request.json();
+    const data:any = await request.json();
     
     const name = data.name ?? "";
     const email = data.emailAddress ?? "";
@@ -104,7 +104,7 @@ export async function DELETE(_: Request): Promise<NextResponse> {
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
-    const deleted = await deleteUser(user.user_id);
+    const deleted = await updateUserStatus(user.user_id, UserStatus.Deleted);
 
     if (deleted) {
         const uploads = await getUploadHistory(user.user_id);

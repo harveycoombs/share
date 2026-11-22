@@ -19,7 +19,7 @@ export async function GET(_: Request): Promise<NextResponse> {
 
 export async function POST(request: Request): Promise<NextResponse> {
      try {
-          const { email, password } = await request.json();
+          const { email, password }: any = await request.json();
      
           if (!email?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
 

@@ -40,8 +40,8 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
         setProceed(false);
         setLoading(true);
         
-        const response = await fetch(`/api/user/email?email=${encodeURIComponent(email)}`);
-        const json = await response.json();
+        const response = await fetch(`/api/user/check?email=${encodeURIComponent(email)}`);
+        const json: any = await response.json();
 
         setLoading(false);
 
@@ -84,7 +84,7 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
             })
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         switch (response.status) {
             case 200:
@@ -126,8 +126,8 @@ export default function RegistrationForm({ initialEmail = "" }: Properties) {
                     >
                         <div className="my-4 w-fit relative left-1/2 -translate-x-1/2">
                             <HCaptcha
-                                sitekey="5f2e9f82-e8bc-408a-b690-9e249948338c"
-                                onVerify={(token: string, _: any) => setCaptchaToken(token)}
+                       		sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                             	onVerify={(token: string, _: any) => setCaptchaToken(token)}
                             />
                         </div>
 

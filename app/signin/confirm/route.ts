@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { verifyUserAccessCode, updateUserAccessCode, updateUserAccessDate, getUserByEmailAddress } from "@/lib/users";
+import { verifyUserAccessCode, updateUserAccessCode, getUserByEmailAddress } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
 import { getFileMetadata } from "@/lib/storage";
 
@@ -19,7 +19,6 @@ export async function GET(request: Request): Promise<NextResponse> {
 
     if (!valid) return NextResponse.redirect(new URL("/signin/error", request.url));
 
-    await updateUserAccessDate(email);
     await updateUserAccessCode(email, null);
 
     const credentials = await createJWT(user);

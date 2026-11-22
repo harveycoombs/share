@@ -30,7 +30,6 @@ export default function Login() {
                               Can&apos;t sign in?<Link href="/recover" className="text-blue-600 font-semibold ml-1.5 hover:underline">Recover Account</Link>
                          </div>
                     
-          
                          <div className="relative border-b border-gray-400/40 text-gray-400/60 text-xs font-medium select-none my-6">
                               <span className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 text-center bg-white px-1.5 dark:bg-zinc-950">OR</span>
                          </div>

@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import fetch from "node-fetch";
-import fs from "fs/promises";
 
-import { createUserFromDiscord, emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
+import { createUser, emailExists, getUserByEmailAddress, getUserDiscordIDFromEmail } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
+import { uploadFile } from "@/lib/storage";
 
 export async function GET(request: NextRequest) {
     try {
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
                 });
             }
         } else {
-            const newShareUser = await createUserFromDiscord(user.username, user.email, user.id);
+            const newShareUser = await createUser(user.username, user.email, user.id);
 
             if (newShareUser && user?.id?.length) {
                 const createdUser = await getUserByEmailAddress(user.email);
@@ -72,8 +72,7 @@ export async function GET(request: NextRequest) {
                     const avatarResponse = await fetch(`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`);
                     const avatarBuffer = await avatarResponse.arrayBuffer();
 
-                    await fs.writeFile(`/tmp/avatars/${user.avatar}.png`, new Uint8Array(avatarBuffer));
-                    await fs.unlink(`/tmp/avatars/${user.avatar}.png`);
+                    await uploadFile(avatarBuffer, `avatars/${user.user_id}`);
                 }
 
                 const avatar = user.avatar?.length ? `https://uploads.share.surf/share/avatars/${createdUser.user_id}` : "/images/default.jpg";

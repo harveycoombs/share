@@ -40,7 +40,7 @@ export default function DCMAForm({ onClose }: Properties) {
             body: JSON.stringify({ name, email, organisation, description, captchaToken })
         });
 
-        const json = await response.json();
+        const json: any = await response.json();
 
         setLoading(false);
 

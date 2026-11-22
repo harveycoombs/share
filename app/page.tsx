@@ -135,7 +135,7 @@ export default function Home() {
             body: JSON.stringify({ title, size, contentType, password, total: files.length, captchaToken: captcha })
         });
 
-        const data = await response.json();
+        const data: any = await response.json();
 
         switch (response.status) {
             case 413:
@@ -154,7 +154,7 @@ export default function Home() {
 
     async function getUploadURL(path: string) {
         const response = await fetch(`/api/uploads/url?filename=${path}`);
-        const data = await response.json();
+        const data: any = await response.json();
 
         if (!response.ok) {
             setError("An internal server error occurred");

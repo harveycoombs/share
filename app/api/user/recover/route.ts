@@ -4,7 +4,7 @@ import { Resend } from "resend";
 import { generateCode } from "@/lib/utils";
 
 export async function POST(request: Request): Promise<NextResponse> {
-    const data = await request.json();
+    const data:any = await request.json();
 
     const email = data.email ?? "";
     const captchaToken = data.captchaToken ?? "";
