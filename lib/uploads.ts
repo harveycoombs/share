@@ -1,82 +1,74 @@
 "use server";
-import { randomUUID } from "crypto";
+import { db } from "@/lib/database";
 
 import { generateRandomString } from "@/lib/utils";
-import getSupabaseClient from "@/lib/database";
 import { generateHash, verify } from "@/lib/passwords";
 
+interface Upload {
+     upload_id?: string;
+     created_at?: number;
+     ip_address?: string;
+     user_id?: string;
+     title?: string;
+     files?: number;
+     size?: number;
+     content_type?: string;
+     password?: string;
+     views?: number;
+     access_id?: string;
+}
+
 export async function getUploadHistory(userid: string, search: string = ""): Promise<any[]> {
-     const supabase = await getSupabaseClient();
-     let query = supabase.from("uploads").select("upload_id, upload_date, ip_address, user_id, title, files, size, content_type, views").eq("user_id", userid).order("upload_date", { ascending: false });
-     
-     if (search.length) {
-          query = query.ilike("title", `%${search}%`);
-     }
-     
-     const { data, error } = await query;
-     
-     if (error) throw error;
-     
-     return (data ?? []).map(row => ({ ...row, available: 0 }));
+     const { results } = await db()
+          .prepare("SELECT upload_id, upload_date, ip_address, user_id, title, files, size, content_type, views FROM uploads WHERE user_id = ? AND (title LIKE ? OR ? = '')")
+          .bind(userid, search)
+          .all<Upload>();
+
+     return results?.map(row => ({ ...row, available: 0 })) || [];
 }
 
 export async function insertUploadHistory(userid: string, title: string, ip: string, files: number, size: number, password: string, contentType: string): Promise<string> {
-    const passwordHash = password?.length ? await generateHash(password) : "";
-    const uploadId = randomUUID();
-    
-    let accessId = generateRandomString();
-
-    while (await checkAccessIDExists(accessId)) {
-        accessId = generateRandomString();
-    }
-
-    const supabase = await getSupabaseClient();
-
-    const { error } = await supabase.from("uploads").insert({
-        upload_id: uploadId,
-        access_id: accessId,
-        user_id: userid,
-        title,
-        ip_address: ip,
-        files,
-        size,
-        password: passwordHash,
-        content_type: contentType,
-    });
-
-    if (error) throw error;
-
-    return accessId;
+     const passwordHash = password?.length ? await generateHash(password) : "";
+     
+     let accessid = generateRandomString();
+     
+     while (await checkAccessIDExists(accessid)) {
+          accessid = generateRandomString();
+     }
+     
+     const { meta } = await db()
+          .prepare("INSERT INTO uploads (upload_id, created_at, access_id, user_id, title, ip_address, files, size, password, content_type) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+          .bind(crypto.randomUUID(), new Date().getTime(), accessid, userid, title, ip, files, size, passwordHash, contentType)
+          .run();
+     
+     return meta.changes ? accessid : "";
 }
 
 export async function deleteUpload(userid: string, id: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("uploads").delete().eq("user_id", userid).eq("upload_id", id);
-     return !error;
+     const { meta } = await db()
+          .prepare("DELETE FROM uploads WHERE user_id = ? AND upload_id = ?")
+          .bind(userid, id)
+          .run();
+     
+     return !!meta.changes;
 }
 
 export async function renameUpload(userid: string, id: string, name: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("uploads").update({ title: name }).eq("user_id", userid).eq("upload_id", id);
-     return !error;
-}
+     const { meta } = await db()
+          .prepare("UPDATE uploads SET title = ? WHERE user_id = ? AND upload_id = ?")
+          .bind(name, userid, id)
+          .run();
 
-export async function checkUploadProtection(id: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("uploads").select("password").eq("access_id", id).maybeSingle();
-     
-     if (error) throw error;
-     
-     return (data?.password?.length ?? 0) > 0;
+     return !!meta.changes;
 }
 
 export async function getUploadPasswordHash(id: string): Promise<string> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("uploads").select("password").eq("access_id", id).maybeSingle();
-     
-     if (error) throw error;
-     
-     return data?.password ?? "";
+     const password = await db()
+          .prepare("SELECT password FROM uploads WHERE access_id = ?")
+          .bind(id)
+          .first<string>("password");
+
+     return password ?? "";
 }
 
 export async function verifyUploadPassword(id: string, password: string): Promise<boolean> {
@@ -88,16 +80,12 @@ export async function verifyUploadPassword(id: string, password: string): Promis
 }
 
 export async function incrementUploadViews(id: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { data: currentData, error: fetchError } = await supabase.from("uploads").select("views").eq("access_id", id).maybeSingle();
-     
-     if (fetchError?.message?.length) throw new Error(fetchError.message);
-     
-     const currentViews = currentData?.views ?? 0;
-     
-     const { error } = await supabase.from("uploads").update({ views: currentViews + 1 }).eq("access_id", id);
-     
-     return !error;
+     const { meta } = await db()
+          .prepare("UPDATE uploads SET views = views + 1 WHERE upload_id = ?")
+          .bind(id)
+          .run();
+
+     return !!meta.changes;
 }
 
 export async function checkPasswordIsSet(id: string): Promise<boolean> {
@@ -106,19 +94,19 @@ export async function checkPasswordIsSet(id: string): Promise<boolean> {
 }
 
 export async function checkAccessIDExists(accessid: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { count, error } = await supabase.from("uploads").select("access_id").eq("access_id", accessid).maybeSingle();
+     const total = await db()
+          .prepare("SELECT COUNT(*) AS total FROM uploads WHERE access_id = ?")
+          .bind(accessid)
+          .first<number>("total");
      
-     if (error?.message?.length) throw error;
-     
-     return !!count;
+     return !!total;
 }
 
 export async function getUploadTitle(accessid: string): Promise<string> {
-     const supabase = await getSupabaseClient();
-	const { data, error } = await supabase.from("uploads").select("title").eq("access_id", accessid).maybeSingle();
-
-	if (error?.message?.length) throw error;
-
-	return data?.title ?? "";
+     const title = await db()
+          .prepare("SELECT title FROM uploads WHERE access_id = ?")
+          .bind(accessid)
+          .first<string>("total");
+     
+     return title ?? "";
 }

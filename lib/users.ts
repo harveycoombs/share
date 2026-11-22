@@ -81,7 +81,7 @@ export async function createUser(name: string, emailAddress: string, discordid: 
      const code = discordid?.length ? null : generateCode();
      
      const { meta } = await db()
-          .prepare("INSERT INTO users (user_id, created_at, name, email_address, auth_code, discord_id) VALUES()")
+          .prepare("INSERT INTO users (user_id, created_at, name, email_address, auth_code, discord_id) VALUES(?, ?, ?, ?, ?, ?)")
           .bind(crypto.randomUUID(), new Date().getTime(), name, emailAddress, code, discordid)
           .run();
      
