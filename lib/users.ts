@@ -1,51 +1,62 @@
 "use server";
-import getSupabaseClient from "@/lib/database";
+import { db } from "@/lib/database";
+import { generateCode } from "@/lib/utils";
 import { generateHash, verify } from "./passwords";
 
-export async function getUserByID(userid: string): Promise<any> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("users").select("user_id, name").eq("user_id", userid).eq("deleted", false).maybeSingle();
-     
-     if (error) throw error;
-     
-     return data;
+interface User {
+     user_id?: string;
+     created_at?: number;
+     email_address?: string;
+     name?: string;
+     password?: string;
+     access_code?: number;
+     auth_code?: number;
+     totp_secret?: string;
+     discord?: string;
+     status?: UserStatus;
+}
+
+enum UserStatus {
+     Unverified,
+     Verified,
+     Suspended,
+     Deleted
+}
+
+export async function getUserByID(userid: string): Promise<User|null> {
+     const user = await db()
+          .prepare("SELECT user_id, name FROM users WHERE user_id = ? AND status < 3")
+          .bind(userid)
+          .first<User>();
+          
+     return user;
 }
 
 export async function getUserByEmailAddress(emailAddress: string): Promise<any> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("users").select("user_id, name, email_address").eq("email_address", emailAddress).eq("deleted", false).maybeSingle();
-     
-     if (error) throw error;
-     
-     return data;
+     const user = await db()
+          .prepare("SELECT user_id, name, email_address FROM users WHERE email_address = ? AND status < 3")
+          .bind(emailAddress)
+          .first();
+
+     return user;
 }
 
 export async function getUserDetails(userid: string): Promise<any> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("users").select("user_id, name, email_address, creation_date, totp_secret, discord_id").eq("user_id", userid).eq("deleted", false).maybeSingle();
-     
-     if (error) throw error;
-     
-     return data;
+     const user = await db()
+          .prepare("SELECT user_id, name, email_address, created_at, totp_secret, discord_id, status FROM users WHERE user_id = ? AND status < 3")
+          .bind(userid)
+          .first();
+
+     return user;
 }
 
-export async function getUserData(userid: string): Promise<any> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("users").select("user_id, creation_date, email_address, name, discord_id, verified, deleted").eq("user_id", userid).maybeSingle();
-     
-     if (error) throw error;
-     
-     return data;
-}
+export async function getPasswordHash(emailAddress: string): Promise<string> {
+     const password = await db()
+          .prepare("SELECT password FROM users WHERE email_address = ? AND status < 3")
+          .bind(emailAddress)
+          .first<string>("password");
 
-export async function getPasswordHash(identifier: string | number): Promise<string> {
-    const field = typeof identifier == "number" ? "user_id" : "email_address";
-    const supabase = await getSupabaseClient();
-    const { data, error } = await supabase.from("users").select("password").eq(field, String(identifier)).eq("deleted", false).maybeSingle();
-    
-    if (error) throw error;
-
-    return data?.password ?? "";
+     return password ?? "";
 }
 
 export async function verifyCredentials(emailAddress: string, password: string): Promise<boolean> {
@@ -58,133 +69,115 @@ export async function verifyCredentials(emailAddress: string, password: string):
 }
 
 export async function emailExists(emailAddress: string, userid: string = ""): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     let query = supabase.from("users").select("user_id", { count: "exact", head: true }).eq("email_address", emailAddress).eq("deleted", false);
-     
-     if (userid.length) {
-          query = query.neq("user_id", userid);
-     }
-     
-     const { count, error } = await query;
-     
-     if (error) throw error;
-     
-     return (count ?? 0) > 0;
+     const total = await db()
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND (user_id = ? OR ? = '') AND status < 3")
+          .bind(emailAddress, userid, userid)
+          .first<number>("total");
+
+     return !!total;
 }
 
-export async function createUser(name: string, emailAddress: string): Promise<any> {
-     const code = crypto.randomUUID();
+export async function createUser(name: string, emailAddress: string, discordid: string|null = null): Promise<any> {
+     const code = discordid?.length ? null : generateCode();
      
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").insert({
-          name,
-          email_address: emailAddress,
-          access_code: code,
-          creation_date: new Date().toISOString()
-     });
+     const { meta } = await db()
+          .prepare("INSERT INTO users (user_id, created_at, name, email_address, auth_code, discord_id) VALUES()")
+          .bind(crypto.randomUUID(), new Date().getTime(), name, emailAddress, code, discordid)
+          .run();
      
-     return { success: !error, code };
-}
-
-export async function createUserFromDiscord(name: string, emailAddress: string, discordid: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").insert({
-          name,
-          email_address: emailAddress,
-          discord_id: discordid,
-          creation_date: new Date().toISOString()
-     });
-     
-     return !error;
+     return { success: !!meta.changes, code };
 }
 
 export async function updateUser(userid: string, name: string, emailAddress: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").update({ name, email_address: emailAddress }).eq("user_id", userid);
-     return !error;
+     const { meta } = await db()
+          .prepare("UPDATE users SET name = ?, email_address = ? WHERE user_id = ?")
+          .bind(name, emailAddress, userid)
+          .run();
+
+     return !!meta.changes;
 }
 
 export async function updateUserPassword(userid: string, password: string): Promise<boolean> {
      const passwordHash = await generateHash(password);
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").update({ password: passwordHash }).eq("user_id", userid);
-     
-     return !error;
+
+     const { meta } = await db()
+          .prepare("UPDATE users SET password = ? WHERE user_id = ? AND status < 3")
+          .bind(passwordHash, userid)
+          .run();
+
+     return !!meta.changes;
 }
 
 export async function updateUserPasswordByEmail(emailAddress: string, password: string): Promise<boolean> {
      const passwordHash = await generateHash(password);
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").update({ password: passwordHash }).eq("email_address", emailAddress);
-     
-     return !error;
+
+     const { meta } = await db()
+          .prepare("UPDATE users SET password = ? WHERE email_address = ? AND status < 3")
+          .bind(passwordHash, emailAddress)
+          .run();
+
+     return !!meta.changes;
 }
 
-export async function deleteUser(userid: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").update({ deleted: true }).eq("user_id", userid);
-     return !error;
+export async function updateUserStatus(userid: string, status: UserStatus): Promise<boolean> {
+     const { meta } = await db()
+          .prepare("UPDATE users SET status = ? WHERE user_id = ?")
+          .bind(status, userid)
+          .run();
+
+     return !!meta.changes;
 }
 
 export async function verifyUserAccessCode(emailAddress: string, code: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { count, error } = await supabase.from("users").select("user_id", { count: "exact", head: true }).eq("email_address", emailAddress).eq("access_code", code);
-     
-     if (error) throw error;
-     
-     return (count ?? 0) > 0;
-}
+     const total = await db()
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND access_code = ?")
+          .bind(emailAddress, code)
+          .first<number>("total");
 
-export async function updateUserAccessDate(emailAddress: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").update({ accessed_at: new Date().toISOString() }).eq("email_address", emailAddress);
-     return !error;
+     return !!total;
 }
 
 export async function updateUserAccessCode(emailAddress: string, code: string|null): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const result = await supabase.from("users").update({ access_code: code }).eq("email_address", emailAddress);
-     return !result.error;
-}
+     const { meta } = await db()
+          .prepare("UPDATE users SET access_code = ? WHERE email_address = ?")
+          .bind(code, emailAddress)
+          .run();
 
-export async function checkUserVerification(userid: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("users").select("accessed_at").eq("user_id", userid).maybeSingle();
-     
-     if (error) throw error;
-     
-     return !!data?.accessed_at;
+     return !!meta.changes;
 }
 
 export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("users").select("totp_secret").eq("email_address", emailAddress).eq("deleted", false).maybeSingle();
-     
-     if (error) throw error;
-     
-     return data?.totp_secret ?? "";
+     const secret = await db()
+          .prepare("SELECT totp_secret FROM users WHERE email_address = ? AND status < 3")
+          .bind(emailAddress)
+          .first<string|null>("totp_secret");
+
+     return secret ?? "";
 }
 
 export async function updateUserTOTPSettings(userid: string, secret: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { error } = await supabase.from("users").update({ totp_secret: secret }).eq("user_id", userid);
-     return !error;
+     const { meta } = await db()
+          .prepare("UPDATE users SET totp_secret = ? WHERE user_id = ?")
+          .bind(secret, userid)
+          .run();
+     
+     return !!meta.changes;
 }
 
 export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<string> {
-     const supabase = await getSupabaseClient();
-     const { data, error } = await supabase.from("users").select("discord_id").eq("email_address", emailAddress).maybeSingle();
-     
-     if (error) throw error;
-     
-     return data?.discord_id ?? "";
+     const discordid = await db()
+          .prepare("SELECT discord_id FROM users WHERE email_address = ? AND status < 3")
+          .bind(emailAddress)
+          .first<string|null>("discord_id");
+
+     return discordid ?? "";
 }
 
 export async function checkUserPasswordUsage(emailAddress: string): Promise<boolean> {
-     const supabase = await getSupabaseClient();
-     const { count, error } = await supabase.from("users").select("*", { count: "exact", head: true }).eq("email_address", emailAddress).not("password", "is", null).neq("password", "").maybeSingle();
+     const total = await db()
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND password IS NOT NULL AND password != ''")
+          .bind(emailAddress)
+          .first<number>("total");
 
-     if (error) throw error;
-
-     return !!count;
+     return !!total;
 }

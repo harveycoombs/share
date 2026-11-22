@@ -6,7 +6,6 @@ import { Resend } from "resend";
 
 import { authenticate, createJWT } from "@/lib/jwt";
 import { getUserByEmailAddress, getUserTOTPSecret, updateUserTOTPSettings } from "@/lib/users";
-import getEnvironmentVariables from "@/lib/variables";
 
 export async function GET(request: Request): Promise<NextResponse> {
     const token = new URL(request.url).searchParams.get("token") ?? "";
@@ -55,10 +54,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     const updated = await updateUserTOTPSettings(user.user_id, secret);
 
-    const env = await getEnvironmentVariables();
-
     if (updated) {
-        const resend = new Resend(env.RESEND_API_KEY!);
+        const resend = new Resend(process.env.RESEND_API_KEY!);
 
         resend.emails.send({
             from: "noreply@share.surf",
@@ -80,10 +77,8 @@ export async function DELETE(_: Request): Promise<NextResponse> {
 
     const disabled = await updateUserTOTPSettings(user.user_id, "");
 
-    const env = await getEnvironmentVariables();
-
     if (disabled) {
-        const resend = new Resend(env.RESEND_API_KEY!);
+        const resend = new Resend(process.env.RESEND_API_KEY!);
 
         resend.emails.send({
             from: "noreply@share.surf",

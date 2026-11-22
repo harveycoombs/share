@@ -6,7 +6,6 @@ import { Resend } from "resend";
 import { authenticate } from "@/lib/jwt";
 import { getUserData } from "@/lib/users";
 import { getUploadHistory } from "@/lib/uploads";
-import getEnvironmentVariables from "@/lib/variables";
 
 export async function GET(_: Request): Promise<NextResponse> {
     const cookieJar = await cookies();
@@ -28,9 +27,7 @@ export async function GET(_: Request): Promise<NextResponse> {
 
     const buffer = await zip.toBufferPromise();
 
-    const env = await getEnvironmentVariables();
-
-    const resend = new Resend(env.RESEND_API_KEY ?? "");
+    const resend = new Resend(process.env.RESEND_API_KEY ?? "");
 
     const result = await resend.emails.send({
         from: "noreply@share.surf",
