@@ -1,25 +1,25 @@
 import { NextResponse } from "next/server";
 
-import { verifyUserAccessCode, updateUserAccessCode, getUserByEmailAddress } from "@/lib/users";
+import { verifyUserAuthCode, updateUserAuthCode, getUserByEmailAddress } from "@/lib/users";
 import { createJWT } from "@/lib/jwt";
 import { getFileMetadata } from "@/lib/storage";
 
 export async function GET(request: Request): Promise<NextResponse> {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get("email") ?? "";
-    const code = searchParams.get("code") ?? "";
+    const code = parseInt(searchParams.get("code") || "0");
 
-    if (!email?.length || !code?.length) return NextResponse.redirect(new URL("/signin/error", request.url));
+    if (!email?.length || !code) return NextResponse.redirect(new URL("/signin/error", request.url));
 
     const user = await getUserByEmailAddress(email);
     
     if (!user) return NextResponse.redirect(new URL("/signin/error", request.url));
 
-    const valid = await verifyUserAccessCode(email, code);
+    const valid = await verifyUserAuthCode(email, code);
 
     if (!valid) return NextResponse.redirect(new URL("/signin/error", request.url));
 
-    await updateUserAccessCode(email, null);
+    await updateUserAuthCode(email, null);
 
     const credentials = await createJWT(user);
     

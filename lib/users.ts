@@ -146,6 +146,24 @@ export async function updateUserAccessCode(emailAddress: string, code: string|nu
      return !!meta.changes;
 }
 
+export async function verifyUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
+     const total = await db()
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND auth_code = ?")
+          .bind(emailAddress, code)
+          .first<number>("total");
+
+     return !!total;
+}
+
+export async function updateUserAuthCode(emailAddress: string, code: number|null): Promise<boolean> {
+     const { meta } = await db()
+          .prepare("UPDATE users SET auth_code = ? WHERE email_address = ?")
+          .bind(code, emailAddress)
+          .run();
+
+     return !!meta.changes;
+}
+
 export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
      const secret = await db()
           .prepare("SELECT totp_secret FROM users WHERE email_address = ? AND status < 3")
