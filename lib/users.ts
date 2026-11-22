@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/database";
-import { generateCode } from "@/lib/utils";
+import { generateCode, normalizeEmail } from "@/lib/utils";
 import { generateHash, verify } from "./passwords";
 
 interface User {
@@ -34,7 +34,7 @@ export async function getUserByID(userid: string): Promise<User|null> {
 
 export async function getUserByEmailAddress(emailAddress: string): Promise<any> {
      const user = await db()
-          .prepare("SELECT user_id, name, email_address FROM users WHERE email_address = ? AND status < 3")
+          .prepare("SELECT user_id, name, email_address FROM users WHERE lower(email_address) = lower(?) AND status < 3")
           .bind(emailAddress)
           .first();
 
@@ -52,7 +52,7 @@ export async function getUserDetails(userid: string): Promise<any> {
 
 export async function getPasswordHash(emailAddress: string): Promise<string> {
      const password = await db()
-          .prepare("SELECT password FROM users WHERE email_address = ? AND status < 3")
+          .prepare("SELECT password FROM users WHERE lower(email_address) = lower(?) AND status < 3")
           .bind(emailAddress)
           .first<string>("password");
 
@@ -68,30 +68,37 @@ export async function verifyCredentials(emailAddress: string, password: string):
     return valid;
 }
 
-export async function emailExists(emailAddress: string, userid: string = ""): Promise<boolean> {
+// Pass excludeUserId to ignore the caller's own account (e.g. when updating a profile).
+export async function emailExists(emailAddress: string, excludeUserId: string = ""): Promise<boolean> {
      const total = await db()
-          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND (user_id = ? OR ? = '') AND status < 3")
-          .bind(emailAddress, userid, userid)
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE lower(email_address) = lower(?) AND (? = '' OR user_id != ?) AND status < 3")
+          .bind(normalizeEmail(emailAddress), excludeUserId, excludeUserId)
           .first<number>("total");
 
      return !!total;
 }
 
-export async function createUser(name: string, emailAddress: string, discordid: string|null = null): Promise<any> {
+export async function createUser(name: string, emailAddress: string, discordid: string|null = null): Promise<{ success: boolean, duplicate: boolean, code: number|null }> {
      const code = discordid?.length ? null : generateCode();
-     
-     const { meta } = await db()
-          .prepare("INSERT INTO users (user_id, created_at, name, email_address, auth_code, discord_id) VALUES(?, ?, ?, ?, ?, ?)")
-          .bind(crypto.randomUUID(), new Date().getTime(), name, emailAddress, code, discordid)
-          .run();
-     
-     return { success: !!meta.changes, code };
+
+     try {
+          const { meta } = await db()
+               .prepare("INSERT INTO users (user_id, created_at, name, email_address, auth_code, discord_id, status) VALUES(?, ?, ?, ?, ?, ?, ?)")
+               .bind(crypto.randomUUID(), new Date().getTime(), name, normalizeEmail(emailAddress), code, discordid, discordid?.length ? UserStatus.Verified : UserStatus.Unverified)
+               .run();
+
+          return { success: !!meta.changes, duplicate: false, code };
+     } catch (ex: any) {
+          // Backstop for two sign-ups racing past emailExists(): the unique index rejects the second one.
+          if (/UNIQUE constraint failed/i.test(ex?.message ?? "")) return { success: false, duplicate: true, code: null };
+          throw ex;
+     }
 }
 
 export async function updateUser(userid: string, name: string, emailAddress: string): Promise<boolean> {
      const { meta } = await db()
           .prepare("UPDATE users SET name = ?, email_address = ? WHERE user_id = ?")
-          .bind(name, emailAddress, userid)
+          .bind(name, normalizeEmail(emailAddress), userid)
           .run();
 
      return !!meta.changes;
@@ -112,7 +119,7 @@ export async function updateUserPasswordByEmail(emailAddress: string, password: 
      const passwordHash = await generateHash(password);
 
      const { meta } = await db()
-          .prepare("UPDATE users SET password = ? WHERE email_address = ? AND status < 3")
+          .prepare("UPDATE users SET password = ? WHERE lower(email_address) = lower(?) AND status < 3")
           .bind(passwordHash, emailAddress)
           .run();
 
@@ -130,7 +137,7 @@ export async function updateUserStatus(userid: string, status: UserStatus): Prom
 
 export async function verifyUserAccessCode(emailAddress: string, code: string): Promise<boolean> {
      const total = await db()
-          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND access_code = ?")
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE lower(email_address) = lower(?) AND access_code = ?")
           .bind(emailAddress, code)
           .first<number>("total");
 
@@ -139,7 +146,7 @@ export async function verifyUserAccessCode(emailAddress: string, code: string): 
 
 export async function updateUserAccessCode(emailAddress: string, code: string|null): Promise<boolean> {
      const { meta } = await db()
-          .prepare("UPDATE users SET access_code = ? WHERE email_address = ?")
+          .prepare("UPDATE users SET access_code = ? WHERE lower(email_address) = lower(?)")
           .bind(code, emailAddress)
           .run();
 
@@ -148,7 +155,7 @@ export async function updateUserAccessCode(emailAddress: string, code: string|nu
 
 export async function verifyUserAuthCode(emailAddress: string, code: number): Promise<boolean> {
      const total = await db()
-          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND auth_code = ?")
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE lower(email_address) = lower(?) AND auth_code = ?")
           .bind(emailAddress, code)
           .first<number>("total");
 
@@ -157,7 +164,7 @@ export async function verifyUserAuthCode(emailAddress: string, code: number): Pr
 
 export async function updateUserAuthCode(emailAddress: string, code: number|null): Promise<boolean> {
      const { meta } = await db()
-          .prepare("UPDATE users SET auth_code = ? WHERE email_address = ?")
+          .prepare("UPDATE users SET auth_code = ? WHERE lower(email_address) = lower(?)")
           .bind(code, emailAddress)
           .run();
 
@@ -166,7 +173,7 @@ export async function updateUserAuthCode(emailAddress: string, code: number|null
 
 export async function getUserTOTPSecret(emailAddress: string): Promise<string> {
      const secret = await db()
-          .prepare("SELECT totp_secret FROM users WHERE email_address = ? AND status < 3")
+          .prepare("SELECT totp_secret FROM users WHERE lower(email_address) = lower(?) AND status < 3")
           .bind(emailAddress)
           .first<string|null>("totp_secret");
 
@@ -184,7 +191,7 @@ export async function updateUserTOTPSettings(userid: string, secret: string): Pr
 
 export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<string> {
      const discordid = await db()
-          .prepare("SELECT discord_id FROM users WHERE email_address = ? AND status < 3")
+          .prepare("SELECT discord_id FROM users WHERE lower(email_address) = lower(?) AND status < 3")
           .bind(emailAddress)
           .first<string|null>("discord_id");
 
@@ -193,7 +200,7 @@ export async function getUserDiscordIDFromEmail(emailAddress: string): Promise<s
 
 export async function checkUserPasswordUsage(emailAddress: string): Promise<boolean> {
      const total = await db()
-          .prepare("SELECT COUNT(*) AS total FROM users WHERE email_address = ? AND password IS NOT NULL AND password != ''")
+          .prepare("SELECT COUNT(*) AS total FROM users WHERE lower(email_address) = lower(?) AND password IS NOT NULL AND password != ''")
           .bind(emailAddress)
           .first<number>("total");
 

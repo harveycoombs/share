@@ -2,10 +2,10 @@ import { authenticate } from "@/lib/jwt";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-import { createUser, updateUserStatus, emailExists, getUserDetails, updateUser, UserStatus } from "@/lib/users";
-import { generateCode } from "@/lib/utils";
+import { createUser, updateUserStatus, emailExists, getUserDetails, updateUser, updateUserPassword, verifyCredentials, checkUserPasswordUsage, UserStatus } from "@/lib/users";
+import { generateCode, normalizeEmail } from "@/lib/utils";
 import { deleteUpload, getUploadHistory } from "@/lib/uploads";
-import { deleteFile } from "@/lib/storage";
+import { deleteFolder } from "@/lib/storage";
 import sendEmail from "@/lib/email";
 
 export async function GET(_: Request): Promise<NextResponse> {
@@ -16,30 +16,38 @@ export async function GET(_: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const details = await getUserDetails(user.user_id);
-    return NextResponse.json({ ...details, avatar: user.avatar });
+    if (!details) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+
+    const { totp_secret, ...rest } = details;
+    const has_password = await checkUserPasswordUsage(details.email_address);
+
+    return NextResponse.json({ ...rest, has_totp: !!totp_secret?.length, has_password, avatar: user.avatar });
 }
 
 export async function POST(request: Request): Promise<NextResponse> {
     const data:any = await request.json();
     
-    const name = data.name ?? "";
-    const email = data.email ?? "";
+    const name = (data.name ?? "").trim();
+    const email = normalizeEmail(data.email);
     const captchaToken = data.captchaToken ?? "";
 
     if (!name.length || !email.length || !captchaToken.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
 
     const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY!}`,
+        body: new URLSearchParams({ response: captchaToken, secret: process.env.HCAPTCHA_SECRET_KEY! }).toString(),
     });
 
-    if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
+    const captchaResult: any = captchaResponse.ok ? await captchaResponse.json() : null;
+    if (!captchaResult?.success) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
 
     const exists = await emailExists(email);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
-    const { success, code } = await createUser(name, email);
+    const { success, duplicate, code } = await createUser(name, email);
+    if (duplicate) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
     if (success) {
         const baseUrl = new URL(request.url).origin;
@@ -67,15 +75,40 @@ export async function PATCH(request: Request): Promise<NextResponse> {
 
     const data:any = await request.json();
     
-    const name = data.name ?? "";
-    const email = data.emailAddress ?? "";
+    const current = await getUserDetails(user.user_id);
+    if (!current) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+
+    // Untouched fields fall back to the current values.
+    const name = (data.name ?? "").trim() || current.name;
+    const email = normalizeEmail(data.emailAddress) || current.email_address;
+    const oldPassword: string = data.oldPassword ?? "";
+    const newPassword: string = data.newPassword ?? "";
 
     if (!name?.length || !email?.length) return NextResponse.json({ error: "One or more fields were not provided." }, { status: 400 });
+
+    if (newPassword.length) {
+        if (newPassword.length < 8) return NextResponse.json({ error: "Password must be at least 8 characters." }, { status: 400 });
+
+        // Accounts that already have a password must confirm it; passwordless accounts can set one directly.
+        const hasPassword = await checkUserPasswordUsage(current.email_address);
+
+        if (hasPassword && !(await verifyCredentials(current.email_address, oldPassword))) {
+            return NextResponse.json({ error: "Current password is incorrect." }, { status: 401 });
+        }
+    }
 
     const exists = await emailExists(email, user.user_id);
     if (exists) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
 
-    const updated = await updateUser(user.user_id, name, email);
+    let updated = false;
+
+    try {
+        updated = await updateUser(user.user_id, name, email);
+        if (updated && newPassword.length) updated = await updateUserPassword(user.user_id, newPassword);
+    } catch (ex: any) {
+        if (/UNIQUE constraint failed/i.test(ex?.message ?? "")) return NextResponse.json({ error: "Email address already in use." }, { status: 409 });
+        throw ex;
+    }
 
     if (updated && user.email_address != email) {
         try {
@@ -110,8 +143,8 @@ export async function DELETE(_: Request): Promise<NextResponse> {
         const uploads = await getUploadHistory(user.user_id);
 
         for (const upload of uploads) {
+            await deleteFolder(`uploads/${upload.access_id}/`).catch((ex: any) => console.error(ex.message));
             await deleteUpload(user.user_id, upload.upload_id);
-            await deleteFile(`uploads/${upload.upload_id}`);
         }
     }
 

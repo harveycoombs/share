@@ -24,7 +24,7 @@ export async function proxy(request: NextRequest) {
 	if (!valid) return NextResponse.json({ error: "Invalid password." }, { status: 401 });
 	
 	const title = await getUploadTitle(id);
-	return NextResponse.redirect(`https://uploads.share.surf/share/uploads/${id}/${title}`);
+	return NextResponse.redirect(`https://uploads.share.surf/uploads/${id}/${encodeURIComponent(title)}`);
 }
 
 export const config = {

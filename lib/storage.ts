@@ -1,4 +1,4 @@
-import { S3Client, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutObjectCommand, DeleteObjectCommand, HeadObjectCommand, CopyObjectCommand, ListObjectsV2Command } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import mime from "mime";
 
@@ -64,4 +64,34 @@ export async function getFileMetadata(key: string) {
           Bucket: bucket(),
           Key: key
      }));
+}
+
+export async function deleteFolder(prefix: string) {
+     let token: string | undefined;
+
+     do {
+          const page = await client().send(new ListObjectsV2Command({
+               Bucket: bucket(),
+               Prefix: prefix,
+               ContinuationToken: token
+          }));
+
+          for (const object of page.Contents ?? []) {
+               if (object.Key) await deleteFile(object.Key);
+          }
+
+          token = page.IsTruncated ? page.NextContinuationToken : undefined;
+     } while (token);
+}
+
+export async function moveFile(from: string, to: string) {
+     if (from === to) return;
+
+     await client().send(new CopyObjectCommand({
+          Bucket: bucket(),
+          CopySource: `${bucket()}/${from.split("/").map(encodeURIComponent).join("/")}`,
+          Key: to
+     }));
+
+     await deleteFile(from);
 }

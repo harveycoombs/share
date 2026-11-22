@@ -39,3 +39,6 @@ export function formatTime(ms: number): string {
             return `${ms}ms`;
     }
 }
+export function normalizeEmail(emailAddress: string): string {
+    return (emailAddress ?? "").trim().toLowerCase();
+}

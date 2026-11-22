@@ -36,7 +36,7 @@ export async function POST(request: Request): Promise<NextResponse> {
               
               try {
                   const metadata = await getFileMetadata(`avatars/${user.user_id}`);
-                  user.avatar = metadata ? `https://uploads.share.surf/share/avatars/${user.user_id}` : "/images/default.jpg";
+                  user.avatar = metadata ? `https://uploads.share.surf/avatars/${user.user_id}` : "/images/default.jpg";
               } catch {
                   user.avatar = "/images/default.jpg";
               }

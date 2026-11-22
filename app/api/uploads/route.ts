@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-import { insertUploadHistory, getUploadHistory, renameUpload, deleteUpload } from "@/lib/uploads";
+import { insertUploadHistory, getUploadHistory, renameUpload, deleteUpload, getUserUpload } from "@/lib/uploads";
 import { authenticate } from "@/lib/jwt";
-import { deleteFile } from "@/lib/storage";
+import { deleteFolder, moveFile } from "@/lib/storage";
 
 export const maxRequestBodySize = "4gb";
 
@@ -45,10 +45,11 @@ export async function POST(request: Request): Promise<NextResponse> {
         const captchaResponse = await fetch("https://hcaptcha.com/siteverify", {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            body: `response=${captchaToken}&secret=${process.env.HCAPTCHA_SECRET_KEY!}`,
+            body: new URLSearchParams({ response: captchaToken, secret: process.env.HCAPTCHA_SECRET_KEY! }).toString(),
         });
     
-        if (!captchaResponse.ok) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
+        const captchaResult: any = captchaResponse.ok ? await captchaResponse.json() : null;
+        if (!captchaResult?.success) return NextResponse.json({ error: "Invalid captcha." }, { status: 401 });
     }
 
     const ip = (request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-host") ?? request.headers.get("x-forwarded-host")) ?? "";
@@ -59,8 +60,8 @@ export async function POST(request: Request): Promise<NextResponse> {
 
 export async function PATCH(request: Request): Promise<NextResponse> {
     const data:any = await request.json();
-    const id = data.uploadid || "0";
-    const title = data.name ?? "";
+    const id = data.uploadid || "";
+    const title = (data.name ?? "").replace(/[\/\\]/g, "_").trim();
 
     if (!id.length) return NextResponse.json({ error: "Invalid upload ID." }, { status: 400 });
     if (!title) return NextResponse.json({ error: "Invalid upload name." }, { status: 400 });
@@ -70,6 +71,16 @@ export async function PATCH(request: Request): Promise<NextResponse> {
     const user = await authenticate(token ?? "");
 
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
+
+    const upload = await getUserUpload(user.user_id, id);
+    if (!upload) return NextResponse.json({ error: "Upload not found." }, { status: 404 });
+
+    try {
+        await moveFile(`uploads/${upload.access_id}/${upload.title}`, `uploads/${upload.access_id}/${title}`);
+    } catch (ex: any) {
+        console.error(`Unable to rename file for ${id}: `, ex.message);
+        return NextResponse.json({ success: false }, { status: 500 });
+    }
 
     const success = await renameUpload(user.user_id, id, title);
     return NextResponse.json({ success }, { status: 200 });
@@ -83,35 +94,28 @@ export async function DELETE(request: Request): Promise<NextResponse> {
     if (!user) return NextResponse.json({ error: "Invalid session." }, { status: 401 });
 
     const data:any = await request.json();
-    const id = data.uploadid || "0";
-    const uploadids = JSON.parse(data.uploads || "[]");
+    const uploadids: string[] = data.uploadid ? [data.uploadid] : JSON.parse(data.uploads || "[]");
 
-    let success = false;
+    if (!uploadids.length) return NextResponse.json({ error: "Invalid upload ID(s)." }, { status: 400 });
 
-    try {
-        switch (true) {
-            case (id.length > 0):
-                await deleteFile(`uploads/${id}`);
-                success = await deleteUpload(user.user_id, id);
-                break;
-            case (uploadids.length > 0):
-                for (let uploadid of uploadids) {
-                    try {
-                        await deleteFile(`uploads/${id}`);
-                    } catch (ex: any) {
-                        console.error(`Unable to delete ${uploadid}: `, ex.message);
-                    } finally {
-                        success = await deleteUpload(user.user_id, uploadid);
-                    }
-                }
-                break;
-            default:
-                return NextResponse.json({ error: "Invalid upload ID(s)." }, { status: 400 });
+    let success = true;
+
+    for (const uploadid of uploadids) {
+        const upload = await getUserUpload(user.user_id, uploadid);
+
+        if (!upload) {
+            success = false;
+            continue;
         }
 
-        return NextResponse.json({ success }, { status: 200 });
-    } catch (ex: any) {
-        console.error(ex);
-        return NextResponse.json({ success: false }, { status: 500 });
+        try {
+            await deleteFolder(`uploads/${upload.access_id}/`);
+        } catch (ex: any) {
+            console.error(`Unable to delete files for ${uploadid}: `, ex.message);
+        }
+
+        success = (await deleteUpload(user.user_id, uploadid)) && success;
     }
+
+    return NextResponse.json({ success }, { status: success ? 200 : 500 });
 }

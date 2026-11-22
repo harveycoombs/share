@@ -20,14 +20,14 @@ interface Upload {
 
 export async function getUploadHistory(userid: string, search: string = ""): Promise<any[]> {
      const { results } = await db()
-          .prepare("SELECT upload_id, upload_date, ip_address, user_id, title, files, size, content_type, views FROM uploads WHERE user_id = ? AND (title LIKE ? OR ? = '')")
-          .bind(userid, search)
+          .prepare("SELECT upload_id, access_id, created_at AS upload_date, ip_address, user_id, title, files, size, content_type, views FROM uploads WHERE user_id = ? AND (title LIKE ? OR ? = '')")
+          .bind(userid, `%${search}%`, search)
           .all<Upload>();
 
      return results?.map(row => ({ ...row, available: 0 })) || [];
 }
 
-export async function insertUploadHistory(userid: string, title: string, ip: string, files: number, size: number, password: string, contentType: string): Promise<string> {
+export async function insertUploadHistory(userid: string | null | undefined, title: string, ip: string, files: number, size: number, password: string, contentType: string): Promise<string> {
      const passwordHash = password?.length ? await generateHash(password) : "";
      
      let accessid = generateRandomString();
@@ -37,8 +37,8 @@ export async function insertUploadHistory(userid: string, title: string, ip: str
      }
      
      const { meta } = await db()
-          .prepare("INSERT INTO uploads (upload_id, created_at, access_id, user_id, title, ip_address, files, size, password, content_type) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-          .bind(crypto.randomUUID(), new Date().getTime(), accessid, userid, title, ip, files, size, passwordHash, contentType)
+          .prepare("INSERT INTO uploads (upload_id, created_at, access_id, user_id, title, ip_address, files, size, password, content_type, views) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)")
+          .bind(crypto.randomUUID(), new Date().getTime(), accessid, userid ?? null, title, ip, files, size, passwordHash, contentType)
           .run();
      
      return meta.changes ? accessid : "";
@@ -81,7 +81,7 @@ export async function verifyUploadPassword(id: string, password: string): Promis
 
 export async function incrementUploadViews(id: string): Promise<boolean> {
      const { meta } = await db()
-          .prepare("UPDATE uploads SET views = views + 1 WHERE upload_id = ?")
+          .prepare("UPDATE uploads SET views = COALESCE(views, 0) + 1 WHERE access_id = ?")
           .bind(id)
           .run();
 
@@ -106,7 +106,13 @@ export async function getUploadTitle(accessid: string): Promise<string> {
      const title = await db()
           .prepare("SELECT title FROM uploads WHERE access_id = ?")
           .bind(accessid)
-          .first<string>("total");
+          .first<string>("title");
      
      return title ?? "";
+}
+export async function getUserUpload(userid: string, id: string): Promise<{ access_id: string, title: string } | null> {
+     return await db()
+          .prepare("SELECT access_id, title FROM uploads WHERE user_id = ? AND upload_id = ?")
+          .bind(userid, id)
+          .first<{ access_id: string, title: string }>();
 }

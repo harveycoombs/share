@@ -73,12 +73,19 @@ export default function Settings({ onClose }: Properties) {
 
         setUpdating(false);
 
+        if (!response.ok) {
+            (response.status === 400 || response.status === 401 || response.status === 409 ? setWarning : setError)(json.error ?? "Something went wrong");
+            return;
+        }
+
         if (json.updated) {
-            setSuccess("Details updated successfully");
+            setSuccess(newPassword.length ? (details?.has_password ? "Password changed successfully" : "Password set successfully") : "Details updated successfully");
+            setOldPassword("");
+            setNewPassword("");
         } else {
             setError("Something went wrong");
         }
-    }, [name, emailAddress, oldPassword, newPassword, setUpdating, setError, setWarning, setSuccess]);
+    }, [name, emailAddress, oldPassword, newPassword, details, setUpdating, setError, setWarning, setSuccess]);
 
     const deleteAccount = useCallback(async () => {
         if (!deletionIntent) {
@@ -194,7 +201,7 @@ export default function Settings({ onClose }: Properties) {
 
                         <div>
                             <strong className="block font-bold">{details?.name}</strong>
-                            <div className="text-xs text-gray-400 font-medium">Joined {new Date(details?.creation_date).toLocaleDateString()}</div>
+                            <div className="text-xs text-gray-400 font-medium">Joined {new Date(details?.created_at).toLocaleDateString()}</div>
                         </div>
                     </div>
 
@@ -217,6 +224,13 @@ export default function Settings({ onClose }: Properties) {
 
                     {section === "security" && (
                         <div className="space-y-5">
+                            <SettingsFieldContainer label={details?.has_password ? "Change Password" : "Set Password"}>
+                                <div className="space-y-2">
+                                    {details?.has_password && <Field type="password" classes="block w-full" placeholder="Current password" autoComplete="current-password" value={oldPassword} onChange={(e: any) => setOldPassword(e.target.value)} />}
+                                    <Field type="password" classes="block w-full" placeholder="New password" autoComplete="new-password" minLength={8} value={newPassword} onChange={(e: any) => setNewPassword(e.target.value)} />
+                                </div>
+                            </SettingsFieldContainer>
+
                             <SettingsFieldContainer label="Multi-Factor Authentication">
                                 {QRCode.length ? (
                                     <div className="flex flex-col">
@@ -224,7 +238,7 @@ export default function Settings({ onClose }: Properties) {
 
                                         <div className="text-xs font-medium text-center text-gray-500">Scan the QR code with your TOTP authenticator app (Google Authenticator, Authy, Duo, etc.)</div>
                                     </div>
-                                ) : details?.totp_secret?.length ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
+                                ) : details?.has_totp ? <Button classes="block w-fit" color="red" loading={updatingTOTP} onClick={disableTOTP}>Remove TOTP</Button> : <Button classes="block w-full" loading={updatingTOTP} onClick={enableTOTP}>Add TOTP</Button>}
                             </SettingsFieldContainer>
 
                             <SettingsFieldContainer label="Data & GDPR">

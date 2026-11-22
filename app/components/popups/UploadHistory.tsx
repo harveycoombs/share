@@ -246,7 +246,7 @@ function Upload({ index, data, bulkSelect, onSelect }: any) {
                 </div>
 
                 <div className="flex items-center gap-1">
-                    <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/uploads/${data.upload_id}`)} />
+                    <UploadOption icon={faChain} title="Copy URL" target="_blank" onClick={() => navigator.clipboard.writeText(`${window.location.origin}/${data.access_id}`)} />
 
                     <UploadOption icon={deletionIntent ? faCheck : faTrashAlt} title={deletionIntent ? "Confirm Deletion" : "Delete"} onClick={deleteUpload} loading={deleteLoading} />
                     {deletionIntent && !deleteLoading && <UploadOption icon={faXmark} title="Cancel Deletion" onClick={() => setDeletionIntent(false)} />}

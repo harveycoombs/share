@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
                     await uploadFile(avatarBuffer, `avatars/${user.user_id}`);
                 }
 
-                const avatar = user.avatar?.length ? `https://uploads.share.surf/share/avatars/${createdUser.user_id}` : "/images/default.jpg";
+                const avatar = user.avatar?.length ? `https://uploads.share.surf/avatars/${createdUser.user_id}` : "/images/default.jpg";
 
                 const credentials = await createJWT({ ...createdUser, avatar });
 
