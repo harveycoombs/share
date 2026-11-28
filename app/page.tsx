@@ -182,11 +182,9 @@ export default function Home() {
     const copyUploadURL = useCallback(async (e: any) => {
         if (!id) return;
 
-        const url = e.target.innerText;
+        const url = `https://share.surf/${id}`;
 
-        if (url === "Copied to Clipboard") return;
-
-        await navigator.clipboard.writeText(url.toLowerCase());
+        await navigator.clipboard.writeText(url);
         e.target.innerText = "Copied to Clipboard";
 
         setTimeout(() => e.target.innerText = url, 1200);
@@ -265,7 +263,7 @@ export default function Home() {
                 {id.length > 0 && (
                     <div>
                         <strong 
-                              className={`block w-fit mx-auto text-2xl font-semibold text-center ${id ? " text-green-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} 
+                              className={`block w-fit mx-auto text-2xl font-semibold text-center select-none ${id ? " text-green-500 cursor-pointer break-all" : ""} max-sm:text-2xl max-sm:leading-relaxed`} 
                               onClick={copyUploadURL}
                         >
                              {id ? `${document.location.href}${id}` : ""}
